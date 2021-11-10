@@ -1,0 +1,19 @@
+.entryResult{
+    display: inline-block;
+    position: relative;
+    width: 0px;
+    left: 30px;
+}
+.entryResult .space-holder{
+    display: block;
+    width: 225px;
+    font-size: 1.3em;
+    text-align: right;
+}
+.entryResult span{
+    color: green;
+    font-weight: 600;
+}
+.stock-deficiency{
+    background-color:#EEAABB;
+}

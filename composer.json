@@ -1,0 +1,5 @@
+{
+    "require": {
+        "openfoodfacts/openfoodfacts-php": "^0.2.4"
+    }
+}

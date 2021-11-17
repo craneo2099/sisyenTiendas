@@ -1,0 +1,832 @@
+{
+    "Sales": {
+        "name":"Sales",
+        "Transactions": {
+            "Caption": [
+                "New Sales Order or Quotation",
+                "Enter Counter Sales",
+                "Enter Counter Returns",
+                "Generate\/Print Picking Lists",
+                "Outstanding Sales Orders\/Quotations",
+                "Special Order",
+                "Recurring Order Template",
+                "Process Recurring Orders",
+                "Maintain Picking Lists"
+            ],
+            "URL": [
+                "\/SelectOrderItems.php?NewOrder=Yes",
+                "\/CounterSales.php",
+                "\/CounterReturns.php",
+                "\/GeneratePickingList.php",
+                "\/SelectSalesOrder.php",
+                "\/SpecialOrder.php",
+                "\/SelectRecurringSalesOrder.php",
+                "\/RecurringSalesOrdersProcess.php",
+                "\/SelectPickingLists.php"
+            ]
+        },
+        "Reports": {
+            "Caption": [
+                "Sales Order Inquiry",
+                "Print Price Lists",
+                "Order Status Report",
+                "Orders Invoiced Reports",
+                "Daily Sales Inquiry",
+                "Sales By Sales Type Inquiry",
+                "Sales By Category Inquiry",
+                "Sales By Category By Item Inquiry",
+                "Sales Analysis Reports",
+                "Sales Graphs",
+                "Top Sellers Inquiry",
+                "Order Delivery Differences Report",
+                "Delivery In Full On Time (DIFOT) Report",
+                "Sales Order Detail Or Summary Inquiries",
+                "Top Sales Items Inquiry",
+                "Top Customers Inquiry",
+                "Worst Sales Items Report",
+                "Sales With Low Gross Profit Report",
+                "Sell Through Support Claims Report",
+                "Sales to Customers"
+            ],
+            "URL": [
+                "\/SelectCompletedOrder.php",
+                "\/PDFPriceList.php",
+                "\/PDFOrderStatus.php",
+                "\/PDFOrdersInvoiced.php",
+                "\/DailySalesInquiry.php",
+                "\/SalesByTypePeriodInquiry.php",
+                "\/SalesCategoryPeriodInquiry.php",
+                "\/StockCategorySalesInquiry.php",
+                "\/SalesAnalRepts.php",
+                "\/SalesGraph.php",
+                "\/SalesTopItemsInquiry.php",
+                "\/PDFDeliveryDifferences.php",
+                "\/PDFDIFOT.php",
+                "\/SalesInquiry.php",
+                "\/TopItems.php",
+                "\/SalesTopCustomersInquiry.php",
+                "\/NoSalesItems.php",
+                "\/PDFLowGP.php",
+                "\/PDFSellThroughSupportClaim.php",
+                "\/SalesReport.php"
+            ]
+        },
+        "Maintenance": {
+            "Caption": [
+                "Create Contract",
+                "Select Contract",
+                "Sell Through Support Deals"
+            ],
+            "URL": [
+                "\/Contracts.php",
+                "\/SelectContract.php",
+                "\/SellThroughSupport.php"
+            ]
+        }
+    },
+    "AR": {
+        "name":"Receivables",
+        "Transactions": {
+            "Caption": [
+                "Select Order to Invoice",
+                "Create A Credit Note",
+                "Enter Receipts",
+                "Allocate Receipts or Credit Notes"
+            ],
+            "URL": [
+                "\/SelectSalesOrder.php",
+                "\/SelectCreditItems.php?NewCredit=Yes",
+                "\/CustomerReceipt.php?NewReceipt=Yes&amp;Type=Customer",
+                "\/CustomerAllocations.php"
+            ]
+        },
+        "Reports": {
+            "Caption": [
+                "Where Allocated Inquiry",
+                "Print Invoices or Credit Notes",
+                "Print Statements",
+                "Aged Customer Balances\/Overdues Report",
+                "Re-Print A Deposit Listing",
+                "Debtor Balances At A Prior Month End",
+                "Customer Listing By Area\/Salesperson",
+                "List Daily Transactions",
+                "Customer Transaction Inquiries",
+                "Customer Activity and Balances"
+            ],
+            "URL": [
+                "\/CustWhereAlloc.php",
+                "\/PrintCustTrans.php",
+                "\/PrintCustStatements.php",
+                "\/AgedDebtors.php",
+                "\/PDFBankingSummary.php",
+                "\/DebtorsAtPeriodEnd.php",
+                "\/PDFCustomerList.php",
+                "\/PDFCustTransListing.php",
+                "\/CustomerTransInquiry.php",
+                "\/CustomerBalancesMovement.php"
+            ]
+        },
+        "Maintenance": {
+            "Caption": [
+                "Add Customer",
+                "Select Customer"
+            ],
+            "URL": [
+                "\/Customers.php",
+                "\/SelectCustomer.php"
+            ]
+        }
+    },
+    "PO": {
+
+        "name":"Purchases",
+        "Transactions": {
+            "Caption": [
+                "New Purchase Order",
+                "Purchase Orders",
+                "Purchase Order Grid Entry",
+                "Create a New Tender",
+                "Edit Existing Tenders",
+                "Process Tenders and Offers",
+                "Orders to Authorise",
+                "Shipment Entry",
+                "Select A Shipment"
+            ],
+            "URL": [
+                "\/PO_Header.php?NewOrder=Yes",
+                {
+                    "name":"\/PO_SelectOSPurchOrder.php",
+                    "Caption": [
+                        "Receive Purchase Order",
+                        "Print Purchase Order"
+                    ],
+                    "URL": [
+                        "\/GoodsReceived.php",
+                        "\/PO_PDFPurchOrder.php"
+                    ]
+                },
+                "\/PurchaseByPrefSupplier.php",
+                "\/SupplierTenderCreate.php?New=Yes",
+                "\/SupplierTenderCreate.php?Edit=Yes",
+                "\/OffersReceived.php",
+                "\/PO_AuthoriseMyOrders.php",
+                "\/SelectSupplier.php",
+                "\/Shipt_Select.php"
+            ]
+        },
+        "Reports": {
+            "Caption": [
+                "Purchase Order Inquiry",
+                "Purchase Order Detail Or Summary Inquiries",
+                "Supplier Price List",
+                "Purchases from Suppliers"
+            ],
+            "URL": [
+                {
+                    "name":"\/PO_SelectPurchOrder.php",
+                    "Caption": [
+                        "Print Purchase Order"
+                    ],
+                    "URL": [
+                        "\/PO_PDFPurchOrder.php?from=OD"
+                    ]
+                },
+                "\/POReport.php",
+                "\/SuppPriceList.php",
+                "\/PurchasesReport.php"
+            ]
+        },
+        "Maintenance": {
+            "Caption": [
+                "Maintain Supplier Price Lists"
+            ],
+            "URL": [
+                "\/SupplierPriceList.php"
+            ]
+        }
+    },
+    "AP": {
+        "name":"Payables",
+        "Transactions": {
+            "Caption": [
+                "Select Supplier",
+                "Supplier Allocations"
+            ],
+            "URL": [
+                "\/SelectSupplier.php",
+                "\/SupplierAllocations.php"
+            ]
+        },
+        "Reports": {
+            "Caption": [
+                "Where Allocated Inquiry",
+                "Aged Supplier Report",
+                "Payment Run Report",
+                "Remittance Advices",
+                "Outstanding GRNs Report",
+                "Supplier Balances At A Prior Month End",
+                "List Daily Transactions",
+                "Supplier Transaction Inquiries"
+            ],
+            "URL": [
+                "\/SuppWhereAlloc.php",
+                "\/AgedSuppliers.php",
+                "\/SuppPaymentRun.php",
+                "\/PDFRemittanceAdvice.php",
+                "\/OutstandingGRNs.php",
+                "\/SupplierBalsAtPeriodEnd.php",
+                "\/PDFSuppTransListing.php",
+                "\/SupplierTransInquiry.php"
+            ]
+        },
+        "Maintenance": {
+            "Caption": [
+                "Add Supplier",
+                "Select Supplier",
+                "Maintain Factor Companies"
+            ],
+            "URL": [
+                "\/Suppliers.php",
+                "\/SelectSupplier.php",
+                "\/Factors.php"
+            ]
+        }
+    },
+    "stock": {
+        "name":"Inventory",
+        "Transactions": {
+            "Caption": [
+                "Receive Purchase Orders",
+                "Inventory Location Transfers",
+                "Bulk Inventory Dispatch",
+                "Bulk Inventory Reception",
+                "Inventory Adjustments",
+                "Reverse Goods Received",
+                "Enter Stock Counts",
+                "Create a New Internal Stock Request",
+                "Authorise Internal Stock Requests",
+                "Fulfill Internal Stock Requests"
+            ],
+            "URL": [
+                "\/PO_SelectOSPurchOrder.php",
+                "\/StockTransfers.php?New=Yes",
+                "\/StockLocTransfer.php",
+                "\/StockLocTransferReceive.php",
+                "\/StockAdjustments.php?NewAdjustment=Yes",
+                "\/ReverseGRN.php",
+                "\/StockCounts.php",
+                "\/InternalStockRequest.php?New=Yes",
+                "\/InternalStockRequestAuthorisation.php",
+                "\/InternalStockRequestFulfill.php"
+            ]
+        },
+        "Reports": {
+            "Caption": [
+                "Serial Item Research Tool",
+                "Print Price Labels",
+                "Reprint GRN",
+                "Inventory Item Movements",
+                "Inventory Item Status",
+                "Inventory Item Usage",
+                "Inventory Quantities",
+                "Reorder Level",
+                "Stock Dispatch",
+                "Inventory Valuation Report",
+                "Mail Inventory Valuation Report",
+                "Inventory Planning Report",
+                "Inventory Planning Based On Preferred Supplier Data",
+                "Inventory Stock Check Sheets",
+                "Make Inventory Quantities CSV",
+                "Compare Counts Vs Stock Check Data",
+                "All Inventory Movements By Location\/Date",
+                "List Inventory Status By Location\/Category",
+                "Historical Stock Quantity By Location\/Category",
+                "List Negative Stocks",
+                "Period Stock Transaction Listing",
+                "Stock Transfer Note",
+                "Aged Controlled Stock Report",
+                "Internal stock request inquiry"
+            ],
+            "URL": [
+                "\/StockSerialItemResearch.php",
+                "\/PDFPrintLabel.php",
+                "\/ReprintGRN.php",
+                "\/StockMovements.php",
+                "\/StockStatus.php",
+                "\/StockUsage.php",
+                "\/InventoryQuantities.php",
+                "\/ReorderLevel.php",
+                "\/StockDispatch.php",
+                "\/InventoryValuation.php",
+                "\/MailInventoryValuation.php",
+                "\/InventoryPlanning.php",
+                "\/InventoryPlanningPrefSupplier.php",
+                "\/StockCheck.php",
+                "\/StockQties_csv.php",
+                "\/PDFStockCheckComparison.php",
+                "\/StockLocMovements.php",
+                "\/StockLocStatus.php",
+                "\/StockQuantityByDate.php",
+                "\/PDFStockNegatives.php",
+                "\/PDFPeriodStockTransListing.php",
+                "\/PDFStockTransfer.php",
+                "\/AgedControlledInventory.php",
+                "\/InternalStockRequestInquiry.php"
+            ]
+        },
+        "Maintenance": {
+            "Caption": [
+                "Add A New Item",
+                "Add multiple new items",
+                "Select An Item",
+                "Review Translated Descriptions",
+                "Sales Category Maintenance",
+                "Brands Maintenance",
+                "Add or Update Prices Based On Costs",
+                "View or Update Prices Based On Costs",
+                "Reorder Level By Category\/Location"
+            ],
+            "URL": [
+                "\/Stocks.php",
+                "\/Stock\/MultiStocks.php",
+                {
+                    "name":"\/SelectProduct.php",
+                    "Caption": [
+                        "Maintain Pricing"
+                    ],
+                    "URL": [
+                        "\/Prices.php"
+                    ]
+                },
+                "\/RevisionTranslations.php",
+                "\/SalesCategories.php",
+                "\/Manufacturers.php",
+                "\/PricesBasedOnMarkUp.php",
+                "\/PricesByCost.php",
+                "\/ReorderLevelLocation.php"
+            ],
+            "Items": [
+                "Work Order Entry",
+                "Select A Work Order",
+                "QA Samples and Test Results",
+                "Timesheet Entry"
+            ]
+        }
+    },
+    "manuf": {
+        "name":"Manufacturing",
+        "Transactions": {
+            "Caption": [
+                "Work Order Entry",
+                "Select A Work Order",
+                "QA Samples and Test Results",
+                "Timesheet Entry"
+            ],
+            "URL": [
+                "\/WorkOrderEntry.php",
+                "\/SelectWorkOrder.php",
+                "\/SelectQASamples.php",
+                "\/Timesheets.php"
+            ]
+        },
+        "Reports": {
+            "Caption": [
+                "Select A Work Order",
+                "Costed Bill Of Material Inquiry",
+                "Where Used Inquiry",
+                "Bill Of Material Listing",
+                "Indented Bill Of Material Listing",
+                "List Components Required",
+                "List Materials Not Used Anywhere",
+                "Indented Where Used Listing",
+                "WO Items ready to produce",
+                "MRP",
+                "MRP Shortages",
+                "MRP Suggested Purchase Orders",
+                "MRP Suggested Work Orders",
+                "MRP Reschedules Required",
+                "Print Product Specification",
+                "Print Certificate of Analysis",
+                "Historical QA Test Results",
+                "Multiple Work Orders Total Cost Inquiry"
+            ],
+            "URL": [
+                "\/SelectWorkOrder.php",
+                "\/BOMInquiry.php",
+                "\/WhereUsedInquiry.php",
+                "\/BOMListing.php",
+                "\/BOMIndented.php",
+                "\/BOMExtendedQty.php",
+                "\/MaterialsNotUsed.php",
+                "\/BOMIndentedReverse.php",
+                "\/WOCanBeProducedNow.php",
+                "\/MRPReport.php",
+                "\/MRPShortages.php",
+                "\/MRPPlannedPurchaseOrders.php",
+                "\/MRPPlannedWorkOrders.php",
+                "\/MRPReschedules.php",
+                "\/PDFProdSpec.php",
+                "\/PDFCOA.php",
+                "\/HistoricalTestResults.php",
+                "\/CollectiveWorkOrderCost.php"
+            ]
+        },
+        "Maintenance": {
+            "Caption": [
+                "Work Centre",
+                "Bills Of Material",
+                "Copy a Bill Of Materials Between Items",
+                "Master Schedule",
+                "Auto Create Master Schedule",
+                "MRP Calculation",
+                "Quality Tests Maintenance",
+                "Product Specifications",
+                "Employees"
+            ],
+            "URL": [
+                "\/WorkCentres.php",
+                "\/BOMs.php",
+                "\/CopyBOM.php",
+                "\/MRPDemands.php",
+                "\/MRPCreateDemands.php",
+                "\/MRP.php",
+                "\/QATests.php",
+                "\/ProductSpecs.php",
+                "\/Employees.php"
+            ]
+        }
+    },
+    "GL": {
+        "name":"General Ledger",
+        "Transactions": {
+            "Caption": [
+                "Bank Account Payments Entry",
+                "Bank Account Receipts Entry",
+                "Import Bank Transactions",
+                "Bank Account Payments Matching",
+                "Bank Account Receipts Matching",
+                "Journal Entry"
+            ],
+            "URL": [
+                "\/Payments.php?NewPayment=Yes",
+                "\/CustomerReceipt.php?NewReceipt=Yes&amp;Type=GL",
+                "\/ImportBankTrans.php",
+                "\/BankMatching.php?Type=Payments",
+                "\/BankMatching.php?Type=Receipts",
+                "\/GLJournal.php?NewJournal=Yes"
+            ]
+        },
+        "Reports": {
+            "Caption": [
+                "Bank Account Balances",
+                "Bank Account Reconciliation Statement",
+                "Cheque Payments Listing",
+                "Daily Bank Transactions",
+                "Account Inquiry",
+                "Graph of Account Transactions",
+                "Account Listing",
+                "Account Listing to CSV File",
+                "General Ledger Journal Inquiry",
+                "Trial Balance",
+                "Balance Sheet",
+                "Profit and Loss Statement",
+                "Statement of Cash Flows",
+                "Financial Statements",
+                "Horizontal Analysis of Statement of Financial Position",
+                "Horizontal Analysis of Statement of Comprehensive Income",
+                "Tag Reports",
+                "Tax Reports"
+            ],
+            "URL": [
+                "\/BankAccountBalances.php",
+                "\/BankReconciliation.php",
+                "\/PDFChequeListing.php",
+                "\/DailyBankTransactions.php",
+                "\/SelectGLAccount.php",
+                "\/GLAccountGraph.php",
+                "\/GLAccountReport.php",
+                "\/GLAccountCSV.php",
+                "\/GLJournalInquiry.php",
+                "\/GLTrialBalance.php",
+                "\/GLBalanceSheet.php",
+                "\/GLProfit_Loss.php",
+                "\/GLCashFlowsIndirect.php",
+                "\/GLStatements.php",
+                "\/AnalysisHorizontalPosition.php",
+                "\/AnalysisHorizontalIncome.php",
+                "\/GLTagProfit_Loss.php",
+                "\/Tax.php"
+            ]
+        },
+        "Maintenance": {
+            "Caption": [
+                "Account Sections",
+                "Account Groups",
+                "GL Accounts",
+                "GL Account Authorised Users",
+                "User Authorised GL Accounts",
+                "GL Budgets",
+                "GL Tags",
+                "Bank Accounts",
+                "Bank Account Authorised Users",
+                "User Authorised Bank Accounts",
+                "Maintain Journal Templates"
+            ],
+            "URL": [
+                "\/AccountSections.php",
+                "\/AccountGroups.php",
+                "\/GLAccounts.php",
+                "\/GLAccountUsers.php",
+                "\/UserGLAccounts.php",
+                "\/GLBudgets.php",
+                "\/GLTags.php",
+                "\/BankAccounts.php",
+                "\/BankAccountUsers.php",
+                "\/UserBankAccounts.php",
+                "\/GLJournalTemplates.php"
+            ]
+        }
+    },
+    "FA": {
+        "name":"Asset Manager",
+        "Transactions": {
+            "Caption": [
+                "Add a new Asset",
+                "Select an Asset",
+                "Change Asset Location",
+                "Depreciation Journal"
+            ],
+            "URL": [
+                "\/FixedAssetItems.php",
+                "\/SelectAsset.php",
+                "\/FixedAssetTransfer.php",
+                "\/FixedAssetDepreciation.php"
+            ]
+        },
+        "Reports": {
+            "Caption": [
+                "Asset Register",
+                "My Maintenance Schedule",
+                "Maintenance Reminder Emails"
+            ],
+            "URL": [
+                "\/FixedAssetRegister.php",
+                "\/MaintenanceUserSchedule.php",
+                "\/MaintenanceReminders.php"
+            ]
+        },
+        "Maintenance": {
+            "Caption": [
+                "Fixed Asset Category Maintenance",
+                "Add or Maintain Asset Locations",
+                "Fixed Asset Maintenance Tasks"
+            ],
+            "URL": [
+                "\/FixedAssetCategories.php",
+                "\/FixedAssetLocations.php",
+                "\/MaintenanceTasks.php"
+            ]
+        }
+    },
+    "PC": {
+        "name":"Petty Cash",
+        "Transactions": {
+            "Caption": [
+                "Assign Cash to PC Tab",
+                "Transfer Assigned Cash Between PC Tabs",
+                "Claim Expenses From PC Tab",
+                "Authorise Expenses",
+                "Authorise Assigned Cash"
+            ],
+            "URL": [
+                "\/PcAssignCashToTab.php",
+                "\/PcAssignCashTabToTab.php",
+                "\/PcClaimExpensesFromTab.php",
+                "\/PcAuthorizeExpenses.php",
+                "\/PcAuthorizeCash.php"
+            ]
+        },
+        "Reports": {
+            "Caption": [
+                "PC Tab General Report",
+                "PC Expense General Report",
+                "PC Tab Expenses List",
+                "PC Expenses Analysis"
+            ],
+            "URL": [
+                "\/PcReportTab.php",
+                "\/PcReportExpense.php",
+                "\/PcTabExpensesList.php",
+                "\/PcAnalysis.php"
+            ]
+        },
+        "Maintenance": {
+            "Caption": [
+                "Types of PC Tabs",
+                "PC Tabs",
+                "PC Expenses",
+                "Expenses for Type of PC Tab"
+            ],
+            "URL": [
+                "\/PcTypeTabs.php",
+                "\/PcTabs.php",
+                "\/PcExpenses.php",
+                "\/PcExpensesTypeTab.php"
+            ]
+        }
+    },
+    "system": {
+        "name":"Setup",
+        "Transactions": {
+            "Caption": [
+                "Company Preferences",
+                "System Parameters",
+                "Users Maintenance",
+                "Maintain Security Tokens",
+                "Access Permissions Maintenance",
+                "Page Security Settings",
+                "Currencies Maintenance",
+                "Tax Authorities and Rates Maintenance",
+                "Tax Group Maintenance",
+                "Dispatch Tax Province Maintenance",
+                "Tax Category Maintenance",
+                "List Periods Defined",
+                "Report Builder Tool",
+                "View Audit Trail",
+                "Geocode Maintenance",
+                "Form Designer",
+                "Web-Store Configuration",
+                "SMTP Server Details",
+                "Mailing Group Maintenance"
+            ],
+            "URL": [
+                "\/CompanyPreferences.php",
+                "\/SystemParameters.php",
+                "\/WWW_Users.php",
+                "\/SecurityTokens.php",
+                "\/WWW_Access.php",
+                "\/PageSecurity.php",
+                "\/Currencies.php",
+                "\/TaxAuthorities.php",
+                "\/TaxGroups.php",
+                "\/TaxProvinces.php",
+                "\/TaxCategories.php",
+                "\/PeriodsInquiry.php",
+                "\/reportwriter\/admin\/ReportCreator.php",
+                "\/AuditTrail.php",
+                "\/GeocodeSetup.php",
+                "\/FormDesigner.php",
+                "\/ShopParameters.php",
+                "\/SMTPServer.php",
+                "\/MailingGroupMaintenance.php"
+            ]
+        },
+        "Reports": {
+            "Caption": [
+                "Sales Types",
+                "Customer Types",
+                "Supplier Types",
+                "Credit Status",
+                "Payment Terms",
+                "Set Purchase Order Authorisation levels",
+                "Payment Methods",
+                "Sales People",
+                "Sales Areas",
+                "Shippers",
+                "Sales GL Interface Postings",
+                "COGS GL Interface Postings",
+                "Freight Costs Maintenance",
+                "Discount Matrix"
+            ],
+            "URL": [
+                "\/SalesTypes.php",
+                "\/CustomerTypes.php",
+                "\/SupplierTypes.php",
+                "\/CreditStatus.php",
+                "\/PaymentTerms.php",
+                "\/PO_AuthorisationLevels.php",
+                "\/PaymentMethods.php",
+                "\/SalesPeople.php",
+                "\/Areas.php",
+                "\/Shippers.php",
+                "\/SalesGLPostings.php",
+                "\/COGSGLPostings.php",
+                "\/FreightCosts.php",
+                "\/DiscountMatrix.php"
+            ]
+        },
+        "Maintenance": {
+            "Caption": [
+                "Inventory Categories Maintenance",
+                "Inventory Locations Maintenance",
+                "Inventory Location Authorised Users Maintenance",
+                "User Authorised Inventory Locations Maintenance",
+                "Discount Category Maintenance",
+                "Units of Measure",
+                "MRP Available Production Days",
+                "MRP Demand Types",
+                "Maintain Internal Departments",
+                "Maintain Internal Stock Categories to User Roles",
+                "Label Templates Maintenance"
+            ],
+            "URL": [
+                "\/StockCategories.php",
+                "\/Locations.php",
+                "\/LocationUsers.php",
+                "\/UserLocations.php",
+                "\/DiscountCategories.php",
+                "\/UnitsOfMeasure.php",
+                "\/MRPCalendar.php",
+                "\/MRPDemandTypes.php",
+                "\/Departments.php",
+                "\/InternalStockCategoriesByRole.php",
+                "\/Labels.php"
+            ]
+        }
+    },
+    "Utilities": {
+        "name":"Utilities",
+        "Transactions": {
+            "Caption": [
+                "Change A Customer Code",
+                "Change A Customer Branch Code",
+                "Change A GL Account Code",
+                "Change An Inventory Item Code",
+                "Change A Location Code",
+                "Change A Salesman Code",
+                "Change A Stock Category Code",
+                "Change A Supplier Code",
+                "Translate Item Descriptions",
+                "Update costs for all BOM items, from the bottom up",
+                "Re-apply costs to Sales Analysis",
+                "Delete sales transactions",
+                "Reverse all supplier payments on a specified date",
+                "Update sales analysis with latest customer data",
+                "Copy Authority of GL Accounts from one user to another"
+            ],
+            "URL": [
+                "\/Z_ChangeCustomerCode.php",
+                "\/Z_ChangeBranchCode.php",
+                "\/Z_ChangeGLAccountCode.php",
+                "\/Z_ChangeStockCode.php",
+                "\/Z_ChangeLocationCode.php",
+                "\/Z_ChangeSalesmanCode.php",
+                "\/Z_ChangeStockCategory.php",
+                "\/Z_ChangeSupplierCode.php",
+                "\/AutomaticTranslationDescriptions.php",
+                "\/Z_BottomUpCosts.php",
+                "\/Z_ReApplyCostToSA.php",
+                "\/Z_DeleteSalesTransActions.php",
+                "\/Z_ReverseSuppPaymentRun.php",
+                "\/Z_UpdateSalesAnalysisWithLatestCustomerData.php",
+                "\/Z_GLAccountUsersCopyAuthority.php"
+            ]
+        },
+        "Reports": {
+            "Caption": [
+                "Debtors Balances By Currency Totals",
+                "Suppliers Balances By Currency Totals",
+                "Show General Transactions That Do Not Balance",
+                "List of items without picture"
+            ],
+            "URL": [
+                "\/Z_CurrencyDebtorsBalances.php",
+                "\/Z_CurrencySuppliersBalances.php",
+                "\/Z_CheckGLTransBalance.php",
+                "\/Z_ItemsWithoutPicture.php"
+            ]
+        },
+        "Maintenance": {
+            "Caption": [
+                "Maintain Language Files",
+                "Make New Company",
+                "Data Export Options",
+                "Import Customers from .csv file",
+                "Import Stock Items from .csv file",
+                "Import Price List from .csv file",
+                "Import Fixed Assets from .csv file",
+                "Import GL Payments Receipts Or Journals From .csv file",
+                "Create new company template SQL file and submit to webERP",
+                "Re-calculate brought forward amounts in GL",
+                "Re-Post all GL transactions from a specified period",
+                "Purge all old prices",
+                "Remove all purchase back orders"
+            ],
+            "URL": [
+                "\/Z_poAdmin.php",
+                "\/Z_MakeNewCompany.php",
+                "\/Z_DataExport.php",
+                "\/Z_ImportDebtors.php",
+                "\/Z_ImportStocks.php",
+                "\/Z_ImportPriceList.php",
+                "\/Z_ImportFixedAssets.php",
+                "\/Z_ImportGLTransactions.php",
+                "\/Z_CreateCompanyTemplateFile.php",
+                "\/Z_UpdateChartDetailsBFwd.php",
+                "\/Z_RePostGLFromPeriod.php",
+                "\/Z_DeleteOldPrices.php",
+                "\/Z_RemovePurchaseBackOrders.php"
+            ]
+        }
+    }
+}

@@ -8,6 +8,41 @@ $BookMark = 'CompanyParameters';
 $Title = _('Company Preferences');
 include('includes/header.php');
 
+$ModuleList = array(
+	_('Sales'),
+	_('Receivables'),
+	_('Purchases'),
+	_('Payables'),
+	_('Inventory'),
+	_('Manufacturing'),
+	_('General Ledger'),
+	_('Asset Manager'),
+	_('Petty Cash'),
+	_('Setup'),
+	_('Utilities')
+);
+$ModuleListLabel = array(
+	_('Display Sales module'),
+	_('Display Receivables module'),
+	_('Display Purchases module'),
+	_('Display Payables module'),
+	_('Display Inventory module'),
+	_('Display Manufacturing module'),
+	_('Display General Ledger module'),
+	_('Display Asset Manager module'),
+	_('Display Petty Cash module'),
+	_('Display Setup module'),
+	_('Display Utilities module')
+);
+
+/*set the default modules to show to all
+this had trapped a few people previously*/
+$i=0;
+if(!isset($_POST['ModulesAllowed'])) {
+	$_POST['ModulesAllowed']='';
+}
+
+
 if (isset($Errors)) {
 	unset($Errors);
 }
@@ -38,6 +73,15 @@ if (isset($_POST['submit'])) {
 		$Errors[$i] = 'Email';
 		$i++;
 	}
+	/* Make a comma separated list of modules allowed ready to update the database*/
+	$i=0;
+	$ModulesAllowed = '';
+	while($i < count($ModuleList)) {
+		$FormVbl = 'Module_' . $i;
+		$ModulesAllowed .= $_POST[($FormVbl)] . ',';
+		$i++;
+	}
+	$_POST['ModulesAllowed']= $ModulesAllowed;
 
 	if ($InputError !=1){
 
@@ -65,7 +109,8 @@ if (isset($_POST['submit'])) {
 									gllink_debtors='" . $_POST['GLLink_Debtors'] . "',
 									gllink_creditors='" . $_POST['GLLink_Creditors'] . "',
 									gllink_stock='" . $_POST['GLLink_Stock'] ."',
-									freightact='" . $_POST['FreightAct'] . "'
+									freightact='" . $_POST['FreightAct'] . "',
+									modulesallowed='" . $ModulesAllowed . "'
 								WHERE coycode=1";
 
 			$ErrMsg =  _('The company preferences could not be updated because');
@@ -103,6 +148,7 @@ if (isset($_POST['submit'])) {
 echo '<form method="post" action="' . htmlspecialchars($_SERVER['PHP_SELF'],ENT_QUOTES,'UTF-8') . '">';
 echo '<div>';
 echo '<input type="hidden" name="FormID" value="' . $_SESSION['FormID'] . '" />';
+echo '<input type="hidden" name="ModulesAllowed" value="' . $_POST['ModulesAllowed'] . '" />';
 echo '<table class="selection">';
 
 if ($InputError != 1) {
@@ -130,7 +176,8 @@ if ($InputError != 1) {
 					gllink_debtors,
 					gllink_creditors,
 					gllink_stock,
-					freightact
+					freightact,
+					modulesallowed
 				FROM companies
 				WHERE coycode=1";
 
@@ -165,6 +212,8 @@ if ($InputError != 1) {
 	$_POST['GLLink_Creditors'] = $myrow['gllink_creditors'];
 	$_POST['GLLink_Stock'] = $myrow['gllink_stock'];
 	$_POST['FreightAct'] = $myrow['freightact'];
+	$_POST['ModulesAllowed'] = $myrow['modulesallowed'];
+	$ModulesAllowed = explode(',',$_POST['ModulesAllowed']);
 }
 
 echo '<tr>
@@ -407,7 +456,19 @@ echo '<tr>
 		<input type="hidden" value="0" name="GLLink_Stock"/>
 		</td>
 	</tr>';
+/*Make an array out of the comma separated list of modules allowed*/
 
+$i = 0;
+foreach($ModuleList as $ModuleName) {
+	echo '<tr>
+			<td><label for="Module_', $i, '">', $ModuleListLabel[$i], ':</label></td>
+			<td><select id="Module_', $i, '" name="Module_', $i, '">
+				<option '.($ModulesAllowed[$i] == 0?'selected="selected" ':'').'value="0">'. _('No'). '</option>
+				<option '.($ModulesAllowed[$i] == 1?'selected="selected" ':'').'value="1">'. _('Yes'). '</option>
+			</select></td>
+		</tr>';
+	$i++;
+}// END foreach($ModuleList as $ModuleName).
 
 echo '</table>
 	<br />

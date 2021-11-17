@@ -46517,8 +46517,6 @@ msgstr "Este formulario no se presentó con una identificación correcta"
 #: includes/UserLogin.php:47
 msgid "Could not retrieve user details on login because"
 msgstr "No se pudieron obtener datos de usuario al iniciar sesión debido a que"
-msgid "Could not retrieve modules allowed because"
-msgstr "No se pudieron obtenerlos módulos habilidados pues"
 
 #: includes/UserLogin.php:249
 msgid "User access blocked"

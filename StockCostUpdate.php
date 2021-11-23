@@ -156,11 +156,12 @@ echo '<tr><td>';
 echo '<input type="hidden" name="OldMaterialCost" value="' . $myrow['materialcost'] .'" />';
 echo '<input type="hidden" name="OldLabourCost" value="' . $myrow['labourcost'] .'" />';
 echo '<input type="hidden" name="OldOverheadCost" value="' . $myrow['overheadcost'] .'" />';
-echo '<input type="hidden" name="QOH" value="' . $myrow['totalqoh'] .'" />';
+echo '<input type="hidden"	 name="QOH" value="' . $myrow['totalqoh'] .'" />';
 
 echo _('Last Cost') .':</td>
 		<td class="number">' . locale_number_format($myrow['lastcost'],$_SESSION['StandardCostDecimalPlaces']) . '</td></tr>';
-if (! in_array($_SESSION['PageSecurityArray']['CostUpdate'],$_SESSION['AllowedPageSecurityTokens'])){
+		$pak=$_SESSION['PageSecurityArray']['CostUpdate.php'];
+		if (! in_array($pak,$_SESSION['AllowedPageSecurityTokens'])){
 	echo '<tr>
 			<td>' . _('Cost') . ':</td>
 			<td class="number">' . locale_number_format($myrow['materialcost']+$myrow['labourcost']+$myrow['overheadcost'],$_SESSION['StandardCostDecimalPlaces']) . '</td>

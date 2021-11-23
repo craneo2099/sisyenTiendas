@@ -139,6 +139,9 @@ if (isset($_POST['Search'])
 		}
 	} //one of keywords or SupplierCode was more than a zero length string
 	$result = DB_query($SQL);
+	if (DB_num_rows($result) == 0) {
+		prnMsg(_('No suppliers records found'), 'info');
+	}
 	if (DB_num_rows($result) == 1) {
 		$myrow = DB_fetch_row($result);
 		$SingleSupplierReturned = $myrow[0];
@@ -318,8 +321,10 @@ if (isset($_POST['Search'])) {
 		DB_data_seek($result, ($_POST['PageOffset'] - 1) * $_SESSION['DisplayRecordsMax']);
 	}
 	while (($myrow = DB_fetch_array($result)) AND ($RowIndex <> $_SESSION['DisplayRecordsMax'])) {
-		echo '<tr class="striped_row">
-				<td><input type="submit" name="Select" value="'.$myrow['supplierid'].'" /></td>
+		
+		$onclick="document.getElementById('Select".$RowIndex."').click();";
+		echo '<tr class="striped_row linkRow" data-href="'.$onclick.'">
+				<td class="nestedLink"><input type="submit" name="Select" id="Select'.$RowIndex.'" value="'.$myrow['supplierid'].'" /></td>
 				<td>' . $myrow['suppname'] . '</td>
 				<td>' . $myrow['currcode'] . '</td>
 				<td>' . $myrow['address1'] . '</td>
@@ -429,5 +434,10 @@ if (isset($_SESSION['SupplierID']) and $_SESSION['SupplierID'] != '') {
 		}
 	}
 }
+echo '<script>
+$(".linkRow > td").not(".nestedLink").click(function() {
+	eval( $(this).parent().data("href"));
+});
+</script>';
 include ('includes/footer.php');
 ?>

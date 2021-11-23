@@ -21612,6 +21612,9 @@ msgstr "No se pueden obtener los registros de proveedor buscados porque"
 msgid "No supplier records contain the selected text"
 msgstr "Ningún registro de proveedor contiene el texto seleccionado"
 
+msgid "No suppliers records found"
+msgstr "No se encontraron proveedores"
+
 #: PO_Header.php:410 PO_Header.php:486 SpecialOrder.php:70
 msgid "The supplier record of the supplier selected"
 msgstr "El registro del proveedor seleccionado"
@@ -24524,6 +24527,9 @@ msgstr "Suburbio"
 #: ../webSHOP/Checkout.php:649 ../webSHOP/CreditCardPayPalPro.php:283
 msgid "City"
 msgstr "Ciudad"
+
+msgid "Province"
+msgstr "Pueblo"
 
 #: RecurringSalesOrders.php:392
 msgid "Region"
@@ -32409,7 +32415,7 @@ msgstr ""
 
 #: SupplierInvoice.php:633
 msgid "Within 20 characters needed"
-msgstr ""
+msgstr "Se requieren al menos 20 caracteres"
 
 #: SupplierInvoice.php:667
 msgid "Purchase Order Charges"
@@ -32859,24 +32865,20 @@ msgid "The supplier name should not be blank and should be less than 40 legal ch
 msgstr ""
 
 #: Suppliers.php:690
-msgid "Within 40 legal characters"
-msgstr ""
+msgid "Within %d legal characters"
+msgstr "Se requieren %d caracteres permitidos"
 
 #: Suppliers.php:694 Suppliers.php:698 Suppliers.php:702
-msgid "The input should be less than 40 characters"
-msgstr ""
+msgid "The input should be less than %d characters"
+msgstr "El campo debe tener menos de %d caracteres"
 
 #: Suppliers.php:694 Suppliers.php:698 Suppliers.php:702 Suppliers.php:710
-msgid "Less than 40 characters"
-msgstr "Menos de 40 caracteres"
-
-#: Suppliers.php:706
-msgid "Less than 50 characters"
-msgstr "Menos de 50 caracteres"
+msgid "Less than %d characters"
+msgstr "Menos de %d caracteres"
 
 #: Suppliers.php:728 Suppliers.php:732
 msgid "only number + - ( and ) allowed"
-msgstr ""
+msgstr "Sólo se permiten números, +, -, (, y )"
 
 #: Suppliers.php:732
 msgid "The input should be fax number"
@@ -32888,15 +32890,15 @@ msgstr "Solo se permite direcciones de correo-e"
 
 #: Suppliers.php:736 Suppliers.php:1022
 msgid "email format such as xx@mail.cn"
-msgstr "formato de correo-e como xx@mail.cn"
+msgstr "formato de correo-e como correo@dominio.com"
 
 #: Suppliers.php:740
 msgid "Only URL address are allowed"
 msgstr "Sólo se permite direcciones URL"
 
 #: Suppliers.php:740
-msgid "URL format such as www.example.com"
-msgstr ""
+msgid "URL format such as http://www.example.com"
+msgstr "Formato URL como http://www.ejemplo.com"
 
 #: Suppliers.php:743 Suppliers.php:1029
 msgid "Supplier Type"
@@ -32948,7 +32950,7 @@ msgstr "Transportista predeterminado"
 
 #: Suppliers.php:858 Suppliers.php:1154
 msgid "Default GL Account"
-msgstr ""
+msgstr "Cuenta por defecto"
 
 #: Suppliers.php:892
 msgid "Insert New Supplier"
@@ -32971,8 +32973,8 @@ msgid "The input must be in url format"
 msgstr ""
 
 #: Suppliers.php:1026
-msgid "url format such as www.example.com"
-msgstr ""
+msgid "url format such as http://www.example.com"
+msgstr "Formato de URL como http://www.ejemplo.com"
 
 #: Suppliers.php:1050
 msgid "Bank Reference"
@@ -35258,9 +35260,6 @@ msgstr "Nombre de la jurisdicción fiscal"
 msgid "The tax province cannot be left blank and includes illegal characters"
 msgstr ""
 
-#: TaxProvinces.php:223
-msgid "Within 30 legal characters"
-msgstr ""
 
 #: TestPlanResults.php:8
 msgid "Test Plan Results"
@@ -36256,10 +36255,6 @@ msgstr "Descripción de centro de trabajo"
 
 #: WorkCentres.php:231
 msgid "The Work Center should be more than 3 characters and no illegal characters allowed"
-msgstr ""
-
-#: WorkCentres.php:231
-msgid "More than 3 legal characters"
 msgstr ""
 
 #: WorkCentres.php:253

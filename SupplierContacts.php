@@ -33,7 +33,7 @@ if (isset($_GET['SelectedContact'])){
 	$SelectedContact = $_POST['SelectedContact'];
 }
 
-
+$SuppName = DB_fetch_row(DB_query("SELECT suppname FROM suppliers WHERE supplierid='" . $SupplierID . "'"))[0];
 if (isset($_POST['submit'])) {
 
 	//initialise no input errors assumed initially before we test
@@ -125,8 +125,7 @@ if (isset($_POST['submit'])) {
 
 
 if (!isset($SelectedContact)){
-	$sql = "SELECT suppliers.suppname,
-					contact,
+	$sql = "SELECT 	contact,
 					position,
 					tel,
 					suppliercontacts.fax,
@@ -145,7 +144,7 @@ if (!isset($SelectedContact)){
 		echo '<table class="selection">
 			<thead>
 				<tr>
-					<th colspan="7"><h3>' . _('Contacts Defined for') . ' - ' . $myrow['suppname'] . '</h3></th>
+					<th colspan="7"><h3>' . _('Contacts Defined for') . ' - ' . $SuppName . '</h3></th>
 				</tr>
 				<tr>
 				<th class="ascending">' . _('Name') . '</th>
@@ -191,7 +190,7 @@ if (!isset($SelectedContact)){
 if (isset($SelectedContact)) {
 	echo '<div class="centre">
 			<a href="' . htmlspecialchars($_SERVER['PHP_SELF'],ENT_QUOTES,'UTF-8') . '?SupplierID=' . $SupplierID . '">' .
-		  _('Show all the supplier contacts for') . ' ' . $SupplierID . '</a>
+		  _('Show all the supplier contacts for') . ' ' . $SupplierID . '-'.$SuppName.'</a>
 		 </div>';
 }
 
@@ -264,19 +263,19 @@ if (! isset($_GET['delete'])) {
 		</tr>
 		<tr>
 			<td>' . _('Telephone No') . ':</td>
-			<td><input type="tel" pattern="[\d\s+()-]{1,30}" title="'._('The input should be phone number').'" placeholder="'._('Only digits,space,+,-,(,) allowed').'" name="Tel" size="31" maxlength="30" value="' . $_POST['Tel'] . '" /></td>
+			<td><input type="tel" pattern="[\d\s+()-]{1,30}" title="'._('The input should be phone number').'" placeholder="'._('Phone Number').'" name="Tel" size="31" maxlength="30" value="' . $_POST['Tel'] . '" /></td>
 		</tr>
 		<tr>
-			<td>' . _('Facsimile No') . ':</td>
-			<td><input type="tel" pattern="[\d\s+()-]{1,30}" title="'._('The input should be phone number').'" placeholder="'._('Only digits,space,+,-,(,) allowed').'" name="Fax" size="31" maxlength="30" value="' . $_POST['Fax'] . '" /></td>
+			<td>' . _('Telephone No') . '2:</td>
+			<td><input type="tel" pattern="[\d\s+()-]{1,30}" title="'._('The input should be phone number').'" placeholder="'._('Phone Number').'" name="Fax" size="31" maxlength="30" value="' . $_POST['Fax'] . '" /></td>
 		</tr>
 		<tr>
-			<td>' . _('Mobile No') . ':</td>
-			<td><input type="tel" pattern="[\d\s+()-]{1,30}" title="'._('The input should be phone number').'" placeholder="'._('Only digits,space,+,-,(,) allowed').'" name="Mobile" size="31" maxlength="30" value="' . $_POST['Mobile'] . '" /></td>
+			<td>' . _('Telephone No') . '3:</td>
+			<td><input type="tel" pattern="[\d\s+()-]{1,30}" title="'._('The input should be phone number').'" placeholder="'._('Phone Number').'" name="Mobile" size="31" maxlength="30" value="' . $_POST['Mobile'] . '" /></td>
 		</tr>
 		<tr>
 			<td><a href="Mailto:' . $_POST['Email'] . '">' . _('Email') . ':</a></td>
-			<td><input type="email" name="Email" title="'._('The input must be email format').'" placeholder="'._('should be email format such as adm@weberp.org').'" size="51" maxlength="50" value="' . $_POST['Email'] . '" /></td>
+			<td><input type="email" name="Email" title="'._('The input must be email format').'" placeholder="'._('should be email format such as adm@devstar-novatech.com').'" size="51" maxlength="50" value="' . $_POST['Email'] . '" /></td>
 		</tr>
 		</table>
 		<br />';

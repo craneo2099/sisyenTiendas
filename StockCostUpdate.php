@@ -160,8 +160,7 @@ echo '<input type="hidden"	 name="QOH" value="' . $myrow['totalqoh'] .'" />';
 
 echo _('Last Cost') .':</td>
 		<td class="number">' . locale_number_format($myrow['lastcost'],$_SESSION['StandardCostDecimalPlaces']) . '</td></tr>';
-		$pak=$_SESSION['PageSecurityArray']['CostUpdate.php'];
-		if (! in_array($pak,$_SESSION['AllowedPageSecurityTokens'])){
+		if (! in_array($_SESSION['PageSecurityArray']['CostUpdate.php'],$_SESSION['AllowedPageSecurityTokens'])){
 	echo '<tr>
 			<td>' . _('Cost') . ':</td>
 			<td class="number">' . locale_number_format($myrow['materialcost']+$myrow['labourcost']+$myrow['overheadcost'],$_SESSION['StandardCostDecimalPlaces']) . '</td>

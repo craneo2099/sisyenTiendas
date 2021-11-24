@@ -31893,7 +31893,7 @@ msgstr "Se ha borrado el contacto del proveedor"
 
 #: SupplierContacts.php:148
 msgid "Contacts Defined for"
-msgstr "Contactos definidos por"
+msgstr "Contactos definidos para"
 
 #: SupplierContacts.php:183
 msgid "There are no contacts defined for this supplier"
@@ -31901,7 +31901,7 @@ msgstr "No hay contactos definidos para este proveedor"
 
 #: SupplierContacts.php:194
 msgid "Show all the supplier contacts for"
-msgstr "Mostrar todos los contactos del proveedor por"
+msgstr "Mostrar todos los contactos del proveedor "
 
 #: SupplierContacts.php:241
 msgid "The contact name must be more than one characters long"
@@ -31929,8 +31929,8 @@ msgid "The input must be email format"
 msgstr ""
 
 #: SupplierContacts.php:279
-msgid "should be email format such as adm@weberp.org"
-msgstr "Debe ser en formato de correo electrónico como adm@weberp.org"
+msgid "should be email format such as adm@devstar-novatech.com"
+msgstr "Debe ser en formato de correo electrónico como  adm@devstar-novatech.com"
 
 #: SupplierCredit.php:27 SupplierCredit.php:45
 msgid "Supplier Credit Note"

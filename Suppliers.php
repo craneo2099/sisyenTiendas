@@ -761,6 +761,7 @@ $self=htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8');
 	<input type="hidden" name="FormID" value="<?=$_SESSION['FormID']?>" />
 
 	<input type="hidden" name="New" value="<?=$isNew?>" />
+	<input type="hidden" name="FactorID" value="0" />
 <?php
 	if(isset($SupplierID)){
 		?>
@@ -827,7 +828,7 @@ $self=htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8');
 			<?php
 		foreach ($CountriesArray as $CountryEntry => $CountryName) {
 			$isAssignated= (!empty($_POST['country']) and ($_POST['country'] === $CountryName));
-			$isDefault=(!isset($_POST['country'])) and $CountryName == "México";
+			$isDefault=(empty($_POST['country']) and $CountryName == "México");
 			$attSelected=($isAssignated || $isDefault)?ATT_SELECTED:'';
 			?>
 				<option <?=$attSelected?>value="<?=$CountryName ?>"><?=$CountryName ?></option>

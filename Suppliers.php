@@ -761,6 +761,7 @@ $self=htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8');
 	<input type="hidden" name="FormID" value="<?=$_SESSION['FormID']?>" />
 
 	<input type="hidden" name="New" value="<?=$isNew?>" />
+	<input type="hidden" name="FactorID" value="0" />
 <?php
 	if(isset($SupplierID)){
 		?>

@@ -236,9 +236,13 @@ if($StockID!=''){
 echo '</table>
 		<div class="centre">
 			<br /><a href="', $RootPath, '/StockStatus.php?StockID=', urlencode($StockID), '">', _('Show Stock Status'), '</a>
-			<br /><a href="', $RootPath, '/StockUsage.php?StockID=', urlencode($StockID), '&amp;StockLocation=', urlencode($_POST['StockLocation']), '">', _('Show Stock Usage'), '</a>
-			<br /><a href="', $RootPath, '/SelectSalesOrder.php?SelectedStockItem=', urlencode($StockID), '&amp;StockLocation=', urlencode($_POST['StockLocation']), '">', _('Search Outstanding Sales Orders'), '</a>
-			<br /><a href="', $RootPath, '/SelectCompletedOrder.php?SelectedStockItem=', urlencode($StockID), '">', _('Search Completed Sales Orders'), '</a>
+			<br /><a href="', $RootPath, '/StockUsage.php?StockID=', urlencode($StockID), '&amp;StockLocation=', urlencode($_POST['StockLocation']), '">', _('Show Stock Usage'), '</a>';
+			if (! in_array($_SESSION['PageSecurityArray']['SelectPendingSOrder'],$_SESSION['AllowedPageSecurityTokens'])){
+				?><br />
+				<a href="<?=$RootPath?>/SelectSalesOrder.php?SelectedStockItem=<?= $StockID?>&amp;StockLocation=<?= urlencode($_POST['StockLocation'])?>"><?=  _('Search Outstanding Sales Orders') ?></a>
+				<?php 
+			} 
+			echo '<br /><a href="', $RootPath, '/SelectCompletedOrder.php?SelectedStockItem=', urlencode($StockID), '">', _('Search Completed Sales Orders'), '</a>
 		</div>
 	</div>
 	</form>';

@@ -659,8 +659,11 @@ if(isset($_SESSION['Transfer'])) {
 		<a href="'.$RootPath.'/StockMovements.php?StockID=' . $StockID . '">' . _('Show Movements') . '</a>';
 	echo '<br />
 		<a href="'.$RootPath.'/StockUsage.php?StockID=' . $StockID . '&amp;StockLocation=' . $_SESSION['Transfer']->StockLocationFrom . '">' . _('Show Stock Usage') . '</a>';
-	echo '<br />
-		<a href="'.$RootPath.'/SelectSalesOrder.php?SelectedStockItem=' . $StockID . '&amp;StockLocation=' . $_SESSION['Transfer']->StockLocationFrom . '">' . _('Search Outstanding Sales Orders') . '</a>';
+		if (! in_array($_SESSION['PageSecurityArray']['SelectPendingSOrder'],$_SESSION['AllowedPageSecurityTokens'])){
+			?><br />
+			<a href="<?=$RootPath?>/SelectSalesOrder.php?SelectedStockItem=<?= $StockID?>&amp;StockLocation=<?= $_SESSION['Transfer']->StockLocationFrom?>"><?=  _('Search Outstanding Sales Orders') ?></a>
+			<?php 
+		} 
 	echo '<br />
 		<a href="'.$RootPath.'/SelectCompletedOrder.php?SelectedStockItem=' . $StockID . '">' . _('Search Completed Sales Orders') . '</a>';
 }

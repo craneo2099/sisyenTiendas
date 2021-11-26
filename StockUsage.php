@@ -192,8 +192,11 @@ echo '<br />
     <a href="' . $RootPath . '/StockStatus.php?StockID=' . $StockID . '">' . _('Show Stock Status')  . '</a>';
 echo '<br />
 	<a href="' . $RootPath . '/StockMovements.php?StockID=' . $StockID . '&amp;StockLocation=' . $_POST['StockLocation'] . '">' . _('Show Stock Movements') . '</a>';
-echo '<br />
-	<a href="' . $RootPath . '/SelectSalesOrder.php?SelectedStockItem=' . $StockID . '&amp;StockLocation=' . $_POST['StockLocation'] . '">' . _('Search Outstanding Sales Orders') . '</a>';
+	if (! in_array($_SESSION['PageSecurityArray']['SelectPendingSOrder'],$_SESSION['AllowedPageSecurityTokens'])){
+		?><br />
+		<a href="<?=$RootPath?>/SelectSalesOrder.php?SelectedStockItem=<?= $StockID?>&amp;StockLocation=<?= $_POST['StockLocation']?>"><?=  _('Search Outstanding Sales Orders') ?></a>
+		<?php 
+	} 
 echo '<br />
 	<a href="' . $RootPath . '/SelectCompletedOrder.php?SelectedStockItem=' . $StockID . '">' . _('Search Completed Sales Orders') . '</a>';
 echo '<br />

@@ -12444,8 +12444,8 @@ msgid "Enter the lond description of the asset including specs etc. Up to 255 ch
 msgstr ""
 
 #: FixedAssetItems.php:497 SalesCategories.php:386 Stocks.php:1085
-msgid "Image File ("
-msgstr ""
+msgid "Image File (%s)"
+msgstr "Archivo de imagen (%s)"
 
 #: FixedAssetItems.php:499 Manufacturers.php:339 SalesCategories.php:388
 #: StockClone.php:714 Stocks.php:1087

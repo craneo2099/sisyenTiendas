@@ -2,7 +2,7 @@
 
 include ('includes/session.php');
 
-$Title = _('Supplier Purchasing Data');
+$Title = _('Maintain Purchasing Data');
 
 include ('includes/header.php');
 
@@ -464,9 +464,7 @@ if (isset($SuppliersResult)) {
 						<th class="ascending">' . _('Code') . '</th>
 	                	<th class="ascending">' . _('Supplier Name') . '</th>
 						<th class="ascending">' . _('Currency') . '</th>
-						<th class="ascending">' . _('Address 1') . '</th>
-						<th class="ascending">' . _('Address 2') . '</th>
-						<th class="ascending">' . _('Address 3') . '</th>
+						<th class="ascending">' . _('Address') . '</th>
 			</tr>
 		</thead>
 		<tbody>';
@@ -477,14 +475,12 @@ if (isset($SuppliersResult)) {
 				<td>%s</td>
 				<td>%s</td>
 				<td>%s</td>
-				<td>%s</td>
-				<td>%s</td>
 				</tr>',
 				$myrow['supplierid'],
 				$myrow['suppname'],
 				$myrow['currcode'],
-				$myrow['address1'],
-				$myrow['address2'],
+				$myrow['address1'].
+				$myrow['address2'].
 				$myrow['address3']);
 
         echo '<input type="hidden" name="StockID" value="' . $StockID . '" />';
@@ -757,7 +753,12 @@ if (!isset($SuppliersResult)) {
 	if (isset($StockLocation) AND isset($StockID) AND mb_strlen($StockID) != 0) {
 		echo '<br /><a href="' . $RootPath . '/StockStatus.php?StockID=' . $StockID . '">' . _('Show Stock Status') . '</a>';
 		echo '<br /><a href="' . $RootPath . '/StockMovements.php?StockID=' . $StockID . '&StockLocation=' . $StockLocation . '">' . _('Show Stock Movements') . '</a>';
-		echo '<br /><a href="' . $RootPath . '/SelectSalesOrder.php?SelectedStockItem=' . $StockID . '&StockLocation=' . $StockLocation . '">' . _('Search Outstanding Sales Orders') . '</a>';
+		if (! in_array($_SESSION['PageSecurityArray']['SelectPendingSOrder'],$_SESSION['AllowedPageSecurityTokens'])){
+			?>
+					<br />
+			        <a href="<?=$RootPath?>/SelectSalesOrder.php?SelectedStockItem=<?= $StockID?>&amp;StockLocation=<?= $StockLocation ?>"><?=  _('Search Outstanding Sales Orders') ?></a>
+					<?php 
+		} 
 		echo '<br /><a href="' . $RootPath . '/SelectCompletedOrder.php?SelectedStockItem=' . $StockID . '">' . _('Search Completed Sales Orders') . '</a>';
 	}
 	echo '</form></div>';

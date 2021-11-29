@@ -519,7 +519,7 @@ echo '</table>
 	<br />
 	<input type="submit" name="EnterAdjustment" value="'. _('Enter Stock Adjustment'). '" />
 	<a href="' . $RootPath . '/StockAdjustments.php?NewAdjustment=Yes">' . _('Clean') . '</a>
-	<a href="' . $RootPath . '/index.php">' . _('Retun') . '</a>
+	<a href="' . $RootPath . '/index.php">' . _('Return') . '</a>
 	<br />';
 
 if (!isset($_POST['StockLocation'])) {
@@ -532,13 +532,18 @@ echo '<br />
 	<a href="'.$RootPath.'/StockMovements.php?StockID=' . $StockID . '">' . _('Show Movements') . '</a>';
 echo '<br />
 	<a href="'.$RootPath.'/StockUsage.php?StockID=' . $StockID . '&amp;StockLocation=' . $_POST['StockLocation'] . '">' . _('Show Stock Usage') . '</a>';
-echo '<br />
-	<a href="'.$RootPath.'/SelectSalesOrder.php?SelectedStockItem='. $StockID .'&amp;StockLocation=' . $_POST['StockLocation'] . '">' .  _('Search Outstanding Sales Orders') . '</a>';
-echo '<br />
-	<a href="'.$RootPath.'/SelectCompletedOrder.php?SelectedStockItem=' . $StockID .'">' . _('Search Completed Sales Orders') . '</a>';
+	
+	if (! in_array($_SESSION['PageSecurityArray']['SelectPendingSOrder'],$_SESSION['AllowedPageSecurityTokens'])){
+?>
+		<br />
+		<a href="<?=$RootPath?>/SelectSalesOrder.php?SelectedStockItem=<?= $StockID?>&amp;StockLocation=<?= $_POST['StockLocation'] ?>"><?=  _('Search Outstanding Sales Orders') ?></a>
+    	<?php } ?>
+		<br />
+		<a href="<?=$RootPath?>/SelectCompletedOrder.php?SelectedStockItem=<?=$StockID?>"><?= _('Search Completed Sales Orders')?></a>
 
-echo '</div>
-      </div>
-      </form>';
+	</div>
+    </div>
+</form>
+<?php
 include('includes/footer.php');
 ?>

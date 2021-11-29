@@ -7645,6 +7645,9 @@ msgstr "Facturación Denegada"
 msgid "Are you sure you wish to delete this credit status record?"
 msgstr "¿Está seguro que desea suprimir este registro de estado de crédito?"
 
+msgid "Are you sure you wish to delete this item?"
+msgstr "¿Está seguro de suprimir éste artículo?"
+
 #: CreditStatus.php:185
 msgid "Show Defined Credit Status Codes"
 msgstr "Mostrar Todos los Estado de Crédito"
@@ -12444,8 +12447,8 @@ msgid "Enter the lond description of the asset including specs etc. Up to 255 ch
 msgstr ""
 
 #: FixedAssetItems.php:497 SalesCategories.php:386 Stocks.php:1085
-msgid "Image File ("
-msgstr ""
+msgid "Image File (%s)"
+msgstr "Archivo de imagen (%s)"
 
 #: FixedAssetItems.php:499 Manufacturers.php:339 SalesCategories.php:388
 #: StockClone.php:714 Stocks.php:1087
@@ -21612,6 +21615,9 @@ msgstr "No se pueden obtener los registros de proveedor buscados porque"
 msgid "No supplier records contain the selected text"
 msgstr "Ningún registro de proveedor contiene el texto seleccionado"
 
+msgid "No suppliers records found"
+msgstr "No se encontraron proveedores"
+
 #: PO_Header.php:410 PO_Header.php:486 SpecialOrder.php:70
 msgid "The supplier record of the supplier selected"
 msgstr "El registro del proveedor seleccionado"
@@ -24524,6 +24530,9 @@ msgstr "Suburbio"
 #: ../webSHOP/Checkout.php:649 ../webSHOP/CreditCardPayPalPro.php:283
 msgid "City"
 msgstr "Ciudad"
+
+msgid "Province"
+msgstr "Pueblo"
 
 #: RecurringSalesOrders.php:392
 msgid "Region"
@@ -31887,7 +31896,7 @@ msgstr "Se ha borrado el contacto del proveedor"
 
 #: SupplierContacts.php:148
 msgid "Contacts Defined for"
-msgstr "Contactos definidos por"
+msgstr "Contactos definidos para"
 
 #: SupplierContacts.php:183
 msgid "There are no contacts defined for this supplier"
@@ -31895,7 +31904,7 @@ msgstr "No hay contactos definidos para este proveedor"
 
 #: SupplierContacts.php:194
 msgid "Show all the supplier contacts for"
-msgstr "Mostrar todos los contactos del proveedor por"
+msgstr "Mostrar todos los contactos del proveedor "
 
 #: SupplierContacts.php:241
 msgid "The contact name must be more than one characters long"
@@ -31923,8 +31932,8 @@ msgid "The input must be email format"
 msgstr ""
 
 #: SupplierContacts.php:279
-msgid "should be email format such as adm@weberp.org"
-msgstr "Debe ser en formato de correo electrónico como adm@weberp.org"
+msgid "should be email format such as adm@devstar-novatech.com"
+msgstr "Debe ser en formato de correo electrónico como  adm@devstar-novatech.com"
 
 #: SupplierCredit.php:27 SupplierCredit.php:45
 msgid "Supplier Credit Note"
@@ -32409,7 +32418,7 @@ msgstr ""
 
 #: SupplierInvoice.php:633
 msgid "Within 20 characters needed"
-msgstr ""
+msgstr "Se requieren al menos 20 caracteres"
 
 #: SupplierInvoice.php:667
 msgid "Purchase Order Charges"
@@ -32859,24 +32868,20 @@ msgid "The supplier name should not be blank and should be less than 40 legal ch
 msgstr ""
 
 #: Suppliers.php:690
-msgid "Within 40 legal characters"
-msgstr ""
+msgid "Within %d legal characters"
+msgstr "Se requieren %d caracteres permitidos"
 
 #: Suppliers.php:694 Suppliers.php:698 Suppliers.php:702
-msgid "The input should be less than 40 characters"
-msgstr ""
+msgid "The input should be less than %d characters"
+msgstr "El campo debe tener menos de %d caracteres"
 
 #: Suppliers.php:694 Suppliers.php:698 Suppliers.php:702 Suppliers.php:710
-msgid "Less than 40 characters"
-msgstr "Menos de 40 caracteres"
-
-#: Suppliers.php:706
-msgid "Less than 50 characters"
-msgstr "Menos de 50 caracteres"
+msgid "Less than %d characters"
+msgstr "Menos de %d caracteres"
 
 #: Suppliers.php:728 Suppliers.php:732
 msgid "only number + - ( and ) allowed"
-msgstr ""
+msgstr "Sólo se permiten números, +, -, (, y )"
 
 #: Suppliers.php:732
 msgid "The input should be fax number"
@@ -32888,15 +32893,15 @@ msgstr "Solo se permite direcciones de correo-e"
 
 #: Suppliers.php:736 Suppliers.php:1022
 msgid "email format such as xx@mail.cn"
-msgstr "formato de correo-e como xx@mail.cn"
+msgstr "formato de correo-e como correo@dominio.com"
 
 #: Suppliers.php:740
 msgid "Only URL address are allowed"
 msgstr "Sólo se permite direcciones URL"
 
 #: Suppliers.php:740
-msgid "URL format such as www.example.com"
-msgstr ""
+msgid "URL format such as http://www.example.com"
+msgstr "Formato URL como http://www.ejemplo.com"
 
 #: Suppliers.php:743 Suppliers.php:1029
 msgid "Supplier Type"
@@ -32948,7 +32953,7 @@ msgstr "Transportista predeterminado"
 
 #: Suppliers.php:858 Suppliers.php:1154
 msgid "Default GL Account"
-msgstr ""
+msgstr "Cuenta por defecto"
 
 #: Suppliers.php:892
 msgid "Insert New Supplier"
@@ -32971,8 +32976,8 @@ msgid "The input must be in url format"
 msgstr ""
 
 #: Suppliers.php:1026
-msgid "url format such as www.example.com"
-msgstr ""
+msgid "url format such as http://www.example.com"
+msgstr "Formato de URL como http://www.ejemplo.com"
 
 #: Suppliers.php:1050
 msgid "Bank Reference"
@@ -35258,9 +35263,6 @@ msgstr "Nombre de la jurisdicción fiscal"
 msgid "The tax province cannot be left blank and includes illegal characters"
 msgstr ""
 
-#: TaxProvinces.php:223
-msgid "Within 30 legal characters"
-msgstr ""
 
 #: TestPlanResults.php:8
 msgid "Test Plan Results"
@@ -36256,10 +36258,6 @@ msgstr "Descripción de centro de trabajo"
 
 #: WorkCentres.php:231
 msgid "The Work Center should be more than 3 characters and no illegal characters allowed"
-msgstr ""
-
-#: WorkCentres.php:231
-msgid "More than 3 legal characters"
 msgstr ""
 
 #: WorkCentres.php:253

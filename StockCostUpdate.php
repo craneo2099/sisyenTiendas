@@ -4,7 +4,7 @@
 $UpdateSecurity =10;
 
 include('includes/session.php');
-$Title = _('Stock Cost Update');
+$Title = _('Maintain Standard Cost');
 include('includes/header.php');
 include('includes/SQL_CommonFunctions.inc');
 
@@ -156,12 +156,12 @@ echo '<tr><td>';
 echo '<input type="hidden" name="OldMaterialCost" value="' . $myrow['materialcost'] .'" />';
 echo '<input type="hidden" name="OldLabourCost" value="' . $myrow['labourcost'] .'" />';
 echo '<input type="hidden" name="OldOverheadCost" value="' . $myrow['overheadcost'] .'" />';
-echo '<input type="hidden" name="QOH" value="' . $myrow['totalqoh'] .'" />';
+echo '<input type="hidden"	 name="QOH" value="' . $myrow['totalqoh'] .'" />';
 
 echo _('Last Cost') .':</td>
 		<td class="number">' . locale_number_format($myrow['lastcost'],$_SESSION['StandardCostDecimalPlaces']) . '</td></tr>';
-if (! in_array($_SESSION['PageSecurityArray']['CostUpdate'],$_SESSION['AllowedPageSecurityTokens'])){
-	echo '<tr>
+	if (! in_array($_SESSION['PageSecurityArray']['CostUpdate'],$_SESSION['AllowedPageSecurityTokens'])){
+		echo '<tr>
 			<td>' . _('Cost') . ':</td>
 			<td class="number">' . locale_number_format($myrow['materialcost']+$myrow['labourcost']+$myrow['overheadcost'],$_SESSION['StandardCostDecimalPlaces']) . '</td>
 		</tr>
@@ -202,7 +202,11 @@ if ($myrow['mbflag']!='D'){
 	echo '<div class="centre"><a href="' . $RootPath . '/StockStatus.php?StockID=' . $StockID . '">' . _('Show Stock Status') . '</a>';
 	echo '<br /><a href="' . $RootPath . '/StockMovements.php?StockID=' . $StockID . '">' . _('Show Stock Movements') . '</a>';
 	echo '<br /><a href="' . $RootPath . '/StockUsage.php?StockID=' . $StockID . '">' . _('Show Stock Usage')   . '</a>';
-	echo '<br /><a href="' . $RootPath . '/SelectSalesOrder.php?SelectedStockItem=' . $StockID . '">' . _('Search Outstanding Sales Orders') . '</a>';
+	if (! in_array($_SESSION['PageSecurityArray']['SelectPendingSOrder'],$_SESSION['AllowedPageSecurityTokens'])){
+		?>
+		<a href="<?=$RootPath?>/SelectSalesOrder.php?SelectedStockItem=<?= $StockID?>"><?=  _('Search Outstanding Sales Orders') ?></a>
+		<?php 
+	} 
 	echo '<br /><a href="' . $RootPath . '/SelectCompletedOrder.php?SelectedStockItem=' . $StockID . '">' . _('Search Completed Sales Orders') . '</a></div>';
 }
 echo '</div>

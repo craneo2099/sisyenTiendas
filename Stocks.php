@@ -1113,7 +1113,7 @@ foreach ($ItemDescriptionLanguagesArray as $LanguageId) {
 
 echo '<div class="form-group row">
 
-		<label for="ItemPicture" class="col-sm-4 col-form-label">' .  _('Image File (' . implode(", ", $SupportedImgExt) . ')') . ':</label>
+		<label for="ItemPicture" class="col-sm-4 col-form-label">' .  sprintf(_('Image File (%s)'), implode(", ", $SupportedImgExt) ) . ':</label>
 		<div class="col-sm-8">
 			<div class="custom-file">
 				<input type="file" id="ItemPicture" name="ItemPicture" class="form-control-file"/>
@@ -1584,9 +1584,10 @@ if ($New==1) {
 	echo '<br />
 		<input type="submit" name="delete" class="btn btn-primary" value="' . _('Delete This Item') . '" onclick="return confirm(\'' . _('Are You Sure?') . '\');" />';
 }
-
-echo '</div>
+?>
+</div>
     </div>
-	</form>';
+	</form>
+<?php
 include('includes/footer.php');
 ?>

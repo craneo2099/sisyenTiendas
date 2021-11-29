@@ -91,51 +91,54 @@ if (isset($_POST['Search'])
 		prnMsg( _('Supplier name keywords have been used in preference to the Supplier code extract entered'), 'info' );
 	}
 	if ($_POST['Keywords'] == '' AND $_POST['SupplierCode'] == '') {
-		$SQL = "SELECT supplierid,
+		$SQL = 'SELECT supplierid,
 					suppname,
 					currcode,
-					address1,
-					address2,
-					address3,
-					address4,
+					concat(
+						address1," ",
+						address2," ",
+						address3," ",
+						address4) as address,
 					telephone,
 					email,
 					url
 				FROM suppliers
-				ORDER BY suppname";
+				ORDER BY suppname';
 	} else {
 		if (mb_strlen($_POST['Keywords']) > 0) {
 			$_POST['Keywords'] = mb_strtoupper($_POST['Keywords']);
 			//insert wildcard characters in spaces
 			$SearchString = '%' . str_replace(' ', '%', $_POST['Keywords']) . '%';
-			$SQL = "SELECT supplierid,
+			$SQL = 'SELECT supplierid,
 							suppname,
 							currcode,
-							address1,
-							address2,
-							address3,
-							address4,
+							concat(
+								address1," ",
+								address2," ",
+								address3," ",
+								address4) as address,
 							telephone,
 							email,
 							url
 						FROM suppliers
-						WHERE suppname " . LIKE . " '" . $SearchString . "'
-						ORDER BY suppname";
+						WHERE suppname ' . LIKE . ' "' . $SearchString . '"
+						ORDER BY suppname';
 		} elseif (mb_strlen($_POST['SupplierCode']) > 0) {
 			$_POST['SupplierCode'] = mb_strtoupper($_POST['SupplierCode']);
-			$SQL = "SELECT supplierid,
+			$SQL = 'SELECT supplierid,
 							suppname,
 							currcode,
-							address1,
-							address2,
-							address3,
-							address4,
+							concat(
+								address1," ",
+								address2," ",
+								address3," ",
+								address4) as address,
 							telephone,
 							email,
 							url
 						FROM suppliers
-						WHERE supplierid " . LIKE . " '%" . $_POST['SupplierCode'] . "%'
-						ORDER BY supplierid";
+						WHERE supplierid ' . LIKE . ' "%' . $_POST['SupplierCode'] . '%"
+						ORDER BY supplierid';
 		}
 	} //one of keywords or SupplierCode was more than a zero length string
 	$result = DB_query($SQL);
@@ -296,25 +299,24 @@ if (isset($_POST['Search'])) {
 		echo '<br />';
 	}
 	echo '<input type="hidden" name="Search" value="' . _('Search Now') . '" />';
-	echo '<br />
+?>
+<br />
 		<br />
 		<br />
 		<table cellpadding="2">
 		<thead>
 			<tr>
-	  		<th class="ascending">' . _('Code') . '</th>
-			<th class="ascending">' . _('Supplier Name') . '</th>
-			<th class="ascending">' . _('Currency') . '</th>
-			<th class="ascending">' . _('Address 1') . '</th>
-			<th class="ascending">' . _('Address 2') . '</th>
-			<th class="ascending">' . _('Address 3') . '</th>
-			<th class="ascending">' . _('Address 4') . '</th>
-			<th class="ascending">' . _('Telephone') . '</th>
-			<th class="ascending">' . _('Email') . '</th>
-			<th class="ascending">' . _('URL') . '</th>
+	  		<th class="ascending"><?=_('Code') ?></th>
+			<th class="ascending"><?=_('Supplier Name') ?></th>
+			<th class="ascending"><?=_('Currency') ?></th>
+			<th class="ascending"><?=_('Address') ?></th>
+			<th class="ascending"><?=_('Telephone') ?></th>
+			<th class="ascending"><?=_('Email') ?></th>
+			<th class="ascending"><?=_('URL') ?></th>
 			</tr>
 		</thead>
-		<tbody>';
+		<tbody>
+<?php
 
 	$RowIndex = 0;
 	if (DB_num_rows($result) <> 0) {
@@ -323,18 +325,17 @@ if (isset($_POST['Search'])) {
 	while (($myrow = DB_fetch_array($result)) AND ($RowIndex <> $_SESSION['DisplayRecordsMax'])) {
 		
 		$onclick="document.getElementById('Select".$RowIndex."').click();";
-		echo '<tr class="striped_row linkRow" data-href="'.$onclick.'">
-				<td class="nestedLink"><input type="submit" name="Select" id="Select'.$RowIndex.'" value="'.$myrow['supplierid'].'" /></td>
-				<td>' . $myrow['suppname'] . '</td>
-				<td>' . $myrow['currcode'] . '</td>
-				<td>' . $myrow['address1'] . '</td>
-				<td>' . $myrow['address2'] . '</td>
-				<td>' . $myrow['address3'] . '</td>
-				<td>' . $myrow['address4'] . '</td>
-				<td>' . $myrow['telephone'] . '</td>
-				<td><a href="mailto://'.$myrow['email'].'">' . $myrow['email']. '</a></td>
-				<td><a href="'.$myrow['url'].'"target="_blank">' . $myrow['url']. '</a></td>
-			</tr>';
+		?>
+			<tr class="striped_row linkRow" data-href="<?=$onclick?>">
+				<td class="nestedLink"><input type="submit" name="Select" id="Select<?=$RowIndex?>" value="<?=$myrow['supplierid']?>" /></td>
+				<td><?=$myrow['suppname']?></td>
+				<td><?=$myrow['currcode']?></td>
+				<td><?=$myrow['address']?></td>
+				<td><?=$myrow['telephone']?></td>
+				<td><a href="mailto://<?=$myrow['email']?>"><?=$myrow['email']?></a></td>
+				<td><a href="<?=$myrow['url']?>"target="_blank"><?=$myrow['url']?></a></td>
+			</tr>
+			<?php
 		$RowIndex = $RowIndex + 1;
 		//end of page full new headings if
 	}

@@ -4,7 +4,7 @@
 $UpdateSecurity =10;
 
 include('includes/session.php');
-$Title = _('Stock Cost Update');
+$Title = _('Maintain Standard Cost');
 include('includes/header.php');
 include('includes/SQL_CommonFunctions.inc');
 
@@ -160,8 +160,8 @@ echo '<input type="hidden"	 name="QOH" value="' . $myrow['totalqoh'] .'" />';
 
 echo _('Last Cost') .':</td>
 		<td class="number">' . locale_number_format($myrow['lastcost'],$_SESSION['StandardCostDecimalPlaces']) . '</td></tr>';
-		if (! in_array($_SESSION['PageSecurityArray']['CostUpdate'],$_SESSION['AllowedPageSecurityTokens'])){
-	echo '<tr>
+	if (! in_array($_SESSION['PageSecurityArray']['CostUpdate'],$_SESSION['AllowedPageSecurityTokens'])){
+		echo '<tr>
 			<td>' . _('Cost') . ':</td>
 			<td class="number">' . locale_number_format($myrow['materialcost']+$myrow['labourcost']+$myrow['overheadcost'],$_SESSION['StandardCostDecimalPlaces']) . '</td>
 		</tr>

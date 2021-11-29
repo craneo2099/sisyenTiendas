@@ -37,8 +37,10 @@ if (isset($_GET['Search'])) {
 if (isset($_POST['StockCode'])) {
 	$_POST['StockCode'] = trim(mb_strtoupper($_POST['StockCode']));
 }
+//funciones a limitar
 if(isset($_SESSION['funciones'])&&in_array('Other', $_SESSION['funciones']))
 	$func_Otras=true;
+$func_Otras=true;
 // Always show the search facilities
 $SQL = "SELECT categoryid,
 				categorydescription
@@ -409,7 +411,11 @@ if (!isset($_POST['Search']) AND (isset($_POST['Select']) OR isset($_SESSION['Se
 		echo '<a href="' . $RootPath . '/StockStatus.php?StockID=' . urlencode($StockID) . '">' . _('Show Stock Status') . '</a><br />';
 		echo '<a href="' . $RootPath . '/StockUsage.php?StockID=' . urlencode($StockID) . '">' . _('Show Stock Usage') . '</a><br />';
 	}
-	echo '<a href="' . $RootPath . '/SelectSalesOrder.php?SelectedStockItem=' . urlencode($StockID) . '">' . _('Search Outstanding Sales Orders') . '</a><br />';
+	if (! in_array($_SESSION['PageSecurityArray']['SelectPendingSOrder'],$_SESSION['AllowedPageSecurityTokens'])){
+		?>
+				<a href="<?=$RootPath?>/SelectSalesOrder.php?SelectedStockItem=<?= urlencode($StockID)?>"><?=  _('Search Outstanding Sales Orders') ?></a>
+				<?php 
+	} 
 	echo '<a href="' . $RootPath . '/SelectCompletedOrder.php?SelectedStockItem=' . urlencode($StockID) . '">' . _('Search Completed Sales Orders') . '</a><br />';
 	if ($Its_A_Kitset_Assembly_Or_Dummy == False) {
 		echo '<a href="' . $RootPath . '/PO_SelectOSPurchOrder.php?SelectedStockItem=' . urlencode($StockID) . '">' . _('Search Outstanding Purchase Orders') . '</a><br />';

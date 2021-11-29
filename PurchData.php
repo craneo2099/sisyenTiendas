@@ -2,7 +2,7 @@
 
 include ('includes/session.php');
 
-$Title = _('Supplier Purchasing Data');
+$Title = _('Maintain Purchasing Data');
 
 include ('includes/header.php');
 
@@ -464,9 +464,7 @@ if (isset($SuppliersResult)) {
 						<th class="ascending">' . _('Code') . '</th>
 	                	<th class="ascending">' . _('Supplier Name') . '</th>
 						<th class="ascending">' . _('Currency') . '</th>
-						<th class="ascending">' . _('Address 1') . '</th>
-						<th class="ascending">' . _('Address 2') . '</th>
-						<th class="ascending">' . _('Address 3') . '</th>
+						<th class="ascending">' . _('Address') . '</th>
 			</tr>
 		</thead>
 		<tbody>';
@@ -477,14 +475,12 @@ if (isset($SuppliersResult)) {
 				<td>%s</td>
 				<td>%s</td>
 				<td>%s</td>
-				<td>%s</td>
-				<td>%s</td>
 				</tr>',
 				$myrow['supplierid'],
 				$myrow['suppname'],
 				$myrow['currcode'],
-				$myrow['address1'],
-				$myrow['address2'],
+				$myrow['address1'].
+				$myrow['address2'].
 				$myrow['address3']);
 
         echo '<input type="hidden" name="StockID" value="' . $StockID . '" />';

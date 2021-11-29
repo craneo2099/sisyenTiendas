@@ -536,9 +536,9 @@ if (isset($_POST['submit'])) {
                             {
                                  prnMsg(_('There is no purchasing data to clone .Use the following link to add purchasing data.'));
                             }
-                            prnMsg('<br />' . '<a target="_blank" href="PurchData.php?StockID=' . $_POST['StockID'] . '">' . _('Review Item Purchase Data.') . '</a> ','success') .
+                            prnMsg('<br />' . '<a target="_blank" href="PurchData.php?StockID=' . $_POST['StockID'] . '">' . _('Maintain Purchasing Data') . '</a> ','success') .
                             prnMsg(_('Costing was updated for this cloned item.').
-                            '<br />' . '<a target="_blank" href="StockCostUpdate.php?StockID=' . $_POST['StockID'] . '">' . _('Review Item Cost') . '</a>', 'success');
+                            '<br />' . '<a target="_blank" href="StockCostUpdate.php?StockID=' . $_POST['StockID'] . '">' . _('Maintain Standard Cost') . '</a>', 'success');
 
 						echo '<br />';
 						unset($_POST['Description']);

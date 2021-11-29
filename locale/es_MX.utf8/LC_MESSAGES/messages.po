@@ -7645,6 +7645,9 @@ msgstr "Facturación Denegada"
 msgid "Are you sure you wish to delete this credit status record?"
 msgstr "¿Está seguro que desea suprimir este registro de estado de crédito?"
 
+msgid "Are you sure you wish to delete this item?"
+msgstr "¿Está seguro de suprimir éste artículo?"
+
 #: CreditStatus.php:185
 msgid "Show Defined Credit Status Codes"
 msgstr "Mostrar Todos los Estado de Crédito"

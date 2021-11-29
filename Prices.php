@@ -213,7 +213,7 @@ if (DB_num_rows($result) > 0) {
 		<thead>
 			<tr>
 				<th colspan="7">' .
-				_('Pricing for part') . ':
+				_('Item Code') . ':
 				<input type="text" required="required" autofocus="autofocus" name="Item" size="22" value="' . $Item . '" maxlength="20" />
 				<input type="submit" name="NewPart" value="' . _('Review Prices') . '" /></th>
 			</tr>
@@ -280,21 +280,10 @@ if (isset($_GET['Edit'])){
 	}
 }
 
-$SQL = "SELECT currabrev FROM currencies";
-$result = DB_query($SQL);
-
 echo '<br /><table class="selection">';
 echo '<tr><th colspan="5"><h3>' . $Item . ' - ' . $PartDescription . '</h3></th></tr>';
 echo '<tr><td>' . _('Currency') . ':</td>
-			<td><select name="CurrAbrev">';
-while ($myrow = DB_fetch_array($result)) {
-	echo '<option ';
-	if ($myrow['currabrev']==$_POST['CurrAbrev']) {
-		echo 'selected="selected" ';
-	}
-	echo 'value="' . $myrow['currabrev'] . '">' . $CurrencyName[$myrow['currabrev']] . '</option>';
-}// End while loop
-echo			'</select></td></tr>';
+			<td><input type="hidden" name="CurrAbrev" value="MXN"/>Peso mexicano</td></tr>';
 
 DB_free_result($result);
 

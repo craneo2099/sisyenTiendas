@@ -5,7 +5,9 @@
 include('includes/session.php');
 include('includes/devstar/stocks.inc');
 $accionId=runAction($_POST,$_GET);
-if($accionId<=1){
+if($accionId==3){//delete
+	$Title = _('Delete item');
+}else if($accionId<=1){
 	$Title = _('Add A New Item');
 }else{
 	
@@ -914,6 +916,15 @@ if (isset($_POST['submit'])) {
 	} //end if Delete Part
 }
 
+if ($New==1) {
+	$SubmitValue=_('Insert New Item');
+
+} else {
+
+	$SubmitValue=_('Update');
+	prnMsg( _('Only click the Delete button if you are sure you wish to delete the item!') . '<br />' . _('Checks will be made to ensure that there are no stock movements, sales analysis records, sales order items or purchase order items for the item') . '. ' . _('No deletions will be allowed if they exist') . '.', 'warn', _('WARNING'));
+}
+
 
 echo '<form name="ItemForm" enctype="multipart/form-data" method="post" action="' . htmlspecialchars($_SERVER['PHP_SELF'],ENT_QUOTES,'UTF-8') . '"
 class="col-6 offset-3">';
@@ -1117,7 +1128,7 @@ echo '<div class="form-group row">
 		<div class="col-sm-8">
 			<div class="custom-file">
 				<input type="file" id="ItemPicture" name="ItemPicture" class="form-control-file"/>
-				<label class="custom-file-label" for="ItemPicture">Choose file</label>
+				<label class="custom-file-label" for="ItemPicture">'._('Choose file').'</label>
 			</div>
 			
 			<div class="form-check">
@@ -1567,24 +1578,35 @@ echo '</table>';
 echo '<input type="hidden" name="PropertyCounter" value="' . $PropertyCounter . '" />';
 echo '<br />';
 
-if ($New==1) {
-	echo '<input type="submit" name="submit" class="btn btn-primary" value="' . _('Insert New Item') . '" />';
-	echo '<input type="submit" name="UpdateCategories" class="btn btn-primary"
-	 style="visibility:hidden;width:1px" value="' . _('Categories') . '" />';
 
-} else {
+?>
 
-	// Now the form to enter the item properties
+	<input type="submit" name="submit" class="btn btn-primary" value="<?=$SubmitValue?>" />';
+	<input type="submit" name="UpdateCategories" class="btn btn-primary"
+	 style="visibility:hidden;width:1px" value="<?=_('Categories')?>" />';
+<?php
+if ($New!=1) {
+	?>
 
-	echo '<input type="submit" name="submit" class="btn btn-primary" value="' . _('Update') . '" />';
-	echo '<input type="submit" name="UpdateCategories" class="btn btn-primary"
-	 style="visibility:hidden;width:1px" value="' . _('Categories') . '" />';
-	echo '<br /><br />';
-	prnMsg( _('Only click the Delete button if you are sure you wish to delete the item!') . '<br />' . _('Checks will be made to ensure that there are no stock movements, sales analysis records, sales order items or purchase order items for the item') . '. ' . _('No deletions will be allowed if they exist') . '.', 'warn', _('WARNING'));
-	echo '<br />
-		<input type="submit" name="delete" class="btn btn-primary" value="' . _('Delete This Item') . '" onclick="return confirm(\'' . _('Are You Sure?') . '\');" />';
+	<br /><br />
+	<br />
+		<input type="submit" name="delete" id="delete" class="btn btn-primary" 
+		value="<?= _('Delete This Item')?>" onclick="return confirm('<?=_('Are you sure you wish to delete this item?') ?>');" />
+	<?php
+	if($accionId==3){//dodelete
+		?>
+		<script type="text/javascript">
+
+			window.onload = function() {
+			  document.getElementById('delete').click();
+			};
+		</script>
+		<?php
+	}
 }
 ?>
+
+
 </div>
     </div>
 	</form>

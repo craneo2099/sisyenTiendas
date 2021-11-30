@@ -303,6 +303,7 @@ $isNew=!isset($SupplierID) ||
 
 $InputError = 0;
 
+$dodelete= (isset($_GET['action']) and $_GET['action']=='dodelete') ;
 if (isset($Errors)) {
 	unset($Errors);
 }
@@ -644,7 +645,7 @@ if (isset($_POST['submit'])) {
 			$MyRow = DB_fetch_row($Result);
 			if ($MyRow[0] > 0) {
 				$CancelDelete = 1;
-				prnMsg(_('Cannot delete this supplier because there are supplier contacts set up against it') . ' - ' . _('delete these first'), 'warn');
+				prnMsg(_('Cannot delete this supplier because there are supplier contacts set up against it') . ' - <a href="' . $RootPath . '/SupplierContacts.php?SupplierID=' . $SupplierID . '">' . _('delete these first') . '</a>' , 'warn');
 				echo '<br />' . _('There are') . ' ' . $MyRow[0] . ' ' . _('supplier contacts relating to this supplier');
 
 			}
@@ -978,10 +979,21 @@ $self=htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8');
 
 		<br />
 			<div class="centre">
-				<input type="submit" name="delete" value="<?=_('Delete Supplier') ?>" formnovalidate="formnovalidate"
+				<input type="submit" name="delete" id='delete' value="<?=_('Delete Supplier') ?>" formnovalidate="formnovalidate"
 				onclick="return confirm(<?=_('Are you sure you wish to delete this supplier?') ?>);" />
 			</div>
-	<?php }?>
+		<?php 
+		if($dodelete){
+			?>
+			<script type="text/javascript">
+
+				window.onload = function() {
+					document.getElementById('delete').click();
+				};
+			</script>
+			<?php
+		}
+	}?>
 </form>
 	
 <?php

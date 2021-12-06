@@ -12449,16 +12449,18 @@ msgstr ""
 #: FixedAssetItems.php:497 SalesCategories.php:386 Stocks.php:1085
 msgid "Image File (%s)"
 msgstr "Archivo de imagen (%s)"
+msgid "Choose file"
+msgstr "Seleccionar archivo"
 
 #: FixedAssetItems.php:499 Manufacturers.php:339 SalesCategories.php:388
 #: StockClone.php:714 Stocks.php:1087
 msgid "Clear Image"
-msgstr ""
+msgstr "Eliminar Imagen"
 
 #: FixedAssetItems.php:532 Manufacturers.php:87 SalesCategories.php:80
 #: StockClone.php:738 Stocks.php:1115
 msgid "You do not have access to delete this item image file."
-msgstr ""
+msgstr "No tienes persmiso para eliminar la imagen del articulo"
 
 #: FixedAssetItems.php:542 FixedAssetRegister.php:266
 #: FixedAssetRegister.php:364

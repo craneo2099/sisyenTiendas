@@ -502,6 +502,7 @@ if (!isset($_POST['Search']) AND (isset($_POST['Select']) OR isset($_SESSION['Se
 	echo '<a href="' . $RootPath . '/Stocks.php?">' . _('Insert New Item') . '</a><br />';
 	echo '<a href="' . $RootPath . '/Stock/MultiStocks.php?">' . _('Add multiple new items') . '</a><br />';
 	echo '<a href="' . $RootPath . '/Stocks.php?StockID=' . urlencode($StockID) . '">' . _('Modify Item Details') . '</a><br />';
+	echo '<a href="' . $RootPath . '/Stocks.php?StockID=' . urlencode($StockID) . '&action=dodelete">' . _('Delete This Item') . '</a><br />';
 	if ($Its_A_Kitset_Assembly_Or_Dummy == False) {
 		if($func_Otras)
 			echo '<a href="' . $RootPath . '/StockReorderLevel.php?StockID=' . urlencode($StockID) . '">' . _('Maintain Reorder Levels') . '</a><br />';

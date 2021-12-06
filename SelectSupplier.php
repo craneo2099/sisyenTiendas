@@ -31,6 +31,7 @@ if (isset($_GET['who'])) {
 	$_POST['Search']=true;
 	$_SESSION['lastPage']=$_GET['who'];
 }
+
 // only get geocode information if integration is on, and supplier has been selected
 if ($_SESSION['geocode_integration'] == 1 AND isset($_SESSION['SupplierID'])) {
 	$sql = "SELECT * FROM geocode_param WHERE 1";
@@ -218,7 +219,8 @@ if (isset($_SESSION['SupplierID'])) {
 	echo '<br /><a href="' . $RootPath . '/ReverseGRN.php?SupplierID=' . $_SESSION['SupplierID'] . '">' . _('Reverse an Outstanding Goods Received Note (GRN)') . '</a>';
 	echo '</td><td valign="top" class="select">'; /* Supplier Maintenance */
 	echo '<a href="' . $RootPath . '/Suppliers.php">' . _('Add a New Supplier') . '</a>
-		<br /><a href="' . $RootPath . '/Suppliers.php?SupplierID=' . $_SESSION['SupplierID'] . '">' . _('Modify Or Delete Supplier Details') . '</a>
+	<br /><a href="' . $RootPath . '/Suppliers.php?SupplierID=' . $_SESSION['SupplierID'] . '">' . _('Modify Or Delete Supplier Details') . '</a>
+	<br /><a href="' . $RootPath . '/Suppliers.php?SupplierID=' . $_SESSION['SupplierID'] . '&action=dodelete">' . _('Delete Supplier') . '</a>
 		<br /><a href="' . $RootPath . '/SupplierContacts.php?SupplierID=' . $_SESSION['SupplierID'] . '">' . _('Add/Edit/Delete Supplier Contacts') . '</a>
 		<br />
 		<br /><a href="' . $RootPath . '/SellThroughSupport.php?SupplierID=' . $_SESSION['SupplierID'] . '">' . _('Set Up Sell Through Support Deals') . '</a>

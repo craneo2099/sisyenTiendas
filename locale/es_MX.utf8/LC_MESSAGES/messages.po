@@ -5498,6 +5498,9 @@ msgstr "No se pudo agregar el registro contable de impuestos porque"
 msgid "Invoice number"
 msgstr "Factura número"
 
+msgid "Ticket number"
+msgstr "Número de ticket"
+
 #: ConfirmDispatch_Invoice.php:1747 CounterReturns.php:1590
 #: CounterSales.php:2050 PickingLists.php:624
 #: RecurringSalesOrdersProcess.php:701 SelectCreditItems.php:1994
@@ -6660,7 +6663,7 @@ msgstr "El SQL que falló al obtener los detalles de la sucursal fue"
 
 #: CounterReturns.php:190
 msgid "This return has been cancelled as requested"
-msgstr ""
+msgstr "Ésta devolución ha sido cancelada correctamente"
 
 #: CounterReturns.php:191 CounterReturns.php:1599
 msgid "Start a new Counter Return"
@@ -6735,7 +6738,7 @@ msgstr ""
 
 #: CounterReturns.php:437
 msgid "Only items entered with a positive quantity can be added to the return"
-msgstr ""
+msgstr "Sólo se pueden devolver cantidades positivas de artículos"
 
 #: CounterReturns.php:471 CounterSales.php:510 SelectOrderItems.php:1070
 msgid "Recalculated the price from the GP % entered - the GP % was"
@@ -6839,7 +6842,7 @@ msgstr "No hay lí­neas en esta devolución. Por favor, introduzca primero las 
 
 #: CounterReturns.php:861
 msgid "The amount entered as payment to the customer does not equal the amount of the return. Please correct amount and re-enter"
-msgstr "La cantidad a devolver no coincide con la cantidad entregada al cliente"
+msgstr "El monto pagado al cliente no coincide con el monto de la devolución"
 
 #: CounterReturns.php:875
 msgid "We were unable to load the area where the sale is to from the custbranch table"
@@ -6908,6 +6911,9 @@ msgstr "No se puede insertar la asignación de clientes de la recepción de la f
 msgid "Credit Note number"
 msgstr "Número de nota de crédito"
 
+msgid "Return Note number %d has been processed"
+msgstr "Número de nota de devolución %d ha sido procesado"
+
 #: CounterReturns.php:1595 CounterReturns.php:1597 Credit_Invoice.php:1478
 #: Credit_Invoice.php:1480
 msgid "Print this credit note"
@@ -6947,7 +6953,7 @@ msgstr "Anterior"
 
 #: CounterReturns.php:1675
 msgid "Return Item(s)"
-msgstr "Artí­culos devueltos"
+msgstr "Devolver artículos"
 
 #: CounterReturns.php:1683 CounterSales.php:2108 CounterSales.php:2254
 #: InternalStockRequest.php:546 SelectOrderItems.php:1524
@@ -7094,7 +7100,7 @@ msgstr "Girado a"
 
 #: CounterSales.php:943
 msgid "Amount given"
-msgstr "Monto entregado"
+msgstr "Monto Recibido"
 
 msgid "Amount Paid"
 msgstr "Monto pagado"
@@ -7204,7 +7210,7 @@ msgstr "Nuevo número de orden de trabajo"
 msgid "for"
 msgstr "para"
 
-#: CounterSales.php:1293 DeliveryDetails.php:593 DeliveryDetails.php:824
+#: DeliveryDetails.php:593 DeliveryDetails.php:824
 #: EmailConfirmation.php:179 EmailConfirmation.php:299 FTP_RadioBeacon.php:178
 #: FTP_RadioBeacon.php:281 PO_AuthoriseMyOrders.php:58 PO_OrderDetails.php:26
 #: POReport.php:492 POReport.php:501 POReport.php:733 POReport.php:1260
@@ -7219,10 +7225,13 @@ msgstr "para"
 msgid "Order Number"
 msgstr "Número de orden"
 
+msgid "Order Number %d has been entered"
+msgstr "Número de orden %d ha sido creada"
+
 msgid "P/O"
 msgstr "N/O"
 
-#: CounterSales.php:1293 DeliveryDetails.php:591 DeliveryDetails.php:593
+#:  DeliveryDetails.php:591 DeliveryDetails.php:593
 #: SpecialOrder.php:563
 msgid "has been entered"
 msgstr "ha sido creada"
@@ -18311,6 +18320,10 @@ msgstr "Cantidad pendiente"
 msgid "Unit Price"
 msgstr "Precio Unitario"
 
+
+msgid "U/P"
+msgstr "P. Unit."
+
 #: OutstandingGRNs.php:185 OutstandingGRNs.php:187 PO_AuthoriseMyOrders.php:120
 #: SupplierCredit.php:316 SupplierInvoice.php:677 SupplierTenders.php:329
 msgid "Line Total"
@@ -26899,6 +26912,9 @@ msgid "Last Paid Date"
 msgstr "Última fecha de pago"
 
 #: SelectCustomer.php:678
+msgid "Inc tax"
+msgstr "Imp. inc."
+
 msgid "Last Paid Amount (inc tax)"
 msgstr "Importe del último pago (imp. inc.)"
 
@@ -42783,7 +42799,7 @@ msgstr ""
 
 #: includes/GetPrice.inc:157
 msgid "There are no prices set up for"
-msgstr "No se ha fijado los precios de"
+msgstr "No se han fijado los precios de"
 
 #: includes/GetSalesTransGLCodes.inc:11
 msgid "Can not retrieve the cost of sales GL code because"

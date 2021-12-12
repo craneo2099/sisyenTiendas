@@ -174,13 +174,16 @@ function runAction(&$post,&$get){
     }else{
         return 0;
     }
-    if(existeStock($dataset['StockID'])){
+    if (isset($dataset['action']) and $dataset['action']=='dodelete'){
+        $salida=3;
+    }else if(existeStock($dataset['StockID'])){
         $salida=2;
     } else
 	if (isset($dataset['findBarCode'])){
         askData($dataset);
         $salida=1;
     }
+	
     return $salida;
 }
 function askData(&$ctx){

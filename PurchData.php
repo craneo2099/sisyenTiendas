@@ -374,9 +374,6 @@ if (isset($SupplierID) AND $SupplierID != '' AND !isset($_POST['SearchSupplier']
 					<input type="hidden" name="StockID" value="' . $StockID . '" />
 					<td>' . _('Text in the Supplier') . ' <b>' . _('NAME') . '</b>:</td>
 					<td><input type="text" name="Keywords" size="20" maxlength="25" /></td>
-					<td><b>' . _('OR') . '</b></td>
-					<td>' . _('Text in Supplier') . ' <b>' . _('CODE') . '</b>:</td>
-					<td><input type="text" name="SupplierCode" data-type="no-illegal-chars" size="20" maxlength="50" /></td>
 				</tr>
 				</table>
 				<br />
@@ -396,13 +393,21 @@ if ($Edit == true) {
 }
 
 if (isset($_POST['SearchSupplier'])) {
-    if (isset($_POST['Keywords']) AND isset($_POST['SupplierCode'])) {
-        prnMsg( _('Supplier Name keywords have been used in preference to the Supplier Code extract entered') . '.', 'info' );
-        echo '<br />';
-    }
-    if ($_POST['Keywords'] == '' AND $_POST['SupplierCode'] == '') {
-        $_POST['Keywords'] = ' ';
-    }
+
+    $ErrMsg = _('The suppliers matching the criteria entered could not be retrieved because');
+    $DbgMsg = _('The SQL to retrieve supplier details that failed was');
+	$SQL = "SELECT suppliers.supplierid,
+				suppliers.suppname,
+				suppliers.currcode,
+				suppliers.address1,
+				suppliers.address2,
+				suppliers.address3
+			FROM suppliers
+			WHERE suppliers.supplierid =''";
+			$values[0]=$_POST['Keywords'];
+	$SupplierResult = DB_query_stmt($SQL, $ErrMsg, $DbgMsg, 's',$values);
+
+
     if (mb_strlen($_POST['Keywords']) > 0) {
         //insert wildcard characters in spaces
 		$SearchString = '%' . str_replace(' ', '%', $_POST['Keywords']) . '%';
@@ -424,11 +429,9 @@ if (isset($_POST['SearchSupplier'])) {
 						suppliers.address2,
 						suppliers.address3
 				FROM suppliers
-				WHERE suppliers.supplierid " . LIKE . " '%" . $_POST['SupplierCode'] . "%'";
+				WHERE suppliers.supplierid ='%" . $_POST['SupplierCode'] . "%'";
 
     } //one of keywords or SupplierCode was more than a zero length string
-    $ErrMsg = _('The suppliers matching the criteria entered could not be retrieved because');
-    $DbgMsg = _('The SQL to retrieve supplier details that failed was');
     $SuppliersResult = DB_query($SQL, $ErrMsg, $DbgMsg);
 } //end of if search
 

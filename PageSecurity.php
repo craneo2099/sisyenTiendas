@@ -9,8 +9,10 @@ echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/s
 
 if (isset($_POST['Update']) AND $AlloDemoMode!= true) {
 	foreach ($_POST as $ScriptName => $PageSecurityValue) {
+
 		if ($ScriptName!='Update' and $ScriptName!='FormID') {
-				$sql="UPDATE scripts SET pagesecurity='". $PageSecurityValue . "' WHERE script='" . $ScriptName . "'";
+			$ScriptName=str_replace('_php','.php',$ScriptName);
+			$sql="UPDATE scripts SET pagesecurity='". $PageSecurityValue . "' WHERE script='" . $ScriptName . "'";
 			$UpdateResult=DB_query($sql,_('Could not update the page security value for the script because'));
 		}
 	}

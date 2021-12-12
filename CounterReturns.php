@@ -32,7 +32,6 @@ if (isset($_SESSION['Items' . $identifier]) AND isset($_POST['CustRef'])) {
 	$_SESSION['Items' . $identifier]->PhoneNo = $_POST['PhoneNo'];
 	$_SESSION['Items' . $identifier]->Email = $_POST['Email'];
 	$_SESSION['Items' . $identifier]->SalesPerson = $_POST['SalesPerson'];
-	$_SESSION['Items' . $identifier]->authorisation = $_POST['authorisation'];
 }
 
 if (isset($_POST['QuickEntry'])) {
@@ -50,18 +49,13 @@ if (isset($_POST['SelectingReturnItems'])) {
 if (isset($_GET['NewItem'])) {
 	$NewItem = trim($_GET['NewItem']);
 }
-if (isset($_POST['CancelReturn'])) {
 
-	prnMsg(_('This return has been cancelled as requested'),'success');
-
-} 
-if (isset($_GET['NewReturn']) or isset($_POST['CancelReturn'])) {
+if (isset($_GET['NewReturn'])) {
 	/*New return entry - clear any existing return details from the ReturnItems object and initiate a newy*/
 	 if (isset($_SESSION['Items' . $identifier])) {
 		unset ($_SESSION['Items' . $identifier]->LineItems);
 		$_SESSION['Items' . $identifier]->ItemsOrdered=0;
 		unset ($_SESSION['Items' . $identifier]);
-		unset($_POST);	
 	}
 }
 
@@ -187,9 +181,22 @@ if (!isset($_SESSION['Items' . $identifier])) {
 	} // user does not have valid inventory location
 } // end if its a new return to be set up
 
-if (!isset($_POST['CancelReturn'])) { /*Not cancelling the return */
+if (isset($_POST['CancelReturn'])) {
 
-	echo '<p class="page_title_text noprint"><img src="'.$RootPath.'/css/'.$Theme.'/images/inventory.png" title="' . _('Counter Return') . '" alt="" />' . ' ';
+	unset($_SESSION['Items' . $identifier]->LineItems);
+	$_SESSION['Items' . $identifier]->ItemsOrdered = 0;
+	unset($_SESSION['Items' . $identifier]);
+	$_SESSION['Items' . $identifier] = new cart;
+
+	echo '<br /><br />';
+	prnMsg(_('This return has been cancelled as requested'),'success');
+	echo '<br /><br /><a href="' .htmlspecialchars($_SERVER['PHP_SELF'],ENT_QUOTES,'UTF-8') . '">' . _('Start a new Counter Return') . '</a>';
+	include('includes/footer.php');
+	exit;
+
+} else { /*Not cancelling the return */
+
+	echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/inventory.png" title="' . _('Counter Return') . '" alt="" />' . ' ';
 	echo '<font color="red" size="5">' . $_SESSION['Items' . $identifier]->CustomerName . '<br /> ' . _('Counter Return') . ' ' . _('to') . ' ' . $_SESSION['Items' . $identifier]->LocationName . ' ' . _('inventory') . ' (' . _('all amounts in') . ' ' . $_SESSION['Items' . $identifier]->DefaultCurrency . ')';
 	echo '</font></p>';
 }
@@ -453,40 +460,33 @@ if ((isset($_SESSION['Items' . $identifier])) OR isset($NewItem)) {
 
 			$Quantity = round(filter_number_format($_POST['Quantity_' . $ReturnItemLine->LineNumber]),$ReturnItemLine->DecimalPlaces);
 
-			$editPrice=filter_number_format($_POST['Price_' . $ReturnItemLine->LineNumber]);
-			if ($editPrice=="0.00"){
-				$editPrice=$ReturnItemLine->Price;
-			}
-			if($ReturnItemLine->Price=="0.00"){
-				$Price = GetPrice($ReturnItemLine->StockID, $_SESSION['Items'.$identifier]->DebtorNo,$_SESSION['Items'.$identifier]->Branch, $ReturnItemLine->Quantity);
-			}else 
-			if (ABS($ReturnItemLine->Price - filter_number_format($_POST['Price_' . $ReturnItemLine->LineNumber]))>0.01) {
-				/*There is a new price being input for the line item */
+				if (ABS($ReturnItemLine->Price - filter_number_format($_POST['Price_' . $ReturnItemLine->LineNumber]))>0.01) {
+					/*There is a new price being input for the line item */
 
-				$Price = filter_number_format($_POST['Price_' . $ReturnItemLine->LineNumber]);
-				$_POST['GPPercent_' . $ReturnItemLine->LineNumber] = (($Price*(1-(filter_number_format($_POST['Discount_' . $ReturnItemLine->LineNumber])/100))) - $ReturnItemLine->StandardCost*$ExRate)/($Price *(1-filter_number_format($_POST['Discount_' . $ReturnItemLine->LineNumber]))/100);
+					$Price = filter_number_format($_POST['Price_' . $ReturnItemLine->LineNumber]);
+					$_POST['GPPercent_' . $ReturnItemLine->LineNumber] = (($Price*(1-(filter_number_format($_POST['Discount_' . $ReturnItemLine->LineNumber])/100))) - $ReturnItemLine->StandardCost*$ExRate)/($Price *(1-filter_number_format($_POST['Discount_' . $ReturnItemLine->LineNumber]))/100);
 
-			} elseif (ABS($ReturnItemLine->GPPercent - filter_number_format($_POST['GPPercent_' . $ReturnItemLine->LineNumber]))>=0.01) {
-				/* A GP % has been input so need to do a recalculation of the price at this new GP Percentage */
+				} elseif (ABS($ReturnItemLine->GPPercent - filter_number_format($_POST['GPPercent_' . $ReturnItemLine->LineNumber]))>=0.01) {
+					/* A GP % has been input so need to do a recalculation of the price at this new GP Percentage */
 
 
-				prnMsg(_('Recalculated the price from the GP % entered - the GP % was') . ' ' . $ReturnItemLine->GPPercent . '  the new GP % is ' . filter_number_format($_POST['GPPercent_' . $ReturnItemLine->LineNumber]),'info');
+					prnMsg(_('Recalculated the price from the GP % entered - the GP % was') . ' ' . $ReturnItemLine->GPPercent . '  the new GP % is ' . filter_number_format($_POST['GPPercent_' . $ReturnItemLine->LineNumber]),'info');
 
 
-				$Price = ($ReturnItemLine->StandardCost*$ExRate)/(1 -((filter_number_format($_POST['GPPercent_' . $ReturnItemLine->LineNumber]) + filter_number_format($_POST['Discount_' . $ReturnItemLine->LineNumber]))/100));
-			} else {
-				$Price = filter_number_format($_POST['Price_' . $ReturnItemLine->LineNumber]);
-			}
-			$DiscountPercentage = filter_number_format($_POST['Discount_' . $ReturnItemLine->LineNumber]);
-			if ($_SESSION['AllowOrderLineItemNarrative'] == 1) {
-				$Narrative = $_POST['Narrative_' . $ReturnItemLine->LineNumber];
-			} else {
-				$Narrative = '';
-			}
+					$Price = ($ReturnItemLine->StandardCost*$ExRate)/(1 -((filter_number_format($_POST['GPPercent_' . $ReturnItemLine->LineNumber]) + filter_number_format($_POST['Discount_' . $ReturnItemLine->LineNumber]))/100));
+				} else {
+					$Price = filter_number_format($_POST['Price_' . $ReturnItemLine->LineNumber]);
+				}
+				$DiscountPercentage = filter_number_format($_POST['Discount_' . $ReturnItemLine->LineNumber]);
+				if ($_SESSION['AllowOrderLineItemNarrative'] == 1) {
+					$Narrative = $_POST['Narrative_' . $ReturnItemLine->LineNumber];
+				} else {
+					$Narrative = '';
+				}
 
-			if (!isset($ReturnItemLine->DiscountPercent)) {
-				$ReturnItemLine->DiscountPercent = 0;
-			}
+				if (!isset($ReturnItemLine->DiscountPercent)) {
+					$ReturnItemLine->DiscountPercent = 0;
+				}
 
 			if ($Quantity<0 or $Price <0 or $DiscountPercentage >100 or $DiscountPercentage <0) {
 				prnMsg(_('The item could not be updated because you are attempting to set the quantity returned to less than 0 or the price less than 0 or the discount more than 100% or less than 0%'),'warn');
@@ -665,7 +665,7 @@ if (count($_SESSION['Items' . $identifier]->LineItems)>0) { /*only show return l
 */
 
 	echo '<br />
-		<table width="90%" cellpadding="2" colspan="7" class="noprint">
+		<table width="90%" cellpadding="2" colspan="7">
 		<tr bgcolor="#800000">';
 	echo '<th>' . _('Item Code') . '</th>
    	      <th>' . _('Item Description') . '</th>
@@ -702,19 +702,9 @@ if (count($_SESSION['Items' . $identifier]->LineItems)>0) { /*only show return l
 		echo '<td><input class="number" tabindex="2" type="text" name="Quantity_' . $ReturnItemLine->LineNumber . '" required="required" size="6" maxlength="6" value="' . locale_number_format($ReturnItemLine->Quantity,$ReturnItemLine->DecimalPlaces) . '" />';
 
 		echo '</td>
-				<td>' . $ReturnItemLine->Units . '</td>';
-				?>
-				<td>
-					<input id="hidPriceNoRound" type="hidden" name="Price_<?= $ReturnItemLine->LineNumber ?>" 
-						value="<?=$ReturnItemLine->Price  ?>"/>
-					<input class="number" type="text" name="viewPrice_<?= $ReturnItemLine->LineNumber ?>" 
-						required="required" size="16" maxlength="16" 
-						value="<?=locale_number_format($ReturnItemLine->Price,$_SESSION['Items'.$identifier]->CurrDecimalPlaces);  ?>" 
-						onchange="
-							$('#hidPriceNoRound').val(this.value).trigger('change');
-						"/></td>
-				<?php
-				echo '<td><input class="number" type="text" name="Discount_' . $ReturnItemLine->LineNumber . '" required="required" size="5" maxlength="4" value="' . locale_number_format(($ReturnItemLine->DiscountPercent * 100),2) . '" /></td>
+				<td>' . $ReturnItemLine->Units . '</td>
+				<td><input class="number" type="text" name="Price_' . $ReturnItemLine->LineNumber . '" required="required" size="16" maxlength="16" value="' . locale_number_format($ReturnItemLine->Price,$_SESSION['Items' . $identifier]->CurrDecimalPlaces) . '" /></td>
+				<td><input class="number" type="text" name="Discount_' . $ReturnItemLine->LineNumber . '" required="required" size="5" maxlength="4" value="' . locale_number_format(($ReturnItemLine->DiscountPercent * 100),2) . '" /></td>
 				<td><input class="number" type="text" name="GPPercent_' . $ReturnItemLine->LineNumber . '" required="required" size="3" maxlength="40" value="' . locale_number_format($ReturnItemLine->GPPercent,2) . '" /></td>
 				<td class="number">' . locale_number_format($SubTotal,$_SESSION['Items' . $identifier]->CurrDecimalPlaces) . '</td>';
 		$LineDueDate = $ReturnItemLine->ItemDue;
@@ -765,7 +755,7 @@ if (count($_SESSION['Items' . $identifier]->LineItems)>0) { /*only show return l
 		</tr>
 		</table>';
 	echo '<input type="hidden" name="TaxTotal" value="'.$TaxTotal.'" />';
-	echo '<table class="noprint"><tr><td>';
+	echo '<table><tr><td>';
 	//nested table
 	echo '<table><tr>
 		<td style="color:red">' .  _('Returned By') .':</td>
@@ -781,28 +771,23 @@ if (count($_SESSION['Items' . $identifier]->LineItems)>0) { /*only show return l
 			<td><input type="email" size="25" maxlength="30" name="Email" value="' . stripslashes($_SESSION['Items' . $identifier]->Email) . '" /></td></tr>';
 
 	echo '<tr>
-			<td style="color:red">' .  _('Ticket number') .':</td>
+			<td style="color:red">' .  _('Customer Reference') .':</td>
 			<td><input type="text" size="25" maxlength="25" name="CustRef" value="' . stripcslashes($_SESSION['Items' . $identifier]->CustRef) . '" /></td>
 		</tr>';
 	echo '<tr>
-			<td style="color:red">' . _('Authorised by'). ':</td>
-			<td><input type="hidden" name="authorisation" value="'.$_SESSION['UserID'].'"/>'.$_SESSION['UsersRealName'].'
-			</td>
-		</tr>';
-	echo '<tr>
-		<td style="color:red">' . _('Sales person'). ':</td>
-		<td><select name="SalesPerson">';
-		$SalesPeopleResult = DB_query("SELECT salesmancode, salesmanname FROM salesman WHERE current=1");
-		if (!isset($_POST['SalesPerson']) AND $_SESSION['SalesmanLogin']!=NULL ) {
-			$_SESSION['Items' . $identifier]->SalesPerson = $_SESSION['SalesmanLogin'];
+			<td style="color:red">' . _('Sales person'). ':</td>
+			<td><select name="SalesPerson">';
+	$SalesPeopleResult = DB_query("SELECT salesmancode, salesmanname FROM salesman WHERE current=1");
+	if (!isset($_POST['SalesPerson']) AND $_SESSION['SalesmanLogin']!=NULL ) {
+		$_SESSION['Items' . $identifier]->SalesPerson = $_SESSION['SalesmanLogin'];
+	}
+	while ($SalesPersonRow = DB_fetch_array($SalesPeopleResult)) {
+		if ($SalesPersonRow['salesmancode']==$_SESSION['Items' . $identifier]->SalesPerson) {
+			echo '<option selected="selected" value="' . $SalesPersonRow['salesmancode'] . '">' . $SalesPersonRow['salesmanname'] . '</option>';
+		} else {
+			echo '<option value="' . $SalesPersonRow['salesmancode'] . '">' . $SalesPersonRow['salesmanname'] . '</option>';
 		}
-		while ($SalesPersonRow = DB_fetch_array($SalesPeopleResult)) {
-			if ($SalesPersonRow['salesmancode']==$_SESSION['Items' . $identifier]->SalesPerson) {
-				echo '<option selected="selected" value="' . $SalesPersonRow['salesmancode'] . '">' . $SalesPersonRow['salesmanname'] . '</option>';
-			} else {
-				echo '<option value="' . $SalesPersonRow['salesmancode'] . '">' . $SalesPersonRow['salesmanname'] . '</option>';
-			}
-		}
+	}
 
 	echo '</select></td>
 		</tr>';
@@ -855,8 +840,8 @@ if (count($_SESSION['Items' . $identifier]->LineItems)>0) { /*only show return l
 	if (!isset($_POST['ProcessReturn'])) {
 		echo '<br />
 				<div class="centre">
-					<input type="submit" name="ProcessReturn" value="' . _('Process The Return') . '" />
 					<input type="submit" name="Recalculate" value="' . _('Re-Calculate') . '" formnovalidate/>
+					<input type="submit" name="ProcessReturn" value="' . _('Process The Return') . '" />
 				</div>';
 	}
 	echo '<hr />';
@@ -935,8 +920,7 @@ if (isset($_POST['ProcessReturn']) AND $_POST['ProcessReturn'] != '') {
 										invtext,
 										shipvia,
 										alloc,
-										salesperson,
-										autorizador  )
+										salesperson )
 			VALUES ('". $CreditNoteNo . "',
 					11,
 					'" . $_SESSION['Items' . $identifier]->DebtorNo . "',
@@ -952,8 +936,7 @@ if (isset($_POST['ProcessReturn']) AND $_POST['ProcessReturn'] != '') {
 					'" . $_SESSION['Items' . $identifier]->Comments . "',
 					'" . $_SESSION['Items' . $identifier]->ShipVia . "',
 					'" . (-$_SESSION['Items' . $identifier]->total - filter_number_format($_POST['TaxTotal'])) . "',
-					'" . $_SESSION['Items' . $identifier]->SalesPerson . "',
-					'" . $_SESSION['Items' . $identifier]->authorisation . "' )";
+					'" . $_SESSION['Items' . $identifier]->SalesPerson . "' )";
 
 		$ErrMsg =_('CRITICAL ERROR') . '! ' . _('NOTE DOWN THIS ERROR AND SEEK ASSISTANCE') . ': ' . _('The debtor transaction record could not be inserted because');
 		$DbgMsg = _('The following SQL to insert the debtor transaction record was used');
@@ -1603,22 +1586,19 @@ if (isset($_POST['ProcessReturn']) AND $_POST['ProcessReturn'] != '') {
 	//   E N D   O F   C R E D I T  N O T E   S Q L   P R O C E S S I N G
 	// *************************************************************************
 
+		unset($_SESSION['Items' . $identifier]->LineItems);
+		unset($_SESSION['Items' . $identifier]);
 
-		echo prnMsg( sprintf(_('Return Note number %d has been processed' ), $CreditNoteNo), 'success');
+		echo prnMsg( _('Credit Note number'). ' '. $CreditNoteNo .' '. _('processed'), 'success');
 
 		echo '<br /><div class="centre">';
 
 		if ($_SESSION['InvoicePortraitFormat']==0) {
-			include "includes/devstar/PrintTicketReturn.inc";
-			$doPrint=true;
-			//echo '<img src="'.$RootPath.'/css/'.$Theme.'/images/printer.png" title="' . _('Print') . '" alt="" />' . ' ' . '<a target="_blank" href="'.$RootPath.'/PrintCustTrans.php?FromTransNo='.$CreditNoteNo.'&InvOrCredit=Credit&PrintPDF=True">' .  _('Print this credit note'). ' (' . _('Landscape') . ')</a><br /><br />';
-		} 
-		
-		unset($_SESSION['Items' . $identifier]->LineItems);
-		unset($_SESSION['Items' . $identifier]);
-		echo '<br /><br />
-		
-		<input type="submit" name="NewReturn" id="NewReturn" value="' . _('Start a new Counter Return') . '" /></div>';
+			echo '<img src="'.$RootPath.'/css/'.$Theme.'/images/printer.png" title="' . _('Print') . '" alt="" />' . ' ' . '<a target="_blank" href="'.$RootPath.'/PrintCustTrans.php?FromTransNo='.$CreditNoteNo.'&InvOrCredit=Credit&PrintPDF=True">' .  _('Print this credit note'). ' (' . _('Landscape') . ')</a><br /><br />';
+		} else {
+			echo '<img src="'.$RootPath.'/css/'.$Theme.'/images/printer.png" title="' . _('Print') . '" alt="" />' . ' ' . '<a target="_blank" href="'.$RootPath.'/PrintCustTransPortrait.php?FromTransNo='.$CreditNoteNo.'&InvOrCredit=Credit&PrintPDF=True" onClick="return window.location=\'index.php\'">' .  _('Print this credit note'). ' (' . _('Portrait') . ')</a><br /><br />';
+		}
+		echo '<br /><br /><a href="' .htmlspecialchars($_SERVER['PHP_SELF'],ENT_QUOTES,'UTF-8') . '">' . _('Start a new Counter Return') . '</a></div>';
 
 		// There were input errors so don't process nuffin
 	} else {
@@ -1693,12 +1673,9 @@ if (!isset($_POST['ProcessReturn'])) {
 			echo '<input type="hidden" name="FormID" value="' . $_SESSION['FormID'] . '" />';
 			echo '<table class="table1">';
 			echo '<tr>
-					<td><input type="hidden" name="previous" value="'.strval($Offset-1).'" /><input tabindex="'.strval($j+7).'" type="submit" name="Prev" value="'._('Prev').'" formnovalidate="formnovalidate" /></td>
-					<td class="centre" colspan="6">
-					 <input type="hidden" name="SelectingReturnItems" value="1" />
-					 <input tabindex="'.strval($j+8).'" type="submit" value="'._('Return Item(s)').'" formnovalidate="formnovalidate"/>
-					</td>
-					<td><input type="hidden" name="NextList" value="'.strval($Offset+1).'" /><input tabindex="'.strval($j+9).'" type="submit" name="Next" value="'._('Next').'" formnovalidate="formnovalidate" /></td>
+					<td><input type="hidden" name="previous" value="'.strval($Offset-1).'" /><input tabindex="'.strval($j+7).'" type="submit" name="Prev" value="'._('Prev').'" /></td>
+					<td class="centre" colspan="6"><input type="hidden" name="SelectingReturnItems" value="1" /><input tabindex="'.strval($j+8).'" type="submit" value="'._('Return Item(s)').'" /></td>
+					<td><input type="hidden" name="NextList" value="'.strval($Offset+1).'" /><input tabindex="'.strval($j+9).'" type="submit" name="Next" value="'._('Next').'" /></td>
 				</tr>';
 			$TableHeader = '<tr>
 								<th>' . _('Code') . '</th>
@@ -1782,11 +1759,11 @@ if (!isset($_POST['ProcessReturn'])) {
 				<input type="hidden" name="Email" value="'.$_SESSION['Items' . $identifier]->Email.'" />
 				<tr>
 					<td><input type="hidden" name="previous" value="'.strval($Offset-1).'" />
-						<input tabindex="'.strval($j+7).'" type="submit" name="Prev" value="'._('Prev').'" formnovalidate="formnovalidate" /></td>
+						<input tabindex="'.strval($j+7).'" type="submit" name="Prev" value="'._('Prev').'" /></td>
 					<td class="centre" colspan="6"><input type="hidden" name="SelectingReturnItems" value="1" />
-						<input tabindex="'.strval($j+8).'" type="submit" value="'._('Return Item(s)').'" formnovalidate="formnovalidate" /></td>
+						<input tabindex="'.strval($j+8).'" type="submit" value="'._('Add to Sale').'" /></td>
 					<td><input type="hidden" name="NextList" value="'.strval($Offset+1).'" />
-						<input tabindex="'.strval($j+9).'" type="submit" name="Next" value="'._('Next').'" formnovalidate="formnovalidate" /></td>
+						<input tabindex="'.strval($j+9).'" type="submit" name="Next" value="'._('Next').'" /></td>
 				</tr>
 				</table>
 				</form>';
@@ -1799,8 +1776,7 @@ if (!isset($_POST['ProcessReturn'])) {
 				<tr>';
 			/*do not display colum unless customer requires po line number by sales order line*/
 		echo '<th>' . _('Item Code') . '</th>
-			<th>' . _('Quantity') . '</th>
-			<th></th>
+				<th>' . _('Quantity') . '</th>
 				</tr>';
 		$ReturnDate = Date($_SESSION['DefaultDateFormat']);
 		if (count($_SESSION['Items' . $identifier]->LineItems)==0) {
@@ -1811,10 +1787,8 @@ if (!isset($_POST['ProcessReturn'])) {
 			<input type="hidden" name="Email" value="'.$_SESSION['Items' . $identifier]->Email.'" />';
 		}
 		for ($i=1;$i<=$_SESSION['QuickEntries'];$i++) {
-			if($i==$_SESSION['QuickEntries']){
-				$lastEntryClass=" lastQkEntry";
-				$addBtn='<a href="#" id="adderLink" class="icon-inline" onclick="triggerEntry()"><i class="fas fa-plus-circle"></i></a>';
-			}
+			if($i==$_SESSION['QuickEntries'])
+			$lastEntryClass=" lastQkEntry";
 
 	 		echo '<tr class="striped_row'.$lastEntryClass.'">';
 	 		/* Do not display colum unless customer requires po line number by sales order line*/
@@ -1823,31 +1797,25 @@ if (!isset($_POST['ProcessReturn'])) {
 			 class="entryCode"
 			 title="' . _('Enter a part code to be returned. Part codes can contain any alpha-numeric characters underscore or hyphen.') .'" maxlength="20" /></td>
 					<td><input type="text" class="number entryQty" name="qty_' . $i . '" size="6" maxlength="6" />
-						<input type="hidden" class="date" name="ItemDue_' . $i . '" value="' . $ReturnDate . '" />
-						</td>
-						<td>'.$addBtn.'
-						</td>
+						<input type="hidden" class="date" name="ItemDue_' . $i . '" value="' . $ReturnDate . '" /></td>
 				</tr>';
    		}
 	 	echo '</table>
 				<br />
 				<div class="centre">
-					<input type="submit" name="QuickEntry" id="QuickEntry" disabled value="' . _('Next') . '" formnovalidate="formnovalidate"/>
-					<input type="submit" name="PartSearch" id="PartSearch" value="' . _('Search Parts') . '(F8)" formnovalidate="formnovalidate"/>
+					<input type="submit" name="QuickEntry" value="' . _('Quick Entry') . '" formnovalidate/>
+					<input type="submit" name="PartSearch" value="' . _('Search Parts') . '" formnovalidate/>
 				</div>';
 
   	}
 	if ($_SESSION['Items' . $identifier]->ItemsOrdered >=1) {
   		echo '<br />
 			<div class="centre">
-				<input type="submit" name="CancelReturn" value="' . _('Cancel Return') . '" onclick="return confirm(\'' . _('Are you sure you wish to cancel this return?') . '\');" formnovalidate="formnovalidate"/>
+				<input type="submit" name="CancelReturn" value="' . _('Cancel Return') . '" onclick="return confirm(\'' . _('Are you sure you wish to cancel this return?') . '\');" formnovalidate/>
 			</div>';
 	}
 }
 echo '</form>';
-if($doPrint){
-	echo '<Script type="text/javascript">window.onload = function() { window.print(); }</script>';
-}
 addScriptList("/javascripts/CounterSales.js");
 include('includes/footer.php');
 ?>

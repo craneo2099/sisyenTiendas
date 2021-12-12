@@ -3,7 +3,7 @@
 
 include('includes/session.php');
 
-$Title = _('Sales Order Inquiry');
+$Title = _('Search Purchase Orders');
 
 include('includes/header.php');
 
@@ -92,10 +92,7 @@ if (isset($OrderNumber)&&$OrderNumber!=0) {
 }
 
 if (isset($_POST['SearchParts']) AND $_POST['SearchParts']!=''){
-	$stockCatWhere="";
-	if(!empty($_POST['StockCat'])){
-		$stockCatWhere="AND stockmaster.categoryid='" . $_POST['StockCat'] . "'";
-	}
+
 	if ($_POST['Keywords']!='' AND $_POST['StockCode']!='') {
 		echo _('Stock description keywords have been used in preference to the Stock code extract entered');
 	}
@@ -116,7 +113,7 @@ if (isset($_POST['SearchParts']) AND $_POST['SearchParts']!=''){
 							 LEFT JOIN purchorderdetails on stockmaster.stockid = purchorderdetails.itemcode)
 						WHERE salesorderdetails.completed =1
 						AND stockmaster.description " . LIKE . " '" . $SearchString. "'
-						".$stockCatWhere."
+						AND stockmaster.categoryid='" . $_POST['StockCat'] . "'
 						GROUP BY stockmaster.stockid,
 							stockmaster.description,
 							stockmaster.decimalplaces,
@@ -134,7 +131,7 @@ if (isset($_POST['SearchParts']) AND $_POST['SearchParts']!=''){
 							 LEFT JOIN locstock ON stockmaster.stockid=locstock.stockid)
 							 LEFT JOIN purchorderdetails on stockmaster.stockid = purchorderdetails.itemcode)
 						WHERE stockmaster.description " . LIKE . " '" . $SearchString. "'
-						".$stockCatWhere."
+						AND stockmaster.categoryid='" . $_POST['StockCat'] . "'
 						GROUP BY stockmaster.stockid,
 							stockmaster.description,
 							stockmaster.decimalplaces,
@@ -157,7 +154,7 @@ if (isset($_POST['SearchParts']) AND $_POST['SearchParts']!=''){
 							 LEFT JOIN purchorderdetails on stockmaster.stockid = purchorderdetails.itemcode)
 						WHERE salesorderdetails.completed =1
 						AND stockmaster.stockid " . LIKE . " '%" . $_POST['StockCode'] . "%'
-						".$stockCatWhere."
+						AND stockmaster.categoryid='" . $_POST['StockCat'] . "'
 						GROUP BY stockmaster.stockid,
 							stockmaster.description,
 							stockmaster.decimalplaces,
@@ -175,7 +172,7 @@ if (isset($_POST['SearchParts']) AND $_POST['SearchParts']!=''){
 							 LEFT JOIN locstock ON stockmaster.stockid=locstock.stockid)
 							 LEFT JOIN purchorderdetails on stockmaster.stockid = purchorderdetails.itemcode)
 						WHERE stockmaster.stockid " . LIKE  . " '%" . $_POST['StockCode'] . "%'
-						".$stockCatWhere."
+						AND stockmaster.categoryid='" . $_POST['StockCat'] . "'
 						GROUP BY stockmaster.stockid,
 							stockmaster.description,
 							stockmaster.decimalplaces,
@@ -221,22 +218,6 @@ if (isset($_POST['SearchParts']) AND $_POST['SearchParts']!=''){
 							stockmaster.units
 						ORDER BY stockmaster.stockid";
 		}
-	}else{
-		$SQL = "SELECT stockmaster.stockid,
-			stockmaster.description,
-			stockmaster.decimalplaces,
-			SUM(locstock.quantity) AS qoh,
-			SUM(purchorderdetails.quantityord-purchorderdetails.quantityrecd) AS qoo,
-			SUM(salesorderdetails.quantity - salesorderdetails.qtyinvoiced) AS qdem,
-			stockmaster.units
-		FROM (((stockmaster LEFT JOIN salesorderdetails on stockmaster.stockid = salesorderdetails.stkcode)
-			LEFT JOIN locstock ON stockmaster.stockid=locstock.stockid)
-			LEFT JOIN purchorderdetails on stockmaster.stockid = purchorderdetails.itemcode)
-		GROUP BY stockmaster.stockid,
-			stockmaster.description,
-			stockmaster.decimalplaces,
-			stockmaster.units
-		ORDER BY stockmaster.stockid";
 	}
 
 	if (mb_strlen($SQL)<2){
@@ -486,7 +467,6 @@ if (!isset($SelectedStockItem)) {
    echo '<tr><td>' . _('Select a stock category') . ':';
    echo '<select name="StockCat">';
 
-   echo '<option value=""> </option>';
 	while ($myrow1 = DB_fetch_array($result1)) {
 		if (isset($_POST['StockCat']) AND $myrow1['categoryid'] == $_POST['StockCat']){
 			echo '<option selected="selected" value="' .  $myrow1['categoryid'] . '">' . $myrow1['categorydescription'] . '</option>';

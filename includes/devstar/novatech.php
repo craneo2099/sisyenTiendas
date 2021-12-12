@@ -113,14 +113,3 @@ function pntMigajas($migajas,$titulo){
 	
 	echo $titulo;
 }
-function getSalesmanName($name){
-	$SQL = "SELECT salesmanname FROM salesman WHERE current=1 and salesmancode=?";
-	return DB_fetch_row(DB_query_stmt($SQL,'','','s',array($name)))[0];
-}
-function getPaymentName($id){
-	$SQL = "SELECT paymentname FROM paymentmethods where paymentid=?";
-	return DB_fetch_row(DB_query_stmt($SQL,'','','s',array($id)))[0];
-}
-function confirmacion($migajas,$titulo){
-	echo '<div></div>';
-}

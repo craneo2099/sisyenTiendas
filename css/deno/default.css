@@ -201,9 +201,6 @@ input[type='email']:focus, textarea:focus, select:focus, button:focus {
 	display: none;
 
 }
-.icon-inline{
-	font-size: 1.8em;
-}
 
 textarea {
 	border:thin solid #C3C3C3;

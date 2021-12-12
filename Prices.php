@@ -58,6 +58,7 @@ if ($myrow[1]=='K') {
 }
 
 if (isset($_POST['submit'])) {
+
 	/* actions to take once the user has clicked the submit button
 	ie the page has called itself with some user input */
 
@@ -309,34 +310,20 @@ echo '<tr><td>' . _('Price Effective To Date')  . ':</td>
 echo '<input type="hidden" name="Item" value="' . $Item.'" /></td></tr>';
 echo '<tr><td>' . _('Price') . ':</td>
           <td>
-          <input type="text" class="number" required="required" name="PriceTx" id="PriceTx" size="12" maxlength="11" value="';
-          if (isset($_POST['Price'])) {
-	         echo $_POST['Price']*1.16;
-          }
-          echo '" />
-     </td></tr>
-	 <tr><td>' . _('Excl Tax') . ':</td>
-          <td>
-          <input type="text" class="number" readonly="readonly" name="Price" id="PriceNoTax" size="12" maxlength="11" value="';
+          <input type="text" class="number" required="required" name="Price" size="12" maxlength="11" value="';
           if (isset($_POST['Price'])) {
 	         echo $_POST['Price'];
           }
           echo '" />
-     </td></tr>';
-	 ?>
-
+     </td></tr>
 </table>
 <br /><div class="centre">
-<input type="submit" name="submit" value="<?= _('Enter')?>/<?=_('Amend Price')?>" />
-</div>
+<input type="submit" name="submit" value="' . _('Enter') . '/' . _('Amend Price') . '" />
+</div>';
 
 
-</div>
-      </form>
-
-<?php
-
-addScriptList("/javascripts/prices.js");
+echo '</div>
+      </form>';
 include('includes/footer.php');
 
 

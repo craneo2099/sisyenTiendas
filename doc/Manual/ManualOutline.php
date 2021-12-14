@@ -270,7 +270,7 @@ $TOC_Array = array (
                                  'Maintenance tasks'),
     'Setup'   		    => array('Setup',
                                  'General Setup Options',
-                                 'Receivables/Payables Setup',
+                                 'Manage authority purchase order',
                                  'Inventory Setup'),
     'Tax'               => array('Tax',
                                  'Tax calculations',

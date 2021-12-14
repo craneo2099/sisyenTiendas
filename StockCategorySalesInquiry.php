@@ -5,6 +5,8 @@ include('includes/session.php');
 $Title = _('Sales By Category By Item Inquiry');
 include('includes/header.php');
 
+define("ALL",     "All");
+
 echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/transactions.png" title="' . _('Sales Report') . '" alt="" />' . ' ' . _('Sales By Category By Item Inquiry') . '</p>';
 echo '<div class="page_help_text">' . _('Select the parameters for the inquiry') . '</div><br />';
 
@@ -28,12 +30,12 @@ echo '<table cellpadding="2" class="selection">
 			<td style="width:150px">' . _('In Stock Category') . ':</td>
 			<td><select name="StockCat">';
 if (!isset($_POST['StockCat'])){
-	$_POST['StockCat']='All';
+	$_POST['StockCat']=ALL;
 }
-if ($_POST['StockCat']=='All'){
-	echo '<option selected="selected" value="All">' . _('All') . '</option>';
+if ($_POST['StockCat']==ALL){
+	echo '<option selected="selected" value="'.ALL.'">' . _('All') . '</option>';
 } else {
-	echo '<option value="All">' . _('All') . '</option>';
+	echo '<option value="'.ALL.'">' . _('All') . '</option>';
 }
 while ($myrow1 = DB_fetch_array($result1)) {
 	if ($myrow1['categoryid']==$_POST['StockCat']){
@@ -87,6 +89,10 @@ if (isset($_POST['ShowSales'])){
 	}
 	$FromDate = FormatDateForSQL($_POST['FromDate']);
 	$ToDate = FormatDateForSQL($_POST['ToDate']);
+	$stockCatWhere='';
+	if(isset($_POST['StockCat']) and ($_POST['StockCat']!= ALL)){
+		$stockCatWhere="and stockmaster.categoryid='".$_POST['StockCat']."'";
+	}
 
 	$sql = "SELECT stockmaster.categoryid,
 					stockcategory.categorydescription,
@@ -102,7 +108,8 @@ if (isset($_POST['ShowSales'])){
 			WHERE (stockmoves.type=10 OR stockmoves.type=11)
 			AND show_on_inv_crds =1
 			AND trandate>='" . $FromDate . "'
-			AND trandate<='" . $ToDate . "'
+			AND trandate<='" . $ToDate . "' "
+			 .$stockCatWhere."
 			GROUP BY stockmaster.categoryid,
 					stockcategory.categorydescription,
 					stockmaster.stockid,
@@ -112,117 +119,119 @@ if (isset($_POST['ShowSales'])){
 
 	$ErrMsg = _('The sales data could not be retrieved because') . ' - ' . DB_error_msg();
 	$SalesResult = DB_query($sql,$ErrMsg);
+	if(DB_num_rows($SalesResult)==0){
+		prnMsg( _('There are no products to display matching the criteria provided'),'warn');
+	}else{
+		echo '<table cellpadding="2" class="selection">';
 
-	echo '<table cellpadding="2" class="selection">';
+		echo'<tr>
+				<th>' . _('Item Code') . '</th>
+				<th>' . _('Item Description') . '</th>
+				<th>' . _('Qty Sold') . '</td>
+				<th>' . _('Sales Revenue') . '</th>
+				<th>' . _('COGS') . '</th>
+				<th>' . _('Gross Margin') . '</th>
+				<th>' . _('Avg Unit') . '<br/>' . _('Sale Price') . '</th>
+				<th>' . _('Avg Unit') . '<br/>' . _('Cost') . '</th>
+				<th>' . _('Margin %') . '</th>
+			</tr>';
 
-	echo'<tr>
-			<th>' . _('Item Code') . '</th>
-			<th>' . _('Item Description') . '</th>
-			<th>' . _('Qty Sold') . '</td>
-			<th>' . _('Sales Revenue') . '</th>
-			<th>' . _('COGS') . '</th>
-			<th>' . _('Gross Margin') . '</th>
-			<th>' . _('Avg Unit') . '<br/>' . _('Sale Price') . '</th>
-			<th>' . _('Avg Unit') . '<br/>' . _('Cost') . '</th>
-			<th>' . _('Margin %') . '</th>
-		</tr>';
+		$CumulativeTotalSales = 0;
+		$CumulativeTotalQty = 0;
+		$CumulativeTotalCOGS = 0;
+		$CategorySales = 0;
+		$CategoryQty = 0;
+		$CategoryCOGS = 0;
+		$CategoryID ='';
 
-	$CumulativeTotalSales = 0;
-	$CumulativeTotalQty = 0;
-	$CumulativeTotalCOGS = 0;
-	$CategorySales = 0;
-	$CategoryQty = 0;
-	$CategoryCOGS = 0;
-	$CategoryID ='';
+		while ($SalesRow=DB_fetch_array($SalesResult)) {
+			if ($CategoryID != $SalesRow['categoryid']) {
+				if ($CategoryID !='') {
+					//print out the previous category totals
+					echo '<tr>
+						<td colspan="2" class="number">' . _('Category Total') . '</td>
+						<td class="number">' . locale_number_format($CategoryQty,$_SESSION['CompanyRecord']['decimalplaces']) . '</td>
+						<td class="number">' . locale_number_format($CategorySales,$_SESSION['CompanyRecord']['decimalplaces']) . '</td>
+						<td class="number">' . locale_number_format($CategoryCOGS,$_SESSION['CompanyRecord']['decimalplaces']) . '</td>
+						<td class="number">' . locale_number_format($CategorySales - $CategoryCOGS,$_SESSION['CompanyRecord']['decimalplaces']) . '</td>
+						<td colspan="2"></td>';
+					if ($CumulativeTotalSales !=0) {
+						echo '<td class="number">' . locale_number_format(($CategorySales-$CategoryCOGS)*100/$CategorySales,$_SESSION['CompanyRecord']['decimalplaces']) . '%</td>';
+					} else {
+						echo '<td>' . _('N/A') . '</td>';
+					}
+					echo '</tr>';
 
-	while ($SalesRow=DB_fetch_array($SalesResult)) {
-		if ($CategoryID != $SalesRow['categoryid']) {
-			if ($CategoryID !='') {
-				//print out the previous category totals
-				echo '<tr>
-					<td colspan="2" class="number">' . _('Category Total') . '</td>
-					<td class="number">' . locale_number_format($CategoryQty,$_SESSION['CompanyRecord']['decimalplaces']) . '</td>
-					<td class="number">' . locale_number_format($CategorySales,$_SESSION['CompanyRecord']['decimalplaces']) . '</td>
-					<td class="number">' . locale_number_format($CategoryCOGS,$_SESSION['CompanyRecord']['decimalplaces']) . '</td>
-					<td class="number">' . locale_number_format($CategorySales - $CategoryCOGS,$_SESSION['CompanyRecord']['decimalplaces']) . '</td>
-					<td colspan="2"></td>';
-				if ($CumulativeTotalSales !=0) {
-					echo '<td class="number">' . locale_number_format(($CategorySales-$CategoryCOGS)*100/$CategorySales,$_SESSION['CompanyRecord']['decimalplaces']) . '%</td>';
-				} else {
-					echo '<td>' . _('N/A') . '</td>';
+					//reset the totals
+					$CategorySales = 0;
+					$CategoryQty = 0;
+					$CategoryCOGS = 0;
+
 				}
-				echo '</tr>';
-
-				//reset the totals
-				$CategorySales = 0;
-				$CategoryQty = 0;
-				$CategoryCOGS = 0;
-
+				echo '<tr>
+						<th colspan="9">' . _('Stock Category') . ': ' . $SalesRow['categoryid'] . ' - ' . $SalesRow['categorydescription'] . '</th>
+					</tr>';
+				$CategoryID = $SalesRow['categoryid'];
 			}
-			echo '<tr>
-					<th colspan="9">' . _('Stock Category') . ': ' . $SalesRow['categoryid'] . ' - ' . $SalesRow['categorydescription'] . '</th>
-				</tr>';
-			$CategoryID = $SalesRow['categoryid'];
-		}
 
-		echo '<tr class="striped_row">
-				<td>' . $SalesRow['stockid'] . '</td>
-				<td>' . $SalesRow['description'] . '</td>
-				<td class="number">' . locale_number_format($SalesRow['quantitysold'],$_SESSION['CompanyRecord']['decimalplaces']) . '</td>
-				<td class="number">' . locale_number_format($SalesRow['salesvalue'],$_SESSION['CompanyRecord']['decimalplaces']) . '</td>
-				<td class="number">' . locale_number_format($SalesRow['cogs'],$_SESSION['CompanyRecord']['decimalplaces']) . '</td>
-				<td class="number">' . locale_number_format($SalesRow['salesvalue']-$SalesRow['cogs'],$_SESSION['CompanyRecord']['decimalplaces']) . '</td>';
-		if ($SalesRow['quantitysold']!=0) {
-			echo '<td class="number">' . locale_number_format(($SalesRow['salesvalue']/$SalesRow['quantitysold']),$_SESSION['CompanyRecord']['decimalplaces']) . '</td>';
-			echo '<td class="number">' . locale_number_format(($SalesRow['cogs']/$SalesRow['quantitysold']),$_SESSION['CompanyRecord']['decimalplaces']) . '</td>';
-		} else {
-			echo '<td>' . _('N/A') . '</td>
-				<td>' . _('N/A') . '</td>';
-		}
-		if ($SalesRow['salesvalue']!=0) {
-			echo '<td class="number">' . locale_number_format((($SalesRow['salesvalue']-$SalesRow['cogs'])*100/$SalesRow['salesvalue']),$_SESSION['CompanyRecord']['decimalplaces']) . '%</td>';
+			echo '<tr class="striped_row">
+					<td>' . $SalesRow['stockid'] . '</td>
+					<td>' . $SalesRow['description'] . '</td>
+					<td class="number">' . locale_number_format($SalesRow['quantitysold'],$_SESSION['CompanyRecord']['decimalplaces']) . '</td>
+					<td class="number">' . locale_number_format($SalesRow['salesvalue'],$_SESSION['CompanyRecord']['decimalplaces']) . '</td>
+					<td class="number">' . locale_number_format($SalesRow['cogs'],$_SESSION['CompanyRecord']['decimalplaces']) . '</td>
+					<td class="number">' . locale_number_format($SalesRow['salesvalue']-$SalesRow['cogs'],$_SESSION['CompanyRecord']['decimalplaces']) . '</td>';
+			if ($SalesRow['quantitysold']!=0) {
+				echo '<td class="number">' . locale_number_format(($SalesRow['salesvalue']/$SalesRow['quantitysold']),$_SESSION['CompanyRecord']['decimalplaces']) . '</td>';
+				echo '<td class="number">' . locale_number_format(($SalesRow['cogs']/$SalesRow['quantitysold']),$_SESSION['CompanyRecord']['decimalplaces']) . '</td>';
+			} else {
+				echo '<td>' . _('N/A') . '</td>
+					<td>' . _('N/A') . '</td>';
+			}
+			if ($SalesRow['salesvalue']!=0) {
+				echo '<td class="number">' . locale_number_format((($SalesRow['salesvalue']-$SalesRow['cogs'])*100/$SalesRow['salesvalue']),$_SESSION['CompanyRecord']['decimalplaces']) . '%</td>';
+			} else {
+				echo '<td>' . _('N/A') . '</td>';
+			}
+			echo '</tr>';
+
+			$CumulativeTotalSales += $SalesRow['salesvalue'];
+			$CumulativeTotalCOGS += $SalesRow['cogs'];
+			$CumulativeTotalQty += $SalesRow['quantitysold'];
+			$CategorySales += $SalesRow['salesvalue'];
+			$CategoryQty += $SalesRow['quantitysold'];
+			$CategoryCOGS += $SalesRow['cogs'];
+
+		} //loop around category sales for the period
+	//print out the previous category totals
+		echo '<tr>
+			<td colspan="2" class="number">' . _('Category Total') . '</td>
+			<td class="number">' . locale_number_format($CategoryQty,$_SESSION['CompanyRecord']['decimalplaces']) . '</td>
+			<td class="number">' . locale_number_format($CategorySales,$_SESSION['CompanyRecord']['decimalplaces']) . '</td>
+			<td class="number">' . locale_number_format($CategoryCOGS,$_SESSION['CompanyRecord']['decimalplaces']) . '</td>
+			<td class="number">' . locale_number_format($CategorySales - $CategoryCOGS,$_SESSION['CompanyRecord']['decimalplaces']) . '</td>
+			<td colspan="2"></td>';
+		if ($CumulativeTotalSales !=0) {
+			echo '<td class="number">' . locale_number_format(($CategorySales-$CategoryCOGS)*100/$CategorySales,$_SESSION['CompanyRecord']['decimalplaces']) . '%</td>';
 		} else {
 			echo '<td>' . _('N/A') . '</td>';
 		}
-		echo '</tr>';
-
-		$CumulativeTotalSales += $SalesRow['salesvalue'];
-		$CumulativeTotalCOGS += $SalesRow['cogs'];
-		$CumulativeTotalQty += $SalesRow['quantitysold'];
-		$CategorySales += $SalesRow['salesvalue'];
-		$CategoryQty += $SalesRow['quantitysold'];
-		$CategoryCOGS += $SalesRow['cogs'];
-
-	} //loop around category sales for the period
-//print out the previous category totals
-	echo '<tr>
-		<td colspan="2" class="number">' . _('Category Total') . '</td>
-		<td class="number">' . locale_number_format($CategoryQty,$_SESSION['CompanyRecord']['decimalplaces']) . '</td>
-		<td class="number">' . locale_number_format($CategorySales,$_SESSION['CompanyRecord']['decimalplaces']) . '</td>
-		<td class="number">' . locale_number_format($CategoryCOGS,$_SESSION['CompanyRecord']['decimalplaces']) . '</td>
-		<td class="number">' . locale_number_format($CategorySales - $CategoryCOGS,$_SESSION['CompanyRecord']['decimalplaces']) . '</td>
-		<td colspan="2"></td>';
-	if ($CumulativeTotalSales !=0) {
-		echo '<td class="number">' . locale_number_format(($CategorySales-$CategoryCOGS)*100/$CategorySales,$_SESSION['CompanyRecord']['decimalplaces']) . '%</td>';
-	} else {
-		echo '<td>' . _('N/A') . '</td>';
+		echo '</tr>
+			<tr>
+			<th colspan="2" class="number">' . _('GRAND Total') . '</th>
+			<th class="number">' . locale_number_format($CumulativeTotalQty,$_SESSION['CompanyRecord']['decimalplaces']) . '</th>
+			<th class="number">' . locale_number_format($CumulativeTotalSales,$_SESSION['CompanyRecord']['decimalplaces']) . '</th>
+			<th class="number">' . locale_number_format($CumulativeTotalCOGS,$_SESSION['CompanyRecord']['decimalplaces']) . '</th>
+			<th class="number">' . locale_number_format($CumulativeTotalSales - $CumulativeTotalCOGS,$_SESSION['CompanyRecord']['decimalplaces']) . '</th>
+			<th colspan="2"></td>';
+		if ($CumulativeTotalSales !=0) {
+			echo '<th class="number">' . locale_number_format(($CumulativeTotalSales-$CumulativeTotalCOGS)*100/$CumulativeTotalSales,$_SESSION['CompanyRecord']['decimalplaces']) . '%</th>';
+		} else {
+			echo '<th>' . _('N/A') . '</th>';
+		}
+		echo '</tr>
+			</table>';
 	}
-	echo '</tr>
-		<tr>
-		<th colspan="2" class="number">' . _('GRAND Total') . '</th>
-		<th class="number">' . locale_number_format($CumulativeTotalQty,$_SESSION['CompanyRecord']['decimalplaces']) . '</th>
-		<th class="number">' . locale_number_format($CumulativeTotalSales,$_SESSION['CompanyRecord']['decimalplaces']) . '</th>
-		<th class="number">' . locale_number_format($CumulativeTotalCOGS,$_SESSION['CompanyRecord']['decimalplaces']) . '</th>
-		<th class="number">' . locale_number_format($CumulativeTotalSales - $CumulativeTotalCOGS,$_SESSION['CompanyRecord']['decimalplaces']) . '</th>
-		<th colspan="2"></td>';
-	if ($CumulativeTotalSales !=0) {
-		echo '<th class="number">' . locale_number_format(($CumulativeTotalSales-$CumulativeTotalCOGS)*100/$CumulativeTotalSales,$_SESSION['CompanyRecord']['decimalplaces']) . '%</th>';
-	} else {
-		echo '<th>' . _('N/A') . '</th>';
-	}
-	echo '</tr>
-		</table>';
-
 } //end of if user hit show sales
 include('includes/footer.php');
 ?>

@@ -504,7 +504,7 @@ if (!isset($SelectedStockItem)) {
 		<td><b> ' ._('OR') . ' </b>' . _('Enter extract of the Stock Code') . ':</td>
 		<td><input type="text" name="StockCode" size="15" maxlength="18" /></td>
    </tr>
-   <tr><td colspan="4"><div class="centre"><input type="submit" name="SearchParts" value="' . _('Search Parts Now') . '" />';
+   <tr><td colspan="4"><div class="centre"><input type="submit" name="SearchParts" value="' . _('Search for Items') . '" />';
 
    if (count($_SESSION['AllowedPageSecurityTokens'])>1){
 		echo '<input type="submit" name="ResetPart" value="' . _('Clean') . '" /></div>';

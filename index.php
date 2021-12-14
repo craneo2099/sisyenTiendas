@@ -134,7 +134,7 @@ echo '</ul></div>';
 echo '<div id="InquiriesDiv" class="col-4"><ul class="list-group-item">'; //=== InquiriesDiv ===
 echo '<li class="menu_group_headers">';
 if ($_SESSION['Module'] == 'system') {
-	$Header = '<img src="' . $RootPath . '/css/' . $Theme . '/images/ar.png" title="' . _('Receivables/Payables Setup') . '" alt="' . _('Receivables/Payables Setup') . '" /><b>' . _('Receivables/Payables Setup') . '</b>';
+	$Header = '<img src="' . $RootPath . '/css/' . $Theme . '/images/ar.png" title="' . _('Manage authority purchase order') . '" alt="' . _('Manage authority purchase order') . '" /><b>' . _('Manage authority purchase order') . '</b>';
 } else {
 	$Header = '<img alt="" src="' . $RootPath . '/css/' . $Theme . '/images/reports.png" title="' . _('Inquiries and Reports') . '" /><b>' . _('Inquiries and Reports') . '</b>';
 }

@@ -15494,6 +15494,10 @@ msgstr "Transacciones"
 msgid "Receivables/Payables Setup"
 msgstr "Configuración de Cobros/Pagos"
 
+#: index.php:125
+msgid "Manage authority purchase order"
+msgstr "Administrar la autorización de orden de compra"
+
 #: index.php:127 SelectCustomer.php:149 SelectProduct.php:56
 #: SelectSupplier.php:152
 msgid "Inquiries and Reports"
@@ -18174,7 +18178,7 @@ msgstr "Detalles de la Orden"
 
 #: OrderDetails.php:57
 msgid "Return to Sales Order Inquiry"
-msgstr ""
+msgstr "Volver a consultar órdenes de venta"
 
 #: OrderDetails.php:58
 msgid "Return to Customer Inquiry Interface"
@@ -26428,7 +26432,7 @@ msgstr "seleccione una categorí­a de existencia o entre una parte del código 
 
 #: SelectCompletedOrder.php:445
 msgid "for all orders placed after"
-msgstr "para todas las pedidos hechas después de"
+msgstr "Para todas las ventas hechas después de"
 
 #: SelectCompletedOrder.php:447
 msgid "Search Orders"

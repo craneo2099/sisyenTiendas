@@ -46,11 +46,13 @@ function PageHeader() {
 
 	$YPos -= $FontSize;
 	//Note, this is ok for multilang as this is the value of a Select, text in option is different
+	$priceListName='';
 	if ($_POST['CustomerSpecials']==_('Customer Special Prices Only')) {
-		$pdf->addText($Left_Margin, $YPos, $FontSize, _('Price List') . ': ' . $CustomerName);
+		$priceListName= $CustomerName;
 	} else {
-		$pdf->addText($Left_Margin, $YPos, $FontSize, _('Price List') . ': ' . $SalesTypeName);
+		$priceListName= $SalesTypeName;
 	}
+	$pdf->addText($Left_Margin, $YPos, $FontSize, _('Price List') . ': ' .$priceListName);
 	$pdf->addTextWrap($Page_Width-$Right_Margin-140, $YPos-$FontSize, 140, $FontSize,
 		_('Printed') . ': ' . date($_SESSION['DefaultDateFormat']), 'right');// Date printed.
 
@@ -78,7 +80,7 @@ function PageHeader() {
 	if ($LeftOvers != '') {// If translated text is greater than column width, prints remainder.
 		$LeftOvers = $pdf->addTextWrap($Left_Margin+80, $YPos-$FontSize, 200, $FontSize, $LeftOvers);
 	}
-	$LeftOvers = $pdf->addTextWrap($Left_Margin+280, $YPos, 96, $FontSize, _('Effective Date Range'), 'center');// (10+2+12)chr @ 8dpi.
+	$LeftOvers = $pdf->addTextWrap($Left_Margin+280, $YPos, 96, $FontSize, _('Date Range'), 'center');// (10+2+12)chr @ 8dpi.
 	if ($LeftOvers != '') {// If translated text is greater than column width, prints remainder.
 		$LeftOvers = $pdf->addTextWrap($Left_Margin+280, $YPos-$FontSize, 96, $FontSize, $LeftOvers, 'center');
 	}
@@ -393,7 +395,8 @@ If (isset($_POST['PrintPDF'])) {
 	}
 
 	$FontSize = 10;
-	$FileName = $_SESSION['DatabaseName'] . '_' . _('Price_List') . '_' . date('Y-m-d') . '.pdf';
+	           
+	$FileName = $_SESSION['CompanyRecord']['coyname'] . '_' . _('Price_List') . '_' . $priceListName."_".date('Y-m-d') . '.pdf';
 	ob_clean();
 	$pdf->OutputD($FileName);
 	$pdf->__destruct();

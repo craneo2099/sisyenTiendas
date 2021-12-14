@@ -76,7 +76,7 @@ if(isset($_POST['PeriodFrom']) AND isset($_POST['PeriodTo']) AND !$_POST['NewRep
 	$PeriodFrom = FormatDateForSQL($_POST['PeriodFrom']);
 	$PeriodTo = FormatDateForSQL($_POST['PeriodTo']);
 	if($_POST['ShowDetails']) {// Parameters: PeriodFrom, PeriodTo, ShowDetails=on.
-		echo		'<th>', _('Date'), '</th>',
+		echo		'<th >', _('Date'), '</th>',
 					'<th>', _('Sales Invoice'), '</th>',
 					'<th>', _('Reference'), '</th>',
 					$CommonHead;
@@ -131,7 +131,7 @@ if(isset($_POST['PeriodFrom']) AND isset($_POST['PeriodTo']) AND !$_POST['NewRep
 			$GlAmount = $MyRow['ovamount']/$MyRow['rate'];
 			$GlTax = $MyRow['ovgst']/$MyRow['rate'];
 			echo '<tr class="striped_row">
-					<td class="centre">', $MyRow['trandate'], '</td>',
+					<td class="centre Date">', $MyRow['trandate'], '</td>',
 					'<td class="number">', $MyRow['transno'], '</td>',
 					'<td class="text">', $MyRow['reference'], '</td>',
 					'<td class="number">', locale_number_format($MyRow['ovamount'], $_SESSION['CompanyRecord']['decimalplaces']), '</td>',
@@ -201,7 +201,7 @@ if(isset($_POST['PeriodFrom']) AND isset($_POST['PeriodTo']) AND !$_POST['NewRep
 	}
 	// Prints all debtors total:
 	echo	'<tr>
-				<td class="text" colspan="6">&nbsp;</td>
+				<td class="text" colspan="5">&nbsp;</td>
 				<td class="number">', locale_number_format($TotalGlAmount, $_SESSION['CompanyRecord']['decimalplaces']), '</td>
 				<td class="number">', locale_number_format($TotalGlTax, $_SESSION['CompanyRecord']['decimalplaces']), '</td>
 				<td class="number">', locale_number_format($TotalGlAmount+$TotalGlTax, $_SESSION['CompanyRecord']['decimalplaces']), '</td>

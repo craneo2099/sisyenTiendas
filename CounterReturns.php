@@ -32,7 +32,6 @@ if (isset($_SESSION['Items' . $identifier]) AND isset($_POST['CustRef'])) {
 	$_SESSION['Items' . $identifier]->PhoneNo = $_POST['PhoneNo'];
 	$_SESSION['Items' . $identifier]->Email = $_POST['Email'];
 	$_SESSION['Items' . $identifier]->SalesPerson = $_POST['SalesPerson'];
-	$_SESSION['Items' . $identifier]->authorisation = $_POST['authorisation'];
 }
 
 if (isset($_POST['QuickEntry'])) {
@@ -785,11 +784,6 @@ if (count($_SESSION['Items' . $identifier]->LineItems)>0) { /*only show return l
 			<td><input type="text" size="25" maxlength="25" name="CustRef" value="' . stripcslashes($_SESSION['Items' . $identifier]->CustRef) . '" /></td>
 		</tr>';
 	echo '<tr>
-			<td style="color:red">' . _('Authorised by'). ':</td>
-			<td><input type="hidden" name="authorisation" value="'.$_SESSION['UserID'].'"/>'.$_SESSION['UsersRealName'].'
-			</td>
-		</tr>';
-	echo '<tr>
 		<td style="color:red">' . _('Sales person'). ':</td>
 		<td><select name="SalesPerson">';
 		$SalesPeopleResult = DB_query("SELECT salesmancode, salesmanname FROM salesman WHERE current=1");
@@ -935,8 +929,7 @@ if (isset($_POST['ProcessReturn']) AND $_POST['ProcessReturn'] != '') {
 										invtext,
 										shipvia,
 										alloc,
-										salesperson,
-										autorizador  )
+										salesperson )
 			VALUES ('". $CreditNoteNo . "',
 					11,
 					'" . $_SESSION['Items' . $identifier]->DebtorNo . "',
@@ -952,8 +945,7 @@ if (isset($_POST['ProcessReturn']) AND $_POST['ProcessReturn'] != '') {
 					'" . $_SESSION['Items' . $identifier]->Comments . "',
 					'" . $_SESSION['Items' . $identifier]->ShipVia . "',
 					'" . (-$_SESSION['Items' . $identifier]->total - filter_number_format($_POST['TaxTotal'])) . "',
-					'" . $_SESSION['Items' . $identifier]->SalesPerson . "',
-					'" . $_SESSION['Items' . $identifier]->authorisation . "' )";
+					'" . $_SESSION['Items' . $identifier]->SalesPerson . "')";
 
 		$ErrMsg =_('CRITICAL ERROR') . '! ' . _('NOTE DOWN THIS ERROR AND SEEK ASSISTANCE') . ': ' . _('The debtor transaction record could not be inserted because');
 		$DbgMsg = _('The following SQL to insert the debtor transaction record was used');
@@ -1623,6 +1615,12 @@ if (isset($_POST['ProcessReturn']) AND $_POST['ProcessReturn'] != '') {
 		// There were input errors so don't process nuffin
 	} else {
 		//pretend the user never tried to commit the sale
+		echo '<br />
+		<div class="centre">
+			<input type="submit" name="ProcessReturn" value="' . _('Process The Return') . '" />
+			<input type="submit" name="Recalculate" value="' . _('Re-Calculate') . '" formnovalidate/>
+		</div>';
+
 		unset($_POST['ProcessReturn']);
 	}
 }

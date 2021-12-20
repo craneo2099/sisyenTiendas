@@ -827,7 +827,7 @@ $self=htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8');
 			<?php
 		foreach ($CountriesArray as $CountryEntry => $CountryName) {
 			$isAssignated= (!empty($_POST['country']) and ($_POST['country'] === $CountryName));
-			$isDefault=(!isset($_POST['country'])) and $CountryName == "México";
+			$isDefault=((!isset($_POST['country'])) and ($CountryName == "México"));
 			$attSelected=($isAssignated || $isDefault)?ATT_SELECTED:'';
 			?>
 				<option <?=$attSelected?>value="<?=$CountryName ?>"><?=$CountryName ?></option>
@@ -893,8 +893,8 @@ $self=htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8');
 		<td><select name="PaymentTerms">
 			<?php
 				while ($MyRow = DB_fetch_array($ResultPayTer)) {
-					$isPtPost=$_POST['PaymentTerms'] == $MyRow['termsindicator'];
-					$isPtDefault=$_POST['PaymentTerms'] == "" and $MyRow['termsindicator']=="CA";
+					$isPtPost=($_POST['PaymentTerms'] == $MyRow['termsindicator']);
+					$isPtDefault=(($_POST['PaymentTerms'] == "") and ($MyRow['termsindicator']=="CA"));
 					$attSelected=($isPtPost||$isPtDefault)?ATT_SELECTED:'';
 				?>
 					<option <?=$attSelected?>value="<?=$MyRow['termsindicator']?>"><?=$MyRow['terms'] ?></option>

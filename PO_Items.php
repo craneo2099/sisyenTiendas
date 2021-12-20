@@ -883,33 +883,40 @@ if (count($_SESSION['PO'.$identifier]->LineItems)>0 and !isset($_GET['Edit'])){
 			<th class="ascending">' . _('Description') . '</th>
 			<th class="ascending">' . _('Quantity Our Units') . '</th>
 			<th>' . _('Our Unit')  . '</th>
-			<th class="ascending">' . _('Price Our Units') .' (' . $_SESSION['PO'.$identifier]->CurrCode .  ')</th>
+			<th class="ascending">' . _('Our Price') .'</th>
 			<th>' . _('Unit Conversion Factor') . '</th>
 			<th class="ascending">' . _('Order Quantity') . '<br />' . _('Supplier Units') . '</th>
 			<th>' .  _('Supplier Unit') . '</th>
-			<th class="ascending">' . _('Order Price') . '<br />' . _('Supp Units') . ' ('.$_SESSION['PO'.$identifier]->CurrCode.  ')</th>
+			<th class="ascending">' . _('Supplier Price') . '</th>
+			<th class="ascending">' . _('Supplier Price w/tax') . '</th>
 			<th class="ascending">' . _('Sub-Total') .' ('.$_SESSION['PO'.$identifier]->CurrCode.  ')</th>
 			<th class="ascending">' . _('Deliver By')  . '</th>
 			</tr>
 		</thead>
 		<tbody>';
 
-	$_SESSION['PO'.$identifier]->Total = 0;
+	$pOIden=$_SESSION['PO'.$identifier];
+	$pOIden->Total = 0;
 
-	foreach ($_SESSION['PO'.$identifier]->LineItems as $POLine) {
+	foreach ($pOIden->LineItems as $POLine) {
 
 		if ($POLine->Deleted==False) {
 			$LineTotal = $POLine->Quantity * $POLine->Price;
-			$DisplayLineTotal = locale_number_format($LineTotal,$_SESSION['PO'.$identifier]->CurrDecimalPlaces);
+			$DisplayLineTotal = locale_number_format($LineTotal,$pOIden->CurrDecimalPlaces);
 			// Note if the price is greater than 1 use 2 decimal place, if the price is a fraction of 1, use 4 decimal places
 			// This should help display where item-price is a fraction
+			$taxrate=GetTaxRateSupp ($pOIden->SupplierID, $pOIden->Location, $POLine->StockID);
+			$addDecimalPlaces=2;
 			if ($POLine->Price > 1) {
-				$DisplayPrice = locale_number_format($POLine->Price,$_SESSION['PO'.$identifier]->CurrDecimalPlaces);
-				$SuppPrice = locale_number_format(round(($POLine->Price *$POLine->ConversionFactor),$_SESSION['PO'.$identifier]->CurrDecimalPlaces),$_SESSION['PO'.$identifier]->CurrDecimalPlaces);
-			} else {
-				$DisplayPrice = locale_number_format($POLine->Price,($_SESSION['PO'.$identifier]->CurrDecimalPlaces + 2));
-				$SuppPrice = locale_number_format(round(($POLine->Price *$POLine->ConversionFactor),($_SESSION['PO'.$identifier]->CurrDecimalPlaces+2)),($_SESSION['PO'.$identifier]->CurrDecimalPlaces+2));
-			}
+				$addDecimalPlaces=0;
+			} 
+			$DisplayPrice = locale_number_format($POLine->Price,
+					($pOIden->CurrDecimalPlaces + $addDecimalPlaces));
+			$SuppPrice = locale_number_format(
+				round(($POLine->Price *$POLine->ConversionFactor),
+						($pOIden->CurrDecimalPlaces + $addDecimalPlaces))
+				,($pOIden->CurrDecimalPlaces+$addDecimalPlaces));
+			$precioSinIva= locale_number_format(($SuppPrice/(1+$taxrate)),($pOIden->CurrDecimalPlaces+$addDecimalPlaces));
 
 			echo '<tr class="striped_row">
 				<td>' . $POLine->StockID  . '</td>
@@ -920,6 +927,7 @@ if (count($_SESSION['PO'.$identifier]->LineItems)>0 and !isset($_GET['Edit'])){
 				<td><input type="text" class="number" name="ConversionFactor' . $POLine->LineNo .'" size="8" value="' . locale_number_format($POLine->ConversionFactor,'Variable') . '" /></td>
 				<td><input type="text" class="number" name="SuppQty' . $POLine->LineNo .'" size="10" value="' . locale_number_format(round($POLine->Quantity/$POLine->ConversionFactor,$POLine->DecimalPlaces),$POLine->DecimalPlaces) . '" /></td>
 				<td>' . _($POLine->SuppliersUnit) . '</td>
+				<td>' . $precioSinIva .'</td>
 				<td><input type="text" class="number" name="SuppPrice' . $POLine->LineNo . '" size="10" value="' . $SuppPrice .'" /></td>
 				<td class="number">' . $DisplayLineTotal . '</td>
 				<td><input type="text" class="date" name="ReqDelDate' . $POLine->LineNo.'" size="10" value="' .$POLine->ReqDelDate .'" /></td>';
@@ -938,7 +946,7 @@ if (count($_SESSION['PO'.$identifier]->LineItems)>0 and !isset($_GET['Edit'])){
 		<tfoot>
 			<tr>',
 /*				'<td colspan="9" class="number">' . _('TOTAL') . _(' excluding Tax') . '</td>',*/
-				'<td class="number" colspan="9">', _('Total Excluding Tax'), '</td>',
+				'<td class="number" colspan="10">', _('Total Including Tax'), '</td>',
 				'<td class="number"><b>', $DisplayTotal, '</b></td>
 			</tr>
 		</tfoot>

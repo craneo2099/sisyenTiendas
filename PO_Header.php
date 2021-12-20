@@ -266,7 +266,8 @@ if (!isset($_SESSION['PO' . $identifier])) {
 
 	$_SESSION['ExistingOrder'] = 0;
 	$_SESSION['PO' . $identifier] = new PurchOrder;
-	$_SESSION['PO' . $identifier]->AllowPrintPO = 1;
+	$pOInden= $_SESSION['PO' . $identifier];
+	$pOInden->AllowPrintPO = 1;
 	/*Of course cos the order aint even started !!*/
 	$_SESSION['PO' . $identifier]->GLLink = $_SESSION['CompanyRecord']['gllink_stock'];
 
@@ -1075,9 +1076,13 @@ if ($_SESSION['RequireSupplierSelection'] == 1 or !isset($_SESSION['PO' . $ident
 	echo '<tr>
 			<td>' . _('Payment Terms') . ':</td>
 			<td><select name="PaymentTerms">';
-
+	$pOIden=$_SESSION['PO' . $identifier];
+	$pPaymentTerms=$pOIden->PaymentTerms;
 	while ($MyRow = DB_fetch_array($Result)) {
-		$isSelected=($MyRow['termsindicator'] == $_SESSION['PO' . $identifier]->PaymentTerms);
+		$isInSession=($MyRow['termsindicator'] == $pOIden->PaymentTerms);
+		$isDefault=!isset($pOIden->PaymentTerms) and 
+					($MyRow['termsindicator'] == 'CA');
+		$isSelected=$isInSession or $isDefault;
 
 		echo '<option ',($isSelected?'selected="selected"':''),' 
 		value="' . $MyRow['termsindicator'] . '">' . _($MyRow['terms']) . '</option>';

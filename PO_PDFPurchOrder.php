@@ -110,7 +110,8 @@ if (isset($OrderNo) AND $OrderNo != '' AND $OrderNo > 0 AND $OrderNo != 'Preview
 					suppliers.currcode,
 					purchorders.status,
 					purchorders.stat_comment,
-					currencies.decimalplaces AS currdecimalplaces
+					currencies.decimalplaces AS currdecimalplaces,
+					purchorders.intostocklocation 
 				FROM purchorders INNER JOIN suppliers
 					ON purchorders.supplierno = suppliers.supplierid
 				INNER JOIN currencies
@@ -224,7 +225,8 @@ if (isset($MakePDFThenDisplayIt) or isset($MakePDFThenEmailIt)) {
 						quantityord,
 						decimalplaces,
 						conversionfactor,
-						suppliers_partno
+						suppliers_partno,
+						taxcatid
 				FROM purchorderdetails LEFT JOIN stockmaster
 					ON purchorderdetails.itemcode=stockmaster.stockid
 				WHERE orderno ='" . $OrderNo . "'
@@ -250,24 +252,26 @@ if (isset($MakePDFThenDisplayIt) or isset($MakePDFThenEmailIt)) {
 				$POLine['conversionfactor'] = 1;
 				$POLine['decimalplaces'] = 2;
 			}
-			if ($POLine['decimalplaces'] != NULL) {
+			if ($POLine['decimalplaces'] !== NULL) {
 				$DecimalPlaces = $POLine['decimalplaces'];
 			}
 			else {
 				$DecimalPlaces = 2;
 			}
 			$DisplayQty = locale_number_format($POLine['quantityord'] / $POLine['conversionfactor'], $DecimalPlaces);
+			$taxRate=GetTaxRateSupp ($POHeader['supplierno'], $POHeader['intostocklocation'], $POLine['itemcode']);
 			if ($_POST['ShowAmounts'] == 'Yes') {
-				$DisplayPrice = locale_number_format($POLine['unitprice'] * $POLine['conversionfactor'], $POHeader['currdecimalplaces']);
+				$priceFull=$POLine['unitprice'] * $POLine['conversionfactor'];
+				$totalByItem=$POLine['unitprice'] * $POLine['quantityord'];
+				$DisplayTotalTax = locale_number_format($totalByItem*$taxRate, $POHeader['currdecimalplaces']);
+				$DisplayPrice    = locale_number_format($priceFull, $POHeader['currdecimalplaces']);
+				$DisplayLineTotal = locale_number_format($totalByItem*(1+$taxRate), $POHeader['currdecimalplaces']);
 			} else {
-				$DisplayPrice = '----';
-			}
-			$DisplayDelDate = ConvertSQLDate($POLine['deliverydate']);
-			if ($_POST['ShowAmounts'] == 'Yes') {
-				$DisplayLineTotal = locale_number_format($POLine['unitprice'] * $POLine['quantityord'], $POHeader['currdecimalplaces']);
-			} else {
+				$DisplayTotalTax = $DisplayPrice='----';
 				$DisplayLineTotal = '----';
 			}
+			$DisplayDelDate = ConvertSQLDate($POLine['deliverydate']);
+
 			/* If the supplier item code is set then use this to display on the PO rather than the businesses item code */
 			if (mb_strlen($POLine['suppliers_partno'])>0){
 				$ItemCode = $POLine['suppliers_partno'];
@@ -288,11 +292,12 @@ if (isset($MakePDFThenDisplayIt) or isset($MakePDFThenEmailIt)) {
 				} //end if we reached the end of page
 				$LeftOvers = $pdf->addTextWrap($FormDesign->Data->Column2->x, $YPos, $FormDesign->Data->Column2->Length, $FormDesign->Data->Column2->FontSize, $LeftOvers, 'left');
 			} //end if need a new page headed up
-			$LeftOvers = $pdf->addTextWrap($FormDesign->Data->Column3->x, $YPos, $FormDesign->Data->Column3->Length, $FormDesign->Data->Column3->FontSize, $DisplayQty, 'left');
+			$LeftOvers = $pdf->addTextWrap($FormDesign->Data->Column3->x, $YPos, $FormDesign->Data->Column3->Length, $FormDesign->Data->Column3->FontSize, $DisplayQty, 'right');
 			$LeftOvers = $pdf->addTextWrap($FormDesign->Data->Column4->x, $YPos, $FormDesign->Data->Column4->Length, $FormDesign->Data->Column4->FontSize, $POLine['suppliersunit'], 'left');
 			$LeftOvers = $pdf->addTextWrap($FormDesign->Data->Column5->x, $YPos, $FormDesign->Data->Column5->Length, $FormDesign->Data->Column5->FontSize, $DisplayDelDate, 'left');
 			$LeftOvers = $pdf->addTextWrap($FormDesign->Data->Column6->x, $YPos, $FormDesign->Data->Column6->Length, $FormDesign->Data->Column6->FontSize, $DisplayPrice, 'right');
-			$LeftOvers = $pdf->addTextWrap($FormDesign->Data->Column7->x, $YPos, $FormDesign->Data->Column7->Length, $FormDesign->Data->Column7->FontSize, $DisplayLineTotal, 'right');
+			$LeftOvers = $pdf->addTextWrap($FormDesign->Data->Column7->x, $YPos, $FormDesign->Data->Column7->Length, $FormDesign->Data->Column7->FontSize, $DisplayTotalTax, 'right');
+			$LeftOvers = $pdf->addTextWrap($FormDesign->Data->Column8->x, $YPos, $FormDesign->Data->Column8->Length, $FormDesign->Data->Column8->FontSize, $DisplayLineTotal, 'right');
 			if (mb_strlen($LeftOvers) > 1) {
 				$LeftOvers = $pdf->addTextWrap($Left_Margin + 1 + 94, $YPos - $line_height, 270, $FontSize, $LeftOvers, 'left');
 				$YPos -= $line_height;
@@ -321,7 +326,7 @@ if (isset($MakePDFThenDisplayIt) or isset($MakePDFThenEmailIt)) {
 		} else {
 			$DisplayOrderTotal = '----';
 		}
-		$pdf->addText($FormDesign->OrderTotalCaption->x, $Page_Height - $FormDesign->OrderTotalCaption->y, $FormDesign->OrderTotalCaption->FontSize, _('Order Total - excl tax') . ' ' . $POHeader['currcode']);
+		$pdf->addText($FormDesign->OrderTotalCaption->x, $Page_Height - $FormDesign->OrderTotalCaption->y, $FormDesign->OrderTotalCaption->FontSize, _('Order Total - incl tax') . ' ' . $POHeader['currcode']);
 		$LeftOvers = $pdf->addTextWrap($FormDesign->OrderTotal->x, $Page_Height - $FormDesign->OrderTotal->y, $FormDesign->OrderTotal->Length, $FormDesign->OrderTotal->FontSize, $DisplayOrderTotal, 'right');
 	} /*end if there are order details to show on the order - or its a preview*/
 

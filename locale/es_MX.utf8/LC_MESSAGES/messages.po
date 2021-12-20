@@ -19755,6 +19755,10 @@ msgstr "Flete"
 msgid "Total Including Tax and Freight"
 msgstr ""
 
+#: PDFAck.php:257
+msgid "Total Including Tax"
+msgstr "Total IVA incluido"
+
 #: PDFAck.php:278
 msgid "There were no items on the Acknowledgement"
 msgstr ""
@@ -21907,7 +21911,7 @@ msgstr "El SQL que falló al actualizar el registro de detalle de la orden de co
 
 #: PO_Items.php:397
 msgid "Receive and Enter Purchase Invoice"
-msgstr ""
+msgstr "Recibir orden de compra"
 
 #: PO_Items.php:414
 msgid "This item cannot be deleted because some of it has already been received"
@@ -22377,6 +22381,8 @@ msgstr "Seleccionar otra pedido"
 #: PO_PDFPurchOrder.php:314
 msgid "Order Total - excl tax"
 msgstr "Total del pedido - sin imp."
+msgid "Order Total - incl tax"
+msgstr "Total del pedido - con IVA"
 
 #: PO_PDFPurchOrder.php:331
 msgid "Please find herewith our purchase order number"
@@ -27802,6 +27808,15 @@ msgstr "Buscar/Modificar/Cerrar Enví­os"
 #: includes/MainMenuLinksArray.php:47
 msgid "Supplier Price List"
 msgstr "Lista de precios del proveedor"
+
+msgid "Supplier Price"
+msgstr "Precio del proveedor"
+
+msgid "Supplier Price w/tax"
+msgstr "Precio del proveedor con IVA"
+
+msgid "Our Price"
+msgstr "Nuestro Precio (MXN con IVA) "
 
 #: SelectSupplier.php:198
 msgid "Enter a Purchase Order for This Supplier"

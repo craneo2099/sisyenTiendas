@@ -72,6 +72,30 @@ Function GetTaxRate ($TaxAuthority, $DispatchTaxProvince, $TaxCategory){
 	}
 
 }
+Function GetTaxRateSupp ($SupplierId, $location, $stockid){
+
+/*Gets the Tax rate applicable to an item from the TaxAuthority of the branch and TaxLevel of the item */
+
+	$QuerySQL = "SELECT tar.taxrate FROM taxauthrates tar
+	left join taxgrouptaxes tg on tg.taxauthid=tar.taxauthority
+	left join suppliers sp on tg.taxgroupid=sp.taxgroupid
+	left join locations lc on lc.taxprovinceid=tar.dispatchtaxprovince
+	LEFT JOIN stockmaster sm on tar.taxcatid=tar.taxcatid
+		where sp.supplierid=? and lc.loccode=? and sm.stockid=?";
+
+	$ErrMsg = _('The tax rate for this item could not be retrieved because');
+	$variables=array($SupplierId, $location, $stockid);
+	$GetTaxRateResult = DB_query_stmt($QuerySQL,$ErrMsg,'', 'sss',$variables);
+
+	if (DB_num_rows($GetTaxRateResult)==1){
+		$myrow = DB_fetch_row($GetTaxRateResult);
+		return $myrow[0];
+	} else {
+		/*The tax rate is not defined for this Tax Authority and Dispatch Tax Authority */
+		return 0;
+	}
+
+}
 
 Function GetTaxes ($TaxGroup, $DispatchTaxProvince, $TaxCategory) {
 

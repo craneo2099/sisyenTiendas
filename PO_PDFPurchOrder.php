@@ -263,7 +263,7 @@ if (isset($MakePDFThenDisplayIt) or isset($MakePDFThenEmailIt)) {
 			if ($_POST['ShowAmounts'] == 'Yes') {
 				$priceFull=$POLine['unitprice'] * $POLine['conversionfactor'];
 				$totalByItem=$POLine['unitprice'] * $POLine['quantityord'];
-				$DisplayTotalTax = locale_number_format($totalByItem*$taxRate, $POHeader['currdecimalplaces']);
+				$DisplayTotalTax = locale_number_format($priceFull*(1+$taxRate), $POHeader['currdecimalplaces']);
 				$DisplayPrice    = locale_number_format($priceFull, $POHeader['currdecimalplaces']);
 				$DisplayLineTotal = locale_number_format($totalByItem*(1+$taxRate), $POHeader['currdecimalplaces']);
 			} else {
@@ -278,7 +278,7 @@ if (isset($MakePDFThenDisplayIt) or isset($MakePDFThenEmailIt)) {
 			} else {
 				$ItemCode = $POLine['itemcode'];
 			}
-			$OrderTotal += ($POLine['unitprice'] * $POLine['quantityord']);
+			$OrderTotal += ($POLine['unitprice'] * $POLine['quantityord'])*(1+$taxRate);
 
 			$LeftOvers = $pdf->addTextWrap($FormDesign->Data->Column1->x, $YPos, $FormDesign->Data->Column1->Length, $FormDesign->Data->Column1->FontSize, $ItemCode, 'left');
 			$LeftOvers = $pdf->addTextWrap($FormDesign->Data->Column2->x, $YPos, $FormDesign->Data->Column2->Length, $FormDesign->Data->Column2->FontSize, $POLine['itemdescription'], 'left');

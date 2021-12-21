@@ -4125,7 +4125,7 @@ msgstr "Para buscar órdenes de trabajo para un artí­culo especí­fico use la
 #: SelectSalesOrder.php:605 SelectWorkOrder.php:192 Shipt_Select.php:157
 #: TestPlanResults.php:147 WorkOrderEntry.php:893 WorkOrderIssue.php:942
 msgid "Select a stock category"
-msgstr "Seleccionar una clase de existencia"
+msgstr "Seleccionar una categoría"
 
 #: CollectiveWorkOrderCost.php:309 SelectSalesOrder.php:618
 #: SelectWorkOrder.php:200
@@ -14833,7 +14833,7 @@ msgstr "Recibir órdenes de compra"
 
 #: GoodsReceived.php:27 PO_Header.php:248
 msgid "Back to Purchase Orders"
-msgstr "Volver a órdenes de compra"
+msgstr "Volver a Buscar órdenes de compra pendientes"
 
 #: GoodsReceived.php:35
 msgid "This page can only be opened if a purchase order has been selected. Please select a purchase order first"
@@ -22046,6 +22046,8 @@ msgstr "Nuestra Unidad"
 #: PO_Items.php:886
 msgid "Price Our Units"
 msgstr "Precio de Nuestras Unidades"
+msgid "Price with tax"
+msgstr "Precio +IVA"
 
 #: PO_Items.php:887
 msgid "Unit Conversion Factor"
@@ -22604,7 +22606,7 @@ msgstr "Buscar órdenes de compra"
 
 #: PO_SelectOSPurchOrder.php:259
 msgid "Show PO Details"
-msgstr ""
+msgstr "Mostrar detalles"
 
 #: PO_SelectOSPurchOrder.php:266 PO_SelectPurchOrder.php:178
 msgid "To search for purchase orders for a specific part use the part selection facilities below"

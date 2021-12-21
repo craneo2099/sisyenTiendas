@@ -75,7 +75,7 @@ $pdf->addText($FormDesign->Headings->Column3->x,$Page_Height - $FormDesign->Head
 $pdf->addText($FormDesign->Headings->Column4->x,$Page_Height - $FormDesign->Headings->Column4->y, $FormDesign->Headings->Column4->FontSize, _('Unit') );
 $pdf->addText($FormDesign->Headings->Column5->x,$Page_Height - $FormDesign->Headings->Column5->y, $FormDesign->Headings->Column5->FontSize, _('Date Reqd'));
 $pdf->addText($FormDesign->Headings->Column6->x,$Page_Height - $FormDesign->Headings->Column6->y, $FormDesign->Headings->Column6->FontSize, _('Price') );
-$pdf->addText($FormDesign->Headings->Column7->x,$Page_Height - $FormDesign->Headings->Column7->y, $FormDesign->Headings->Column7->FontSize, _('IVA') );
+$pdf->addText($FormDesign->Headings->Column7->x,$Page_Height - $FormDesign->Headings->Column7->y, $FormDesign->Headings->Column7->FontSize, _('Price with tax') );
 $pdf->addText($FormDesign->Headings->Column8->x,$Page_Height - $FormDesign->Headings->Column8->y, $FormDesign->Headings->Column8->FontSize, _('Total') );
 
 /*draw a rectangle to hold the data lines */

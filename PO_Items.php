@@ -33,8 +33,9 @@ if (!isset($_POST['Commit'])) {
 	echo '<a href="'.$RootPath.'/PO_Header.php?identifier=' . $identifier. '">' ._('Back To Purchase Order Header') . '</a><br />';
 }
 
+$pOIden=$_SESSION['PO'.$identifier];
 if (isset($_POST['UpdateLines']) OR isset($_POST['Commit'])) {
-	foreach ($_SESSION['PO'.$identifier]->LineItems as $POLine) {
+	foreach ($pOIden->LineItems as $POLine) {
 		if ($POLine->Deleted == false) {
 			if (!is_numeric(filter_number_format($_POST['ConversionFactor'.$POLine->LineNo]))){
 				prnMsg(_('The conversion factor is expected to be numeric - the figure which converts from our units to the supplier units. e.g. if the supplier units is a tonne and our unit is a kilogram then the conversion factor that converts our unit to the suppliers unit is 1000'),'error');
@@ -47,10 +48,12 @@ if (isset($_POST['UpdateLines']) OR isset($_POST['Commit'])) {
 			} else { //ok to update the PO object variables
 				$_SESSION['PO'.$identifier]->LineItems[$POLine->LineNo]->Quantity = round(filter_number_format($_POST['SuppQty'.$POLine->LineNo])*$_SESSION['PO'.$identifier]->LineItems[$POLine->LineNo]->ConversionFactor,$_SESSION['PO'.$identifier]->LineItems[$POLine->LineNo]->DecimalPlaces);
 			}
-			if (!is_numeric(filter_number_format($_POST['SuppPrice'.$POLine->LineNo]))){
+			if (!is_numeric(filter_number_format($_POST['SuppPriceTax'.$POLine->LineNo]))){
 				prnMsg(_('The supplier price is expected to be numeric. Please re-enter as a number'),'error');
 			} else { //ok to update the PO object variables
-				$_SESSION['PO'.$identifier]->LineItems[$POLine->LineNo]->Price = filter_number_format($_POST['SuppPrice'.$POLine->LineNo])/$_SESSION['PO'.$identifier]->LineItems[$POLine->LineNo]->ConversionFactor;
+				$taxrate=GetTaxRateSupp ($pOIden->SupplierID, $pOIden->Location, $POLine->StockID);
+				$SuppPrice=$_POST['SuppPriceTax'.$POLine->LineNo]/(1+$taxrate);
+				$pOIden->LineItems[$POLine->LineNo]->Price = filter_number_format($SuppPrice)/$pOIden->LineItems[$POLine->LineNo]->ConversionFactor;
 			}
 			$_SESSION['PO'.$identifier]->LineItems[$POLine->LineNo]->ReqDelDate = $_POST['ReqDelDate'.$POLine->LineNo];
             $_SESSION['PO'.$identifier]->LineItems[$POLine->LineNo]->ItemDescription = $_POST['ItemDescription'.$POLine->LineNo];
@@ -895,14 +898,11 @@ if (count($_SESSION['PO'.$identifier]->LineItems)>0 and !isset($_GET['Edit'])){
 		</thead>
 		<tbody>';
 
-	$pOIden=$_SESSION['PO'.$identifier];
 	$pOIden->Total = 0;
 
 	foreach ($pOIden->LineItems as $POLine) {
 
 		if ($POLine->Deleted==False) {
-			$LineTotal = $POLine->Quantity * $POLine->Price;
-			$DisplayLineTotal = locale_number_format($LineTotal,$pOIden->CurrDecimalPlaces);
 			// Note if the price is greater than 1 use 2 decimal place, if the price is a fraction of 1, use 4 decimal places
 			// This should help display where item-price is a fraction
 			$taxrate=GetTaxRateSupp ($pOIden->SupplierID, $pOIden->Location, $POLine->StockID);
@@ -910,13 +910,18 @@ if (count($_SESSION['PO'.$identifier]->LineItems)>0 and !isset($_GET['Edit'])){
 			if ($POLine->Price > 1) {
 				$addDecimalPlaces=0;
 			} 
+			$precioSinIva=$POLine->Price *$POLine->ConversionFactor;
+			$precioConIva=$precioSinIva*(1+$taxrate);
+			$LineTotal = $POLine->Quantity * $precioConIva;
+			
 			$DisplayPrice = locale_number_format($POLine->Price,
-					($pOIden->CurrDecimalPlaces + $addDecimalPlaces));
-			$SuppPrice = locale_number_format(
-				round(($POLine->Price *$POLine->ConversionFactor),
-						($pOIden->CurrDecimalPlaces + $addDecimalPlaces))
+				($pOIden->CurrDecimalPlaces + $addDecimalPlaces));
+			$DisplayPrecioSinIva = locale_number_format(
+				round($precioSinIva,
+				($pOIden->CurrDecimalPlaces + $addDecimalPlaces))
 				,($pOIden->CurrDecimalPlaces+$addDecimalPlaces));
-			$precioSinIva= locale_number_format(($SuppPrice/(1+$taxrate)),($pOIden->CurrDecimalPlaces+$addDecimalPlaces));
+			$DisplayPrecioConIva= locale_number_format($precioConIva,($pOIden->CurrDecimalPlaces+$addDecimalPlaces));
+			$DisplayLineTotal = locale_number_format($LineTotal,$pOIden->CurrDecimalPlaces);
 
 			echo '<tr class="striped_row">
 				<td>' . $POLine->StockID  . '</td>
@@ -927,8 +932,8 @@ if (count($_SESSION['PO'.$identifier]->LineItems)>0 and !isset($_GET['Edit'])){
 				<td><input type="text" class="number" name="ConversionFactor' . $POLine->LineNo .'" size="8" value="' . locale_number_format($POLine->ConversionFactor,'Variable') . '" /></td>
 				<td><input type="text" class="number" name="SuppQty' . $POLine->LineNo .'" size="10" value="' . locale_number_format(round($POLine->Quantity/$POLine->ConversionFactor,$POLine->DecimalPlaces),$POLine->DecimalPlaces) . '" /></td>
 				<td>' . _($POLine->SuppliersUnit) . '</td>
-				<td>' . $precioSinIva .'</td>
-				<td><input type="text" class="number" name="SuppPrice' . $POLine->LineNo . '" size="10" value="' . $SuppPrice .'" /></td>
+				<td>' . $DisplayPrecioSinIva .'</td>
+				<td><input type="text" class="number" name="SuppPriceTax' . $POLine->LineNo . '" size="10" value="' . $DisplayPrecioConIva .'" /></td>
 				<td class="number">' . $DisplayLineTotal . '</td>
 				<td><input type="text" class="date" name="ReqDelDate' . $POLine->LineNo.'" size="10" value="' .$POLine->ReqDelDate .'" /></td>';
 			if ($POLine->QtyReceived !=0 AND $POLine->Completed!=1){

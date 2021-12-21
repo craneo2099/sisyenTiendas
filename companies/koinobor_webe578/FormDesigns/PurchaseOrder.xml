@@ -236,7 +236,7 @@
 		</Column6>
 		<Column7 type="SimpleText" name="Heading 7" id="Heading7">
 			<FontSize>10</FontSize>
-			<x>687</x>
+			<x>670</x>
 			<y>330</y>
 		</Column7>
 		<Column8 type="SimpleText" name="Heading 8" id="Heading8">

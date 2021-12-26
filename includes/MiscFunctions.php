@@ -564,5 +564,16 @@ function fShowPageHelp($HelpText) {
 	}
 	return;
 }
+function implode_list(...$values){
+	$separador="";
+	$salida="";
+	foreach ($values as  $value) {
+		if(!empty($value)){
+			$salida=$salida.$separador.$value;
+			$separador=", ";
+		}
+	}
+	return $salida;
+}
 
 ?>

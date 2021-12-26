@@ -15890,7 +15890,7 @@ msgstr "Crear otra Requisición"
 
 #: InternalStockRequest.php:137
 msgid "There are no items added to this request"
-msgstr ""
+msgstr "No se han agregado artículos a la solicitud"
 
 #: InternalStockRequest.php:140 StockAdjustments.php:122
 #: StockLocTransfer.php:244 StockLocTransferReceive.php:523
@@ -21743,6 +21743,9 @@ msgstr "Nueva orden de compra"
 msgid "Status Comment"
 msgstr "Comentario del Estado"
 
+msgid "Status Comments"
+msgstr "Comentarios de Estatus"
+
 #: PO_Header.php:849
 msgid "Status Update"
 msgstr "Actualización de Estado"
@@ -22310,6 +22313,14 @@ msgstr "Valor total del pedido sin impuestos"
 msgid "Total Order Value Received Excluding Tax"
 msgstr "Valor total de la orden recibida sin impuestos"
 
+#: PO_OrderDetails.php:240
+msgid "Total Order Value Incl. Tax"
+msgstr "Valor total del pedido Con IVA"
+
+#: PO_OrderDetails.php:244
+msgid "Total Order Value Received Incl. Tax"
+msgstr "Valor total de la orden recibida con IVA"
+
 #: PO_PDFPurchOrder.php:9 ReprintGRN.php:18
 msgid "Select a purchase order"
 msgstr "Seleccionar una orden de compra"
@@ -22322,6 +22333,9 @@ msgstr "Seleccione un número de orden de compra a imprimir antes de llamar esta
 #: includes/MainMenuLinksArray.php:47
 msgid "Purchase Order Inquiry"
 msgstr "Consultar órdenes de compra"
+
+msgid "Purchase Order Inquiry Number"
+msgstr "Consultar la órden de compra"
 
 #: PO_PDFPurchOrder.php:29
 msgid "This page must be called with a purchase order number to print"
@@ -23985,7 +23999,7 @@ msgstr "Editar orden"
 
 #: PurchaseByPrefSupplier.php:299
 msgid "Unable to create the order"
-msgstr ""
+msgstr "No fue posible crear la orden"
 
 #: PurchaseByPrefSupplier.php:310 SellThroughSupport.php:221
 msgid "For Supplier"
@@ -24005,7 +24019,7 @@ msgstr ""
 
 #: PurchaseByPrefSupplier.php:417
 msgid "Supp Ords"
-msgstr ""
+msgstr "Ord. Prov."
 
 #: PurchaseByPrefSupplier.php:419 PurchaseByPrefSupplier.php:422
 msgid "Last"
@@ -26921,7 +26935,10 @@ msgstr "Última fecha de pago"
 
 #: SelectCustomer.php:678
 msgid "Inc tax"
-msgstr "Imp. inc."
+msgstr "IVA inc."
+
+msgid "Included tax"
+msgstr "IVA incluido"
 
 msgid "Last Paid Amount (inc tax)"
 msgstr "Importe del último pago (imp. inc.)"
@@ -45861,7 +45878,7 @@ msgstr "Administrar Compañí­as Financieras"
 
 #: includes/MainMenuLinksArray.php:44
 msgid "Purchase Order Grid Entry"
-msgstr "Entrada en cuadrí­cula de orden de compra"
+msgstr "Entrada en cuadrícula de órdenes de compra"
 
 #: includes/MainMenuLinksArray.php:44
 msgid "Create a New Tender"
@@ -48188,7 +48205,7 @@ msgstr "Seleccionar el método de pago"
 
 #: ../webSHOP/Checkout.php:635
 msgid "Delivery Address"
-msgstr ""
+msgstr "Direccion de entrega"
 
 #: ../webSHOP/Checkout.php:660
 msgid "Change Delivery Details"

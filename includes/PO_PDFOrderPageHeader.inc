@@ -18,12 +18,11 @@ $pdf->addText($FormDesign->PageNumber->x,$Page_Height - $FormDesign->PageNumber-
 $pdf->addText($FormDesign->TaxAuthority->x,$Page_Height - $FormDesign->TaxAuthority->y, $FormDesign->TaxAuthority->FontSize, $_SESSION['TaxAuthorityReferenceName'] . ' ' . $_SESSION['CompanyRecord']['gstno']);
 /*Now print out the company name and address */
 $coyRec=$_SESSION['CompanyRecord'];
-$supplierAddressArr=array($POHeader['address1'],$POHeader['address2'],$POHeader['address3'],$POHeader['address4'],$POHeader['address5'],$POHeader['address6']);
-$supplierAddress=implode(', ',array_filter($supplierAddressArr));
-$regOfficeArr=array($coyRec['regoffice1'],$coyRec['regoffice2'],$coyRec['regoffice3'],$coyRec['regoffice4'],$coyRec['regoffice5'],$coyRec['regoffice6']);
-$regOffice=implode(', ',array_filter($regOfficeArr));
-$deladdArr=array($POHeader['deladd1'],$POHeader['deladd2'],$POHeader['deladd3'],$POHeader['deladd4'],$POHeader['deladd5'],$POHeader['deladd6']);
-$deladd=implode(', ',array_filter($deladdArr));
+
+$supplierAddress=implode_list($POHeader['address1'],$POHeader['address2'],$POHeader['address3'],$POHeader['address4'],$POHeader['address5'],$POHeader['address6']);
+$regOffice=implode_list($coyRec['regoffice1'],$coyRec['regoffice2'],$coyRec['regoffice3'],$coyRec['regoffice4'],$coyRec['regoffice5'],$coyRec['regoffice6']);
+$deladd=implode_list($POHeader['deladd1'],$POHeader['deladd2'],$POHeader['deladd3'],$POHeader['deladd4'],$POHeader['deladd5'],$POHeader['deladd6']);
+
 $pdf->addText($FormDesign->CompanyName->x,$Page_Height - $FormDesign->CompanyName->y, $FormDesign->CompanyName->FontSize, $coyRec['coyname']);
 $pdf->MultiCell(200,0,$regOffice,0, 'L', false, 0, 
 $FormDesign->CompanyAddress->Line->x, $FormDesign->CompanyAddress->Line->y);

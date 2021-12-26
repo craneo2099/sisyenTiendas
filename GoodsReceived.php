@@ -163,18 +163,18 @@ if (count($poid->LineItems)>0 and !isset($_POST['ProcessGoodsReceived'])) {
 	default to the balance on order then just remove the comments around the 3 lines above */
 
 	//Setup & Format values for LineItem display
-
-		$LineTotal = ($LnItm->ReceiveQty * $LnItm->Price );
+		$precioIva=$LnItm->Price * (1+$LnItm->taxrate);
+		$LineTotal = ($LnItm->ReceiveQty * $precioIva  );
 		$poid->Total = $poid->Total + $LineTotal;
 		$DisplaySupplierQtyOrd = locale_number_format($LnItm->Quantity/$LnItm->ConversionFactor,$LnItm->DecimalPlaces);
 		$DisplaySupplierQtyRec = locale_number_format($LnItm->QtyReceived/$LnItm->ConversionFactor,$LnItm->DecimalPlaces);
 		$DisplayQtyOrd = locale_number_format($LnItm->Quantity,$LnItm->DecimalPlaces);
 		$DisplayQtyRec = locale_number_format($LnItm->QtyReceived,$LnItm->DecimalPlaces);
 		$DisplayLineTotal = locale_number_format($LineTotal,$poid->CurrDecimalPlaces);
-		 if ($LnItm->Price > 1) {
-			$DisplayPrice = locale_number_format($LnItm->Price,$poid->CurrDecimalPlaces);
+		 if ($precioIva > 1) {
+			$DisplayPrice = locale_number_format($precioIva,$poid->CurrDecimalPlaces);
 		} else {
-			$DisplayPrice = locale_number_format($LnItm->Price,4);
+			$DisplayPrice = locale_number_format($precioIva,4);
 		}
 
 

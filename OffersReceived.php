@@ -209,6 +209,8 @@ if (!isset($_POST['submit']) and isset($_POST['supplierid'])) {
 						WHERE offerid='" . $AcceptID."'";
 			$result= DB_query($sql);
 			$myrow=DB_fetch_array($result);
+			$taxrate=GetTaxRateSupp ($_POST['supplierid'], $_SESSION['DefaultFactoryLocation'], $myrow['stockid']);
+
 			$MailText.=$myrow['description'] . "\t"._('Quantity').' ' . $myrow['quantity'] . "\t"._('Price').' '.
 					locale_number_format($myrow['price'])."\n";
 			$sql="INSERT INTO purchorderdetails (orderno,
@@ -218,7 +220,8 @@ if (!isset($_POST['submit']) and isset($_POST['supplierid'])) {
 												unitprice,
 												actprice,
 												quantityord,
-												suppliersunit)
+												suppliersunit,
+												taxrate)
 									VALUES ('" . $OrderNo."',
 											'" . $myrow['stockid'] . "',
 											'".date('Y-m-d')."',

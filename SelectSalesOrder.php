@@ -342,6 +342,7 @@ if (isset($_POST['PlacePO'])) { /*user hit button to place PO for selected order
 					$result = DB_query($sql,$ErrMsg,$DbgMsg,true);
 				} //end if it's a new supplier and PO to create
 
+				$taxrate=GetTaxRateSupp ($SupplierID, $_SESSION['UserStockLocation'], $ItemRow['stockid']);
 				/*reminder we are in a loop of the total of each item to place a purchase order for based on a selection of sales orders */
 				$DeliveryDate = DateAdd(Date($_SESSION['DefaultDateFormat']),'d',$ItemRow['leadtime']);
 				$sql = "INSERT INTO purchorderdetails ( orderno,
@@ -353,7 +354,8 @@ if (isset($_POST['PlacePO'])) { /*user hit button to place PO for selected order
 		      									quantityord,
 		      									suppliersunit,
 		      									suppliers_partno,
-		      									conversionfactor )
+		      									conversionfactor,
+												taxrate )
 					      VALUES ('" . $PO_OrderNo . "',
 		      						     '" . $ItemRow['stockid'] . "',
 		      						     '" . FormatDateForSQL($DeliveryDate) . "',
@@ -363,7 +365,8 @@ if (isset($_POST['PlacePO'])) { /*user hit button to place PO for selected order
 		      						     '" . $ItemRow['orderqty'] . "',
 		      						     '" . $ItemRow['suppliersuom'] . "',
 		      						     '" . $ItemRow['suppliers_partno'] . "',
-		      						     '" . $ItemRow['conversionfactor']  . "')";
+		      						     '" . $ItemRow['conversionfactor']  . "',
+										   '".$taxrate."')";
 				$ErrMsg =_('One of the purchase order detail records could not be inserted into the database because');
 				$DbgMsg =_('The SQL statement used to insert the purchase order detail record and failed was');
 

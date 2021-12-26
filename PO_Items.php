@@ -205,6 +205,8 @@ if (isset($_POST['Commit'])){ /*User wishes to commit the order to the database 
 		     /*Insert the purchase order detail records */
 			foreach ($_SESSION['PO'.$identifier]->LineItems as $POLine) {
 				if ($POLine->Deleted==False) {
+					
+					$taxrate=GetTaxRateSupp ($_SESSION['PO'.$identifier]->SupplierID, $_SESSION['PO'.$identifier]->Location, $POLine->StockID);
 					$sql = "INSERT INTO purchorderdetails (orderno,
 														itemcode,
 														deliverydate,
@@ -217,7 +219,8 @@ if (isset($_POST['Commit'])){ /*User wishes to commit the order to the database 
 														suppliersunit,
 														suppliers_partno,
 														assetid,
-														conversionfactor )
+														conversionfactor,
+														taxrate )
 									VALUES ('" . $_SESSION['PO'.$identifier]->OrderNo . "',
 											'" . $POLine->StockID . "',
 											'" . FormatDateForSQL($POLine->ReqDelDate) . "',
@@ -230,7 +233,8 @@ if (isset($_POST['Commit'])){ /*User wishes to commit the order to the database 
 											'" . $POLine->SuppliersUnit . "',
 											'" . $POLine->Suppliers_PartNo . "',
 											'" . $POLine->AssetID . "',
-											'" . $POLine->ConversionFactor . "')";
+											'" . $POLine->ConversionFactor . "',
+											'".$taxrate."')";
 					$ErrMsg =_('One of the purchase order detail records could not be inserted into the database because');
 					$DbgMsg =_('The SQL statement used to insert the purchase order detail record and failed was');
 
@@ -314,6 +318,7 @@ if (isset($_POST['Commit'])){ /*User wishes to commit the order to the database 
 						 * field PODetailRec is given to the session for that POLine
 						 * So it will only be a new POLine if PODetailRec is empty
 						*/
+					$taxrate=GetTaxRateSupp ($_SESSION['PO'.$identifier]->SupplierID, $_SESSION['PO'.$identifier]->Location, $POLine->StockID);
 					$sql = "INSERT INTO purchorderdetails ( orderno,
 														itemcode,
 														deliverydate,
@@ -326,7 +331,8 @@ if (isset($_POST['Commit'])){ /*User wishes to commit the order to the database 
 														suppliersunit,
 														suppliers_partno,
 														assetid,
-														conversionfactor)
+														conversionfactor,
+														taxrate)
 													VALUES (
 														'" . $_SESSION['PO'.$identifier]->OrderNo . "',
 														'" . $POLine->StockID . "',
@@ -340,7 +346,8 @@ if (isset($_POST['Commit'])){ /*User wishes to commit the order to the database 
 														'" . $POLine->SuppliersUnit . "',
 														'" . $POLine->Suppliers_PartNo . "',
 														'" . $POLine->AssetID . "',
-														'" . $POLine->ConversionFactor . "')";
+														'" . $POLine->ConversionFactor . "',
+														'".$taxrate."')";
 
 				} else {
 					if ($POLine->Quantity==$POLine->QtyReceived){

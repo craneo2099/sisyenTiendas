@@ -226,7 +226,7 @@ if (isset($MakePDFThenDisplayIt) or isset($MakePDFThenEmailIt)) {
 						decimalplaces,
 						conversionfactor,
 						suppliers_partno,
-						taxcatid
+						taxrate
 				FROM purchorderdetails LEFT JOIN stockmaster
 					ON purchorderdetails.itemcode=stockmaster.stockid
 				WHERE orderno ='" . $OrderNo . "'
@@ -259,7 +259,7 @@ if (isset($MakePDFThenDisplayIt) or isset($MakePDFThenEmailIt)) {
 				$DecimalPlaces = 2;
 			}
 			$DisplayQty = locale_number_format($POLine['quantityord'] / $POLine['conversionfactor'], $DecimalPlaces);
-			$taxRate=GetTaxRateSupp ($POHeader['supplierno'], $POHeader['intostocklocation'], $POLine['itemcode']);
+			$taxRate=$POLine['taxrate'];
 			if ($_POST['ShowAmounts'] == 'Yes') {
 				$priceFull=$POLine['unitprice'] * $POLine['conversionfactor'];
 				$totalByItem=$POLine['unitprice'] * $POLine['quantityord'];

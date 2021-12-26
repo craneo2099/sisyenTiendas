@@ -293,7 +293,7 @@ echo '<td><input type="text" name="StockCode" size="15" maxlength="18" /></td>
 echo '<table>
 		<tr>
 			<td><input type="submit" name="SearchParts" value="' . _('Search Parts Now') . '" />
-				<input type="submit" name="ResetPart" value="' . _('Show All') . '" /></td>
+				<input type="submit" name="ResetPart" value="' . _('Clean') . '" /></td>
 		</tr>
 	</table>';
 
@@ -558,7 +558,7 @@ else {
 							suppliers.currcode,
 							currencies.decimalplaces AS currdecimalplaces,
 							group_concat(CASE WHEN quantityord>quantityrecd THEN CONCAT(itemcode,'--',round(quantityord-quantityrecd)) ELSE '' END) as bal,
-							SUM(purchorderdetails.unitprice*purchorderdetails.quantityord) AS ordervalue
+							SUM(purchorderdetails.unitprice*purchorderdetails.quantityord*(1+purchorderdetails.taxrate)) AS ordervalue
 						FROM purchorders INNER JOIN purchorderdetails
 						ON purchorders.orderno = purchorderdetails.orderno
 						INNER JOIN suppliers

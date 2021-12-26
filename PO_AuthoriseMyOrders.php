@@ -58,7 +58,7 @@ echo '<thead>
 		<th class="ascending">' . _('Order Number') . '</th>
 		<th class="ascending">' . _('Supplier') . '</th>
 		<th class="ascending">' . _('Date Ordered') . '</th>
-		<th class="ascending">' . _('Initiator') . '</th>
+		<th class="ascending">' . _('Initiated By') . '</th>
 		<th class="ascending">' . _('Delivery Date') . '</th>
 		<th class="ascending">' . _('Status') . '</th>
 		</tr>

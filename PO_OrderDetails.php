@@ -2,6 +2,7 @@
 
 
 include('includes/session.php');
+include('includes/SQL_CommonFunctions.inc');
 
 if (isset($_GET['OrderNo'])) {
 	$Title = _('Reviewing Purchase Order Number').' ' . $_GET['OrderNo'];
@@ -33,7 +34,7 @@ if (!isset($_GET['OrderNo'])) {
 
 	echo '<table class="table_index">
 		<tr><td class="menu_group_item">
-                <li><a href="'. $RootPath . '/PO_SelectPurchOrder.php">' . _('Outstanding Purchase Orders') . '</a></li>
+                <li><a href="'. $RootPath . '/PO_SelectPurchOrder.php">' . _('Return') . '</a></li>
 		</td></tr></table>';
 	include('includes/footer.php');
 	exit;
@@ -71,7 +72,7 @@ if (DB_num_rows($GetOrdHdrResult)!=1) {
         echo '<table class="table_index">
                 <tr>
 					<td class="menu_group_item">
-						<li><a href="'. $RootPath . '/PO_SelectPurchOrder.php">' . _('Outstanding Purchase Orders') . '</a></li>
+						<li><a href="'. $RootPath . '/PO_SelectPurchOrder.php">' . _('Return') . '</a></li>
 					</td>
 				</tr>
 				</table>';
@@ -82,11 +83,18 @@ if (DB_num_rows($GetOrdHdrResult)!=1) {
  // the checks all good get the order now
 
 $myrow = DB_fetch_array($GetOrdHdrResult);
-
+$stockLoc=$myrow['intostocklocation'];
+$suppid=$myrow['supplierid'];
+$deladd=implode_list($myrow['deladd1'] , 
+$myrow['deladd2'] , 
+$myrow['deladd3'] , 
+$myrow['deladd4'] , 
+$myrow['deladd5'], 
+$myrow['deladd6']);
 /* SHOW ALL THE ORDER INFO IN ONE PLACE */
 echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/supplier.png" title="' .
 		_('Purchase Order') . '" alt="" />' . ' ' . $Title . '</p>';
-echo '<a href="' . $RootPath . '/PO_SelectPurchOrder.php">' . _('Outstanding Purchase Orders') . '</a>';
+echo '<a href="' . $RootPath . '/PO_SelectPurchOrder.php">' . _('Return') . '</a>';
 echo '<table class="selection" cellpadding="2">
 		<tr>
 			<th colspan="8"><b>' .  _('Order Header Details'). '</b></th>
@@ -100,38 +108,30 @@ echo '<table class="selection" cellpadding="2">
 		<tr>
 			<td>' . _('Ordered On'). '</td>
 			<td>' . ConvertSQLDate($myrow['orddate']) . '</td>
-			<td>' . _('Delivery Address 1'). '</td>
-			<td>' . $myrow['deladd1'] . '</td>
+			<td colsman="2">' . _('Delivery Address'). ':</td>
 		</tr>
 		<tr>
 			<td>' . _('Order Currency'). '</td>
 			<td>' . $myrow['currcode'] . '</td>
-			<td>' . _('Delivery Address 2'). '</td>
-			<td>' . $myrow['deladd2'] . '</td>
+			<td colspan="2" rowspan="6">' . $deladd . ', '
+			
+			.'</td>
 		</tr>
 		<tr>
 			<td>' . _('Exchange Rate'). '</td>
 			<td>' . $myrow['rate'] . '</td>
-			<td>' . _('Delivery Address 3'). '</td>
-			<td>' . $myrow['deladd3'] . '</td>
 		</tr>
 		<tr>
 			<td>' . _('Deliver Into Location'). '</td>
 			<td>' . $myrow['locationname'] . '</td>
-			<td>' . _('Delivery Address 4'). '</td>
-			<td>' . $myrow['deladd4'] . '</td>
 		</tr>
 		<tr>
-			<td>' . _('Initiator'). '</td>
+			<td>' . _('Initiated By'). '</td>
 			<td>' . $myrow['realname'] . '</td>
-			<td>' . _('Delivery Address 5'). '</td>
-			<td>' . $myrow['deladd5'] . '</td>
 		</tr>
 		<tr>
 			<td>' . _('Requisition Ref'). '.</td>
 			<td>' . $myrow['requisitionno'] . '</td>
-			<td>' . _('Delivery Address 6'). '</td>
-			<td>' . $myrow['deladd6'] . '</td>
 		</tr>
 		<tr>
 			<td>' .  _('Printing') . '</td>
@@ -166,7 +166,8 @@ echo '<br />';
 /*Now get the line items */
 $ErrMsg = _('The line items of the purchase order could not be retrieved');
 $LineItemsSQL = "SELECT purchorderdetails.*,
-						stockmaster.decimalplaces
+						stockmaster.decimalplaces,
+						stockmaster.stockid
 				FROM purchorderdetails
 				LEFT JOIN stockmaster
 				ON purchorderdetails.itemcode=stockmaster.stockid
@@ -193,12 +194,14 @@ echo '<table class="selection" cellpadding="0">
 
 $OrderTotal=0;
 $RecdTotal=0;
+$ivaTotal=0;
 
 while ($myrow=DB_fetch_array($LineItemsResult)) {
-
-	$OrderTotal += ($myrow['quantityord'] * $myrow['unitprice']);
-	$RecdTotal += ($myrow['quantityrecd'] * $myrow['unitprice']);
-
+	
+	$precioFinal=$myrow['unitprice']*(1+$myrow['taxrate']);
+	$OrderTotal += ($myrow['quantityord'] * $precioFinal);
+	$RecdTotal += ($myrow['quantityrecd'] * $precioFinal);
+	$ivaTotal+=$myrow['unitprice']*($myrow['taxrate']);
 	$DisplayReqdDate = ConvertSQLDate($myrow['deliverydate']);
 	if ($myrow['decimalplaces']!=NULL){
 		$DecimalPlaces = $myrow['decimalplaces'];
@@ -227,7 +230,7 @@ while ($myrow=DB_fetch_array($LineItemsResult)) {
 			locale_number_format($myrow['quantityord'],$DecimalPlaces),
 			locale_number_format($myrow['quantityrecd'],$DecimalPlaces),
 			locale_number_format($myrow['qtyinvoiced'],$DecimalPlaces),
-			locale_number_format($myrow['unitprice'],$CurrDecimalPlaces),
+			locale_number_format($precioFinal,$CurrDecimalPlaces),
 			locale_number_format($myrow['actprice'],$CurrDecimalPlaces),
 			$DisplayReqdDate);
 
@@ -236,11 +239,15 @@ while ($myrow=DB_fetch_array($LineItemsResult)) {
 echo '<tr><td><br /></td>
 	</tr>
 	<tr>
-		<td colspan="4" class="number">' . _('Total Order Value Excluding Tax')  . '</td>
+		<td colspan="4" class="number">' . _('Included tax')  . '</td>
+		<td colspan="2" class="number">' . locale_number_format($ivaTotal,$CurrDecimalPlaces) . '</td>
+	</tr>
+	<tr>
+		<td colspan="4" class="number">' . _('Total Order Value Incl. Tax')  . '</td>
 		<td colspan="2" class="number">' . locale_number_format($OrderTotal,$CurrDecimalPlaces) . '</td>
 	</tr>
 	<tr>
-		<td colspan="4" class="number">' . _('Total Order Value Received Excluding Tax') . '</td>
+		<td colspan="4" class="number">' . _('Total Order Value Received Incl. Tax') . '</td>
 		<td colspan="2" class="number">' . locale_number_format($RecdTotal,$CurrDecimalPlaces) . '</td>
 	</tr>
 	</table>

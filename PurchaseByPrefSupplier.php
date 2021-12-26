@@ -12,9 +12,11 @@ if (isset($_POST['CreatePO']) AND isset($_POST['Supplier'])){
 	//Make an array of the Items to purchase
 	$PurchItems = array();
 	$OrderValue =0;
+	$noItem =true;
 	foreach ($_POST as $FormVariable => $Quantity) {
 		if (mb_strpos($FormVariable,'OrderQty')!==false) {
 			if ($Quantity > 0) {
+				$noItem=false;
 				$StockID = $_POST['StockID' . mb_substr($FormVariable,8)];
 				$PurchItems[$StockID]['Quantity'] = filter_number_format($Quantity);
 
@@ -107,9 +109,13 @@ if (isset($_POST['CreatePO']) AND isset($_POST['Supplier'])){
 					$InputError =1;
 					prnmsg(_('An item where a quantity was entered could not be retrieved from the database. The order cannot proceed. The item code was:') . ' ' . $StockID,'error');
 				}
-			} //end if the quantity entered into the form is positive
+			} 
 		} //end if the form variable name is OrderQtyXXX
 	}//end loop around the form variables
+	if($noItem) {
+		prnMsg( _('There are no items added to this request'), 'warn');
+		$InputError =1;
+	} //end if the quantity entered into the form is positive
 
 	if ($InputError==0) { //only if all continues smoothly
 
@@ -258,7 +264,7 @@ if (isset($_POST['CreatePO']) AND isset($_POST['Supplier'])){
 		foreach ($PurchItems as $StockID=>$POLine) {
 
 			//print_r($POLine);
-
+			$taxrate=GetTaxRateSupp ($_POST['Supplier'], $_SESSION['UserStockLocation'], $StockID);
 			$sql = "INSERT INTO purchorderdetails (orderno,
 										itemcode,
 										deliverydate,
@@ -271,7 +277,8 @@ if (isset($_POST['CreatePO']) AND isset($_POST['Supplier'])){
 										suppliersunit,
 										suppliers_partno,
 										assetid,
-										conversionfactor )
+										conversionfactor,
+										taxrate )
 					VALUES ('" . $OrderNo . "',
 							'" . $StockID . "',
 							'" . FormatDateForSQL($POLine['DeliveryDate']) . "',
@@ -284,7 +291,8 @@ if (isset($_POST['CreatePO']) AND isset($_POST['Supplier'])){
 							'" . $POLine['UnitOfMeasure'] . "',
 							'" . $POLine['SuppliersPartNo'] . "',
 							'0',
-							'" . $POLine['ConversionFactor'] . "')";
+							'" . $POLine['ConversionFactor'] . "',
+							'".$taxrate."')";
 			$ErrMsg =_('One of the purchase order detail records could not be inserted into the database because');
 			$DbgMsg =_('The SQL statement used to insert the purchase order detail record and failed was');
 

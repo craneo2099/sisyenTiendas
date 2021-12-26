@@ -1,7 +1,7 @@
 <?php
 
 include ('includes/session.php');
-$Title = _('Search Purchase Orders');
+$Title = _('Purchase Order Inquiry');
 include ('includes/header.php');
 
 echo '<p class="page_title_text">
@@ -35,6 +35,7 @@ if (isset($OrderNumber) AND $OrderNumber != '') {
 		unset($OrderNumber);
 	} else {
 		echo _('Order Number') . ' - ' . $OrderNumber;
+		
 	}
 } else {
 	if (isset($SelectedSupplier)) {
@@ -45,6 +46,11 @@ if (isset($OrderNumber) AND $OrderNumber != '') {
 if (isset($_POST['SearchParts'])) {
 	if ($_POST['Keywords'] AND $_POST['StockCode']) {
 		prnMsg(_('Stock description keywords have been used in preference to the Stock code extract entered'), 'info');
+	}
+	if('All'!=$_POST['StockCat']){
+		$qry_stockcat=" AND stockmaster.categoryid='" . $_POST['StockCat'] . "'";
+	}else{
+		$qry_stockcat="";
 	}
 	if ($_POST['Keywords']) {
 		//insert wildcard characters in spaces
@@ -60,7 +66,7 @@ if (isset($_POST['SearchParts'])) {
 			ON stockmaster.stockid=purchorderdetails.itemcode
 			WHERE purchorderdetails.completed=1
 			AND stockmaster.description " . LIKE  . " '" . $SearchString ."'
-			AND stockmaster.categoryid='" . $_POST['StockCat'] . "'
+			" . $qry_stockcat . "
 			GROUP BY stockmaster.stockid,
 				stockmaster.description,
 				stockmaster.decimalplaces,
@@ -78,7 +84,7 @@ if (isset($_POST['SearchParts'])) {
 				INNER JOIN purchorderdetails ON stockmaster.stockid=purchorderdetails.itemcode
 			WHERE purchorderdetails.completed=1
 			AND stockmaster.stockid " . LIKE  . " '%" . $_POST['StockCode'] . "%'
-			AND stockmaster.categoryid='" . $_POST['StockCat'] . "'
+			" . $qry_stockcat . "
 			GROUP BY stockmaster.stockid,
 				stockmaster.description,
 				stockmaster.decimalplaces,
@@ -94,7 +100,7 @@ if (isset($_POST['SearchParts'])) {
 			FROM stockmaster INNER JOIN locstock ON stockmaster.stockid = locstock.stockid
 				INNER JOIN purchorderdetails ON stockmaster.stockid=purchorderdetails.itemcode
 			WHERE purchorderdetails.completed=1
-			AND stockmaster.categoryid='" . $_POST['StockCat'] . "'
+			" . $qry_stockcat . "
 			GROUP BY stockmaster.stockid,
 				stockmaster.description,
 				stockmaster.decimalplaces,
@@ -163,48 +169,50 @@ if (!isset($OrderNumber) or $OrderNumber == "") {
 	}
  	echo '</select> <input type="submit" name="SearchOrders" value="' . _('Search Purchase Orders') . '" /></td>
 		</tr>
-		</table>';
+		</table>
+		</form>';
 }
-$SQL = "SELECT categoryid,
-			categorydescription
-		FROM stockcategory
-		ORDER BY categorydescription";
-$result1 = DB_query($SQL);
+
 echo '<br />
 		<br />
+		<form action="' . htmlspecialchars($_SERVER['PHP_SELF'],ENT_QUOTES,'UTF-8') . '" method="post">
+	<div>
+	<input type="hidden" name="FormID" value="' . $_SESSION['FormID'] . '" />
 		<table class="selection">
 		<tr>
 			<td>';
 echo _('To search for purchase orders for a specific part use the part selection facilities below') . '</td></tr>';
 echo '<tr>
-		<td>' . _('Select a stock category') . ':<select name="StockCat">';
-while ($myrow1 = DB_fetch_array($result1)) {
-	if (isset($_POST['StockCat']) and $myrow1['categoryid'] == $_POST['StockCat']) {
-		echo '<option selected="selected" value="' . $myrow1['categoryid'] . '">' . $myrow1['categorydescription'] . '</option>';
-	} else {
-		echo '<option value="' . $myrow1['categoryid'] . '">' . $myrow1['categorydescription'] . '</option>';
-	}
-}
-echo '</select></td>
-		<td>' . _('Enter text extracts in the') . ' <b>' . _('description') . '</b>:</td>
+		<td>' . _('Select a stock category') . ':';
+		getCategorySelect($_POST['StockCat'] , '', true);
+?>
+</select></td>
+		<td><?= _('Enter text extracts in the') ?> <b><?=_('description') ?></b>:</td>
 		<td><input type="text" name="Keywords" size="20" maxlength="25" /></td>
 	</tr>
 	<tr>
 		<td></td>
-		<td><b>' . _('OR') . ' </b>' . _('Enter extract of the') . '<b> ' . _('Stock Code') . '</b>:</td>
+		<td><b><?=_('OR') ?> </b><?=_('Enter extract of the') ?><b> <?= _('Stock Code') ?></b>:</td>
 		<td><input type="text" name="StockCode" size="15" maxlength="18" /></td>
 	</tr>
 	<tr>
 		<td colspan="3">
 			<div class="centre">
-				<input type="submit" name="SearchParts" value="' . _('Search Parts Now') . '" />
-                <input type="submit" name="ResetPart" value="' . _('Show All') . '" />
+				<input type="submit" name="SearchParts" value="<?= _('Search Parts Now') ?>" />
+				<?php
+				if(isset($SelectedStockItem)){?>
+                <input type="submit" name="ResetPart" value="<?= _('Show All') ?>" />
+				<?php
+				}
+				?>
 			</div>
 		</td>
 	</tr>
 	</table>
+			</form>
 	<br />
-	<br />';
+	<br />
+<?php
 
 if (isset($StockItemsResult)) {
 	echo '<table class="selection">
@@ -387,7 +395,7 @@ else {
 								purchorders.status,
 								suppliers.currcode,
 								currencies.decimalplaces AS currdecimalplaces,
-								SUM(purchorderdetails.unitprice*purchorderdetails.quantityord) AS ordervalue
+								SUM(purchorderdetails.unitprice*purchorderdetails.quantityord*(1+purchorderdetails.taxrate)) AS ordervalue
 							FROM purchorders
 							INNER JOIN purchorderdetails
 							ON purchorders.orderno = purchorderdetails.orderno
@@ -423,7 +431,7 @@ else {
 					<th class="ascending">' . _('Requisition') . '</th>
 					<th class="ascending">' . _('Order Date') . '</th>
 					<th class="ascending">' . _('Delivery Date') . '</th>
-					<th class="ascending">' . _('Initiator') . '</th>
+					<th class="ascending">' . _('Initiated By') . '</th>
 					<th class="ascending">' . _('Order Total') . '</th>
 					<th class="ascending">' . _('Status') . '</th>
 				</tr>
@@ -453,7 +461,9 @@ else {
 		echo '</tbody></table>';
 	} // end if purchase orders to show
 }
-echo '</div>
-      </form>';
+echo '</div>';
+	  ?>
+	  <a href="<?=htmlspecialchars($_SERVER['PHP_SELF'],ENT_QUOTES,'UTF-8') ?>">limpiar</a>
+	  <?php
 include ('includes/footer.php');
 ?>

@@ -449,13 +449,15 @@ if (isset($_POST['Commit'])){ /*User wishes to commit the order to the database 
 
 			$OrderDate = FormatDateForSQL($SPLLine->ReqDelDate);
 
+			$taxrate=GetTaxRateSupp ($_SESSION['SPL'.$identifier]->SupplierID,$_SESSION['SPL'.$identifier]->StkLocation, $PartCode);
 			$sql = "INSERT INTO purchorderdetails (orderno,
 								itemcode,
 								deliverydate,
 								itemdescription,
 								glcode,
 								unitprice,
-								quantityord)
+								quantityord,
+								taxrate)
 					VALUES ('";
 			$sql = $sql . $_SESSION['SPL'.$identifier]->PurchOrderNo . "',
 					'" . $PartCode . "',
@@ -463,7 +465,8 @@ if (isset($_POST['Commit'])){ /*User wishes to commit the order to the database 
 					'" . $SPLLine->ItemDescription . "',
 					'" . $GLCode . "',
 					'" . $SPLLine->Cost . "',
-					'" . $SPLLine->Quantity . "')";
+					'" . $SPLLine->Quantity . "',
+					'".$taxrate."')";
 
 			$ErrMsg = _('One of the purchase order detail records could not be inserted into the database because');
 			$DbgMsg = _('The SQL statement used to insert the purchase order detail record and failed was');

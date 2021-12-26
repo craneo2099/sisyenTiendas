@@ -1002,7 +1002,11 @@ if (isset($_POST['ProcessSale']) AND $_POST['ProcessSale'] != '') {
 		prnMsg(_('There are no lines on this sale. Please enter lines to invoice first'),'error');
 		$InputError = true;
 	}
-	if (abs(filter_number_format($_POST['AmountPaid']) -(round($_SESSION['Items'.$identifier]->total+filter_number_format($_POST['TaxTotal']),$_SESSION['Items'.$identifier]->CurrDecimalPlaces)))>=0.01) {
+	$ampa=filter_number_format($_POST['AmountPaid']);
+	$totl=$_SESSION['Items'.$identifier]->total;
+	$txttl=filter_number_format($_POST['TaxTotal']);
+	$raund=round($totl+$txttl,$_SESSION['Items'.$identifier]->CurrDecimalPlaces);
+	if (abs($ampa -($raund))>=0.01) {
 		prnMsg(_('The amount entered as payment does not equal the amount of the invoice. Please ensure the customer has paid the correct amount and re-enter'),'error');
 		$InputError = true;
 	}

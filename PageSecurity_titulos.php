@@ -60,6 +60,7 @@ while ($myrow=DB_fetch_array($result)) {
 	<td>'._($sitepath[1]).'</td>
 	<td>'.$sitepath[2].'</td>
 	<td>' . $myrow['script'] . '</td>
+	<td>' . $myrow['pagesecurity'] . '</td>
 			<td>';
 
 	while ($myTokenRow=DB_fetch_array($TokenResult)) {

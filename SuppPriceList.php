@@ -14,6 +14,8 @@ if (isset($_POST['PrintPDF']) OR isset($_POST['View'])) {
 	$FontSize=9;
 	$pdf->addInfo('Title',_('Supplier Price List'));
 	$pdf->addInfo('Subject',_('Price List of goods from a Supplier'));
+	
+	$FormDesign = simplexml_load_file($PathPrefix . 'companies/' . $_SESSION['DatabaseName'] . '/FormDesigns/suppList.xml');
 
 	$PageNumber=1;
 	$line_height=12;
@@ -27,7 +29,7 @@ if (isset($_POST['PrintPDF']) OR isset($_POST['View'])) {
 				WHERE supplierid='" . $_POST['supplier'] . "'";
 	$resultsup = DB_query($sqlsup);
 	$RowSup = DB_fetch_array($resultsup);
-	$SupplierName=$RowSup['suppname'];
+	$SupplierName=$_POST['supplier']." - ".$RowSup['suppname'];
 	$CurrCode =$RowSup['currcode'];
 	$CurrDecimalPlaces=$RowSup['currdecimalplaces'];
 
@@ -202,13 +204,13 @@ if (isset($_POST['PrintPDF']) OR isset($_POST['View'])) {
 	}
 
 
-	$pdf->OutputD( $_SESSION['CompanyRecord']['coyname'] . '_Proveedor_Lista_' .$SupplierName. '_' . Date('Y-m-d') . '.pdf');
+	$pdf->OutputD( $_SESSION['CompanyRecord']['coyname'] . '_Proveedor_Lista_' .$RowSup['suppname']. '_' . Date('Y-m-d') . '.pdf');
 	} else {
 		$Title = _('View supplier price');
 		include('includes/header.inc');
 		echo '<a href="'.htmlspecialchars($_SERVER['PHP_SELF'],ENT_QUOTES,'UTF-8').'">'._('return').'</a>';
 		echo '<p class="page_title_text">'. _('Supplier Price List for').' : '.$CurrentOrAllPrices . '<br/>'
-			._('Supplier').'   : '.$SupplierName.' <br/>'._('Category').' : '.$Categoryname.
+			._('Supplier').'   : '.$RowSup['suppname'].' <br/>'._('Category').' : '.$Categoryname.
 			'</p>';
 
 		echo '<table class="selection">
@@ -308,7 +310,7 @@ if (isset($_POST['PrintPDF']) OR isset($_POST['View'])) {
 function PrintHeader(&$pdf,&$YPos,&$PageNumber,$Page_Height,$Top_Margin,$Left_Margin,
                      $Page_Width,$Right_Margin,$SupplierName,$Categoryname,$CurrCode,$CurrentOrAllPrices) {
 
-
+	global $FormDesign;					
 	/*PDF page header for Supplier price list */
 	if ($PageNumber>1){
 		$pdf->newPage();
@@ -316,37 +318,34 @@ function PrintHeader(&$pdf,&$YPos,&$PageNumber,$Page_Height,$Top_Margin,$Left_Ma
 	$line_height=12;
 	$FontSize=9;
 	$YPos= $Page_Height-$Top_Margin;
-	$YPos -=(3*$line_height);
+	$pdf->addJpegFromFile($_SESSION['LogoFile'],$Left_Margin+$FormDesign->logo->x,$Page_Height- $FormDesign->logo->y,$FormDesign->logo->width,$FormDesign->logo->height);
+	$pdf->addText($FormDesign->CompanyName->x,$Page_Height - $FormDesign->CompanyName->y, $FormDesign->CompanyName->FontSize,$_SESSION['CompanyRecord']['coyname']);
+	$pdf->addText($FormDesign->OrderNumber->x,$Page_Height- $FormDesign->OrderNumber->y,$FormDesign->OrderNumber->FontSize, _('Supplier Price List for'). ' ' . $CurrentOrAllPrices);
+	
+	$pdf->addText($FormDesign->PageNumber->x,$Page_Height - $FormDesign->PageNumber->y, $FormDesign->PageNumber->FontSize, _('Printed') . ': ' .
+		Date($_SESSION['DefaultDateFormat']) . '   ' . _('Page') . ' ' . $PageNumber);
+		
+	$pdf->addText($FormDesign->SupplierName->x,$Page_Height - $FormDesign->SupplierName->y, 
+		$FormDesign->SupplierName->FontSize, _('Supplier').'   : '.$SupplierName);
+	$pdf->addText($FormDesign->Category->x,$Page_Height - $FormDesign->Category->y,$FormDesign->Category->FontSize,
+		_('Category').' : '.$Categoryname);	
+	$pdf->addText($FormDesign->Currency->x,$Page_Height - $FormDesign->Currency->y,$FormDesign->Currency->FontSize,
+		_('All amounts stated in').' - ' . $CurrCode . ' ' . $CurrencyName[$CurrCode]);
 
-	$pdf->addTextWrap($Left_Margin,$YPos,300,$FontSize+2,$_SESSION['CompanyRecord']['coyname']);
-	$YPos -=$line_height;
-
-	$pdf->addTextWrap($Left_Margin,$YPos,150,$FontSize,_('Supplier Price List for').' '.$CurrentOrAllPrices);
-
-	$pdf->addTextWrap($Page_Width-$Right_Margin-150,$YPos,160,$FontSize,_('Printed') . ': ' .
-		 Date($_SESSION['DefaultDateFormat']) . '   ' . _('Page') . ' ' . $PageNumber,'left');
-	$YPos -= $line_height;
-	$pdf->addTextWrap($Left_Margin,$YPos,50,$FontSize,_('Supplier').'   ');
-	$pdf->addTextWrap(95,$YPos,150,$FontSize,': '.$SupplierName);
-
-	$YPos -= $line_height;
-	$pdf->addTextWrap($Left_Margin,$YPos,50,$FontSize,_('Category').' ');
-
-	$pdf->addTextWrap(95,$YPos,150,$FontSize,': '.$Categoryname);
-	$YPos -= $line_height;
-	$pdf->addTextWrap($Left_Margin,$YPos,50,$FontSize,_('Currency').'  ');
-	$pdf->addTextWrap(95,$YPos,50,$FontSize,': '.$CurrCode);
-	$YPos -=(2*$line_height);
+	$pdf->Rectangle($FormDesign->HeaderRectangle->x, $Page_Height - $FormDesign->HeaderRectangle->y, $FormDesign->HeaderRectangle->width,$FormDesign->HeaderRectangle->height);
+	$YPos -=(11*$line_height);
 	/*set up the headings */
-
+	
 	$pdf->addTextWrap(30,$YPos,70,$FontSize,_('Code'), 'left');
 	$pdf->addTextWrap(125,$YPos,80,$FontSize,_('Description'), 'left');
 	$pdf->addTextWrap(290,$YPos,80,$FontSize,_('Conv Factor'), 'left');
 	$pdf->addTextWrap(390,$YPos,50,$FontSize,_('Price'), 'left');
 	$pdf->addTextWrap(430,$YPos,80,$FontSize,_('Date From'), 'left');
 	$pdf->addTextWrap(490,$YPos,80,$FontSize,_('Supp Code'), 'left');
-
+		
+	$pdf->Rectangle($FormDesign->DataRectangle->x, $Page_Height - $FormDesign->DataRectangle->y, $FormDesign->DataRectangle->width,$FormDesign->DataRectangle->height);
 	$FontSize=8;
 	$PageNumber++;
+	$YPos -=(1*$line_height);
 } // End of PrintHeader() function
 ?>

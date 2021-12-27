@@ -33577,7 +33577,7 @@ msgstr "Factor de conversión"
 
 #: SuppPriceList.php:219 SuppPriceList.php:344
 msgid "Supp Code"
-msgstr "Código de proveedor"
+msgstr "ID del prov."
 
 #: SuppPriceList.php:244
 msgid "Purchase"

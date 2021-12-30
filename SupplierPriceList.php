@@ -320,6 +320,7 @@ foreach ($_POST as $key=>$value) {
 			$PreferredSQL = "UPDATE purchdata SET preferred=0
 									WHERE stockid='" . $StockID . "'";
 			$PreferredResult=DB_query($PreferredSQL);
+			prnMsg(_('The preferred supplier was updated'), 'success');
 		} else {
 			$Preferred = 0;
 		}
@@ -338,6 +339,7 @@ foreach ($_POST as $key=>$value) {
 								WHERE supplierno='" . $_POST['SupplierID'] . "'
 								AND stockid='" . $StockID . "'";
 		$result=DB_query($sql);
+		prnMsg(_('This supplier purchasing data has been updated'), 'success');
 	}
 	if(mb_substr($key,0,6)=='Insert') {
 		if(isset($_POST['Preferred0'])) {
@@ -370,6 +372,7 @@ foreach ($_POST as $key=>$value) {
 									'" . $_POST['MinOrderQty0'] . "'
 								)";
 		$result=DB_query($sql);
+		prnMsg(_('This supplier purchasing data has been added to the database'), 'success');
 	}
 }
 
@@ -615,6 +618,7 @@ if(isset($_POST['SupplierID'])) {
 	echo '</table>';
 	echo '</form>';
 	
+	echo '<div class="centre"><a href="' .htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8') . '">' . _('Clean') . '</a></div>';
 	echo '<div class="centre"><a href="' . $RootPath . '/index.php">' . _('Back to the menu') . '</a></div>';
 	include('includes/footer.php');
 	exit;

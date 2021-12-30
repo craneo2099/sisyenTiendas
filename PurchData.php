@@ -670,7 +670,7 @@ if (!isset($SuppliersResult)) {
 	if ($Edit == true) {
 		/* A supplier purchase price is being edited - also show the discounts applicable to the supplier  for update/deletion*/
 
-		/*List the discount records for this supplier */
+		/*List the discount records for this supplier :) */
 		$sql = "SELECT id,
 						discountnarrative,
 						discountpercent,

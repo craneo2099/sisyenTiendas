@@ -231,13 +231,20 @@ if (isset($_GET['Delete'])) {
     prnMsg(_('This purchasing data record has been successfully deleted'), 'success');
     unset($SupplierID);
 }
+if(isset($Edit)){
+
+	if( !empty($StockID)){
+		$ItemResult = DB_query("SELECT description FROM stockmaster WHERE stockid='" . $StockID . "'");
+		$DescriptionRow = DB_fetch_array($ItemResult);
+		$titleTail=_('For Stock Code') .' - ' . $StockID . ' - ' . $DescriptionRow['description'];
+	}
+	echo '<p class="page_title_text"><img src="' . $RootPath . '/css/' . $Theme . '/images/maintenance.png" title="' . _('Search') . '" alt="" />' . ' ' . $Title . ' ' . $titleTail . '</p><br />';
+}
+
 
 
 if ($Edit == false) {
 
-	$ItemResult = DB_query("SELECT description FROM stockmaster WHERE stockid='" . $StockID . "'");
-	$DescriptionRow = DB_fetch_array($ItemResult);
-	echo '<p class="page_title_text"><img src="' . $RootPath . '/css/' . $Theme . '/images/maintenance.png" title="' . _('Search') . '" alt="" />' . ' ' . $Title . ' ' . _('For Stock Code') . ' - ' . $StockID . ' - ' . $DescriptionRow['description'] . '</p><br />';
 
     $sql = "SELECT purchdata.supplierno,
 				suppliers.suppname,
@@ -363,27 +370,26 @@ if (isset($SupplierID) AND $SupplierID != '' AND !isset($_POST['SearchSupplier']
         unset($SupplierID);
     }
 } else {
+	echo '<form action="' . htmlspecialchars($_SERVER['PHP_SELF'],ENT_QUOTES,'UTF-8') . '" method="post">
+			<table cellpadding="3" colspan="4" class="selection">
+			<tr>
+				<input type="hidden" name="FormID" value="' . $_SESSION['FormID'] . '" />
+				<input type="hidden" name="StockID" value="' . $StockID . '" />
+				<td>' . _('Containing text') . '</b>:</td>
+				<td><input type="text" name="Keywords" size="20" maxlength="25" /></td>
+			</tr>
+			</table>
+			<br />
+			<div class="centre">
+			<input type="submit" name="SearchSupplier" value="' . _('Find Suppliers Now') . '" />
+			<input type="submit" name="clear" value="' . _('Clean') . '" />
+			</div>
+		</form>';
 	if ($NoPurchasingData==0) {
-		echo '<p class="page_title_text"><img src="' . $RootPath . '/css/' . $Theme . '/images/maintenance.png" title="' . _('Search') . '" alt="" />' . ' ' . $Title . ' ' . _('For Stock Code') . ' - ' . $StockID . '</p><br />';
+		
 	}
     if (!isset($_POST['SearchSupplier'])) {
-        echo '<form action="' . htmlspecialchars($_SERVER['PHP_SELF'],ENT_QUOTES,'UTF-8') . '" method="post">
-				<table cellpadding="3" colspan="4" class="selection">
-				<tr>
-					<input type="hidden" name="FormID" value="' . $_SESSION['FormID'] . '" />
-					<input type="hidden" name="StockID" value="' . $StockID . '" />
-					<td>' . _('Text in the Supplier') . ' <b>' . _('NAME') . '</b>:</td>
-					<td><input type="text" name="Keywords" size="20" maxlength="25" /></td>
-					<td><b>' . _('OR') . '</b></td>
-					<td>' . _('Text in Supplier') . ' <b>' . _('CODE') . '</b>:</td>
-					<td><input type="text" name="SupplierCode" data-type="no-illegal-chars" size="20" maxlength="50" /></td>
-				</tr>
-				</table>
-				<br />
-				<div class="centre">
-					<input type="submit" name="SearchSupplier" value="' . _('Find Suppliers Now') . '" />
-				</div>
-			</form>';
+
         include ('includes/footer.php');
         exit;
     }
@@ -392,47 +398,43 @@ if (isset($SupplierID) AND $SupplierID != '' AND !isset($_POST['SearchSupplier']
 if ($Edit == true) {
 	$ItemResult = DB_query("SELECT description FROM stockmaster WHERE stockid='" . $StockID . "'");
 	$DescriptionRow = DB_fetch_array($ItemResult);
-	echo '<p class="page_title_text"><img src="' . $RootPath . '/css/' . $Theme . '/images/maintenance.png" title="' . _('Search') . '" alt="" />' . ' ' . $Title . ' ' . _('For Stock Code') . ' - ' . $StockID . ' - ' . $DescriptionRow['description'] . '</p><br />';
 }
 
 if (isset($_POST['SearchSupplier'])) {
-    if (isset($_POST['Keywords']) AND isset($_POST['SupplierCode'])) {
-        prnMsg( _('Supplier Name keywords have been used in preference to the Supplier Code extract entered') . '.', 'info' );
-        echo '<br />';
-    }
-    if ($_POST['Keywords'] == '' AND $_POST['SupplierCode'] == '') {
-        $_POST['Keywords'] = ' ';
-    }
-    if (mb_strlen($_POST['Keywords']) > 0) {
-        //insert wildcard characters in spaces
-		$SearchString = '%' . str_replace(' ', '%', $_POST['Keywords']) . '%';
 
-		$SQL = "SELECT suppliers.supplierid,
-						suppliers.suppname,
-						suppliers.currcode,
-						suppliers.address1,
-						suppliers.address2,
-						suppliers.address3
-				FROM suppliers
-				WHERE suppliers.suppname " . LIKE  . " '".$SearchString."'";
-
-    } elseif (mb_strlen($_POST['SupplierCode']) > 0) {
-        $SQL = "SELECT suppliers.supplierid,
-						suppliers.suppname,
-						suppliers.currcode,
-						suppliers.address1,
-						suppliers.address2,
-						suppliers.address3
-				FROM suppliers
-				WHERE suppliers.supplierid " . LIKE . " '%" . $_POST['SupplierCode'] . "%'";
-
-    } //one of keywords or SupplierCode was more than a zero length string
     $ErrMsg = _('The suppliers matching the criteria entered could not be retrieved because');
     $DbgMsg = _('The SQL to retrieve supplier details that failed was');
-    $SuppliersResult = DB_query($SQL, $ErrMsg, $DbgMsg);
+	$SQL = "SELECT suppliers.supplierid,
+				suppliers.suppname,
+				suppliers.currcode,
+				suppliers.address1,
+				suppliers.address2,
+				suppliers.address3
+			FROM suppliers
+			WHERE suppliers.supplierid =?";
+			$values[0]=$_POST['Keywords']??'';
+	$SuppliersResult = DB_query_stmt($SQL, $ErrMsg, $DbgMsg, 's',$values);
+
+	if(DB_num_rows($SuppliersResult) == 0){
+		$SQL = "SELECT suppliers.supplierid,
+					suppliers.suppname,
+					suppliers.currcode,
+					suppliers.address1,
+					suppliers.address2,
+					suppliers.address3
+				FROM suppliers
+				WHERE concat(suppliers.supplierid,
+					suppliers.suppname,
+					suppliers.currcode,
+					suppliers.address1,
+					suppliers.address2,
+					suppliers.address3) like ?";
+			$values[0]='%'.$values[0].'%';
+		$SuppliersResult = DB_query_stmt($SQL, $ErrMsg, $DbgMsg, 's',$values);
+	}
 } //end of if search
 
-if (isset($SuppliersResult)) {
+if (isset($SuppliersResult) and DB_num_rows($SuppliersResult)>0) {
 	if (isset($StockID)) {
         $result = DB_query("SELECT stockmaster.description,
 								stockmaster.units,
@@ -492,6 +494,8 @@ if (isset($SuppliersResult)) {
 		</table>
 			<br/>
 			</form>';
+}else{
+	prnMsg(_('No supplier records contain the selected text'), 'warn');
 }
 //end if results to show
 

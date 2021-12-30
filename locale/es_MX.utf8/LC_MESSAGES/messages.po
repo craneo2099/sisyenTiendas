@@ -4125,7 +4125,7 @@ msgstr "Para buscar órdenes de trabajo para un artí­culo especí­fico use la
 #: SelectSalesOrder.php:605 SelectWorkOrder.php:192 Shipt_Select.php:157
 #: TestPlanResults.php:147 WorkOrderEntry.php:893 WorkOrderIssue.php:942
 msgid "Select a stock category"
-msgstr "Seleccionar una clase de existencia"
+msgstr "Seleccionar una categoría"
 
 #: CollectiveWorkOrderCost.php:309 SelectSalesOrder.php:618
 #: SelectWorkOrder.php:200
@@ -5498,6 +5498,9 @@ msgstr "No se pudo agregar el registro contable de impuestos porque"
 msgid "Invoice number"
 msgstr "Factura número"
 
+msgid "Ticket number"
+msgstr "Número de ticket"
+
 #: ConfirmDispatch_Invoice.php:1747 CounterReturns.php:1590
 #: CounterSales.php:2050 PickingLists.php:624
 #: RecurringSalesOrdersProcess.php:701 SelectCreditItems.php:1994
@@ -6660,7 +6663,7 @@ msgstr "El SQL que falló al obtener los detalles de la sucursal fue"
 
 #: CounterReturns.php:190
 msgid "This return has been cancelled as requested"
-msgstr ""
+msgstr "Ésta devolución ha sido cancelada correctamente"
 
 #: CounterReturns.php:191 CounterReturns.php:1599
 msgid "Start a new Counter Return"
@@ -6735,7 +6738,7 @@ msgstr ""
 
 #: CounterReturns.php:437
 msgid "Only items entered with a positive quantity can be added to the return"
-msgstr ""
+msgstr "Sólo se pueden devolver cantidades positivas de artículos"
 
 #: CounterReturns.php:471 CounterSales.php:510 SelectOrderItems.php:1070
 msgid "Recalculated the price from the GP % entered - the GP % was"
@@ -6839,7 +6842,7 @@ msgstr "No hay lí­neas en esta devolución. Por favor, introduzca primero las 
 
 #: CounterReturns.php:861
 msgid "The amount entered as payment to the customer does not equal the amount of the return. Please correct amount and re-enter"
-msgstr "La cantidad a devolver no coincide con la cantidad entregada al cliente"
+msgstr "El monto pagado al cliente no coincide con el monto de la devolución"
 
 #: CounterReturns.php:875
 msgid "We were unable to load the area where the sale is to from the custbranch table"
@@ -6908,6 +6911,9 @@ msgstr "No se puede insertar la asignación de clientes de la recepción de la f
 msgid "Credit Note number"
 msgstr "Número de nota de crédito"
 
+msgid "Return Note number %d has been processed"
+msgstr "Número de nota de devolución %d ha sido procesado"
+
 #: CounterReturns.php:1595 CounterReturns.php:1597 Credit_Invoice.php:1478
 #: Credit_Invoice.php:1480
 msgid "Print this credit note"
@@ -6947,7 +6953,7 @@ msgstr "Anterior"
 
 #: CounterReturns.php:1675
 msgid "Return Item(s)"
-msgstr "Artí­culos devueltos"
+msgstr "Devolver artículos"
 
 #: CounterReturns.php:1683 CounterSales.php:2108 CounterSales.php:2254
 #: InternalStockRequest.php:546 SelectOrderItems.php:1524
@@ -7094,7 +7100,7 @@ msgstr "Girado a"
 
 #: CounterSales.php:943
 msgid "Amount given"
-msgstr "Monto entregado"
+msgstr "Monto Recibido"
 
 msgid "Amount Paid"
 msgstr "Monto pagado"
@@ -7204,7 +7210,7 @@ msgstr "Nuevo número de orden de trabajo"
 msgid "for"
 msgstr "para"
 
-#: CounterSales.php:1293 DeliveryDetails.php:593 DeliveryDetails.php:824
+#: DeliveryDetails.php:593 DeliveryDetails.php:824
 #: EmailConfirmation.php:179 EmailConfirmation.php:299 FTP_RadioBeacon.php:178
 #: FTP_RadioBeacon.php:281 PO_AuthoriseMyOrders.php:58 PO_OrderDetails.php:26
 #: POReport.php:492 POReport.php:501 POReport.php:733 POReport.php:1260
@@ -7219,10 +7225,13 @@ msgstr "para"
 msgid "Order Number"
 msgstr "Número de orden"
 
+msgid "Order Number %d has been entered"
+msgstr "Número de orden %d ha sido creada"
+
 msgid "P/O"
 msgstr "N/O"
 
-#: CounterSales.php:1293 DeliveryDetails.php:591 DeliveryDetails.php:593
+#:  DeliveryDetails.php:591 DeliveryDetails.php:593
 #: SpecialOrder.php:563
 msgid "has been entered"
 msgstr "ha sido creada"
@@ -14824,7 +14833,7 @@ msgstr "Recibir órdenes de compra"
 
 #: GoodsReceived.php:27 PO_Header.php:248
 msgid "Back to Purchase Orders"
-msgstr "Volver a órdenes de compra"
+msgstr "Volver a Buscar órdenes de compra pendientes"
 
 #: GoodsReceived.php:35
 msgid "This page can only be opened if a purchase order has been selected. Please select a purchase order first"
@@ -15881,7 +15890,7 @@ msgstr "Crear otra Requisición"
 
 #: InternalStockRequest.php:137
 msgid "There are no items added to this request"
-msgstr ""
+msgstr "No se han agregado artículos a la solicitud"
 
 #: InternalStockRequest.php:140 StockAdjustments.php:122
 #: StockLocTransfer.php:244 StockLocTransferReceive.php:523
@@ -18311,6 +18320,10 @@ msgstr "Cantidad pendiente"
 msgid "Unit Price"
 msgstr "Precio Unitario"
 
+
+msgid "U/P"
+msgstr "P. Unit."
+
 #: OutstandingGRNs.php:185 OutstandingGRNs.php:187 PO_AuthoriseMyOrders.php:120
 #: SupplierCredit.php:316 SupplierInvoice.php:677 SupplierTenders.php:329
 msgid "Line Total"
@@ -19741,6 +19754,10 @@ msgstr "Flete"
 #: PDFAck.php:257
 msgid "Total Including Tax and Freight"
 msgstr ""
+
+#: PDFAck.php:257
+msgid "Total Including Tax"
+msgstr "Total IVA incluido"
 
 #: PDFAck.php:278
 msgid "There were no items on the Acknowledgement"
@@ -21726,6 +21743,9 @@ msgstr "Nueva orden de compra"
 msgid "Status Comment"
 msgstr "Comentario del Estado"
 
+msgid "Status Comments"
+msgstr "Comentarios de Estatus"
+
 #: PO_Header.php:849
 msgid "Status Update"
 msgstr "Actualización de Estado"
@@ -21894,7 +21914,7 @@ msgstr "El SQL que falló al actualizar el registro de detalle de la orden de co
 
 #: PO_Items.php:397
 msgid "Receive and Enter Purchase Invoice"
-msgstr ""
+msgstr "Recibir orden de compra"
 
 #: PO_Items.php:414
 msgid "This item cannot be deleted because some of it has already been received"
@@ -22029,6 +22049,8 @@ msgstr "Nuestra Unidad"
 #: PO_Items.php:886
 msgid "Price Our Units"
 msgstr "Precio de Nuestras Unidades"
+msgid "Price with tax"
+msgstr "Precio +IVA"
 
 #: PO_Items.php:887
 msgid "Unit Conversion Factor"
@@ -22291,6 +22313,14 @@ msgstr "Valor total del pedido sin impuestos"
 msgid "Total Order Value Received Excluding Tax"
 msgstr "Valor total de la orden recibida sin impuestos"
 
+#: PO_OrderDetails.php:240
+msgid "Total Order Value Incl. Tax"
+msgstr "Valor total del pedido Con IVA"
+
+#: PO_OrderDetails.php:244
+msgid "Total Order Value Received Incl. Tax"
+msgstr "Valor total de la orden recibida con IVA"
+
 #: PO_PDFPurchOrder.php:9 ReprintGRN.php:18
 msgid "Select a purchase order"
 msgstr "Seleccionar una orden de compra"
@@ -22303,6 +22333,9 @@ msgstr "Seleccione un número de orden de compra a imprimir antes de llamar esta
 #: includes/MainMenuLinksArray.php:47
 msgid "Purchase Order Inquiry"
 msgstr "Consultar órdenes de compra"
+
+msgid "Purchase Order Inquiry Number"
+msgstr "Consultar la órden de compra"
 
 #: PO_PDFPurchOrder.php:29
 msgid "This page must be called with a purchase order number to print"
@@ -22364,6 +22397,8 @@ msgstr "Seleccionar otra pedido"
 #: PO_PDFPurchOrder.php:314
 msgid "Order Total - excl tax"
 msgstr "Total del pedido - sin imp."
+msgid "Order Total - incl tax"
+msgstr "Total del pedido - con IVA"
 
 #: PO_PDFPurchOrder.php:331
 msgid "Please find herewith our purchase order number"
@@ -22585,7 +22620,7 @@ msgstr "Buscar órdenes de compra"
 
 #: PO_SelectOSPurchOrder.php:259
 msgid "Show PO Details"
-msgstr ""
+msgstr "Mostrar detalles"
 
 #: PO_SelectOSPurchOrder.php:266 PO_SelectPurchOrder.php:178
 msgid "To search for purchase orders for a specific part use the part selection facilities below"
@@ -23964,7 +23999,7 @@ msgstr "Editar orden"
 
 #: PurchaseByPrefSupplier.php:299
 msgid "Unable to create the order"
-msgstr ""
+msgstr "No fue posible crear la orden"
 
 #: PurchaseByPrefSupplier.php:310 SellThroughSupport.php:221
 msgid "For Supplier"
@@ -23984,7 +24019,7 @@ msgstr ""
 
 #: PurchaseByPrefSupplier.php:417
 msgid "Supp Ords"
-msgstr ""
+msgstr "Ord. Prov."
 
 #: PurchaseByPrefSupplier.php:419 PurchaseByPrefSupplier.php:422
 msgid "Last"
@@ -24028,6 +24063,9 @@ msgstr "Al utilizar éste botón se creará una orden de compra para todas las c
 msgid "Purchases from Suppliers"
 msgstr "Compras a proveedores"
 
+msgid "Search all purchases in selected period"
+msgstr "Buscar todas las compras en el periodo elegido"
+
 #: PurchasesReport.php:48 PurchasesReport.php:250 SalesReport.php:48
 #: SalesReport.php:250
 msgid "Period from"
@@ -24044,7 +24082,7 @@ msgstr "Monto global original"
 
 #: PurchasesReport.php:56 SalesReport.php:56
 msgid "Original Overall Taxes"
-msgstr "Impuesto global original"
+msgstr "Imp. global orig."
 
 #: PurchasesReport.php:57 SalesReport.php:57
 msgid "Original Overall Total"
@@ -24056,7 +24094,7 @@ msgstr "Monto global contable"
 
 #: PurchasesReport.php:59 SalesReport.php:59
 msgid "GL Overall Taxes"
-msgstr "Impuesto global contable"
+msgstr "Imp. global cont."
 
 #: PurchasesReport.php:60 SalesReport.php:60
 msgid "GL Overall Total"
@@ -24065,6 +24103,9 @@ msgstr "Total global contable"
 #: PurchasesReport.php:66
 msgid "Original amounts in the supplier's currency. GL amounts in the functional currency."
 msgstr "Montos originales en la moneda del proveedor. Montos contables en la moneda funcional."
+
+msgid "There are no purchases in the selected period."
+msgstr "No hay compras en el periodo seleccionado."
 
 #: PurchasesReport.php:76 SuppWhereAlloc.php:32 SuppWhereAlloc.php:37
 #: SuppWhereAlloc.php:41 SuppWhereAlloc.php:150
@@ -24139,6 +24180,9 @@ msgstr "No se pudo agregar en la base de datos el detalle de la compra al provee
 #: PurchData.php:115
 msgid "This supplier purchasing data has been added to the database"
 msgstr "Se han introducido los datos de compra al proveedor"
+
+msgid "This supplier purchasing data has been updated"
+msgstr "Se han actualizado los datos de compra al proveedor"
 
 #: PurchData.php:130
 msgid "The supplier purchasing details could not be updated because"
@@ -24261,6 +24305,9 @@ msgstr "No se pudieron obtener los detalles del proveedor seleccionado porque"
 #: PurchData.php:362 SupplierPriceList.php:390
 msgid "The supplier code"
 msgstr "El proveedor código"
+
+msgid "The preferred supplier was updated"
+msgstr "El proveedor preferido fue actualizado"
 
 #: PurchData.php:362 SupplierPriceList.php:390
 msgid "is not an existing supplier in the database"
@@ -26899,6 +26946,12 @@ msgid "Last Paid Date"
 msgstr "Última fecha de pago"
 
 #: SelectCustomer.php:678
+msgid "Inc tax"
+msgstr "IVA inc."
+
+msgid "Included tax"
+msgstr "IVA incluido"
+
 msgid "Last Paid Amount (inc tax)"
 msgstr "Importe del último pago (imp. inc.)"
 
@@ -27786,6 +27839,15 @@ msgstr "Buscar/Modificar/Cerrar Enví­os"
 #: includes/MainMenuLinksArray.php:47
 msgid "Supplier Price List"
 msgstr "Lista de precios del proveedor"
+
+msgid "Supplier Price"
+msgstr "Precio del proveedor"
+
+msgid "Supplier Price w/tax"
+msgstr "Precio del proveedor con IVA"
+
+msgid "Our Price"
+msgstr "Nuestro Precio (MXN con IVA) "
 
 #: SelectSupplier.php:198
 msgid "Enter a Purchase Order for This Supplier"
@@ -33527,7 +33589,7 @@ msgstr "Factor de conversión"
 
 #: SuppPriceList.php:219 SuppPriceList.php:344
 msgid "Supp Code"
-msgstr "Código de proveedor"
+msgstr "ID del prov."
 
 #: SuppPriceList.php:244
 msgid "Purchase"
@@ -42783,7 +42845,7 @@ msgstr ""
 
 #: includes/GetPrice.inc:157
 msgid "There are no prices set up for"
-msgstr "No se ha fijado los precios de"
+msgstr "No se han fijado los precios de"
 
 #: includes/GetSalesTransGLCodes.inc:11
 msgid "Can not retrieve the cost of sales GL code because"
@@ -45828,7 +45890,7 @@ msgstr "Administrar Compañí­as Financieras"
 
 #: includes/MainMenuLinksArray.php:44
 msgid "Purchase Order Grid Entry"
-msgstr "Entrada en cuadrí­cula de orden de compra"
+msgstr "Entrada en cuadrícula de órdenes de compra"
 
 #: includes/MainMenuLinksArray.php:44
 msgid "Create a New Tender"
@@ -48155,7 +48217,7 @@ msgstr "Seleccionar el método de pago"
 
 #: ../webSHOP/Checkout.php:635
 msgid "Delivery Address"
-msgstr ""
+msgstr "Direccion de entrega"
 
 #: ../webSHOP/Checkout.php:660
 msgid "Change Delivery Details"

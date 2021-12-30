@@ -16,7 +16,6 @@ $Title = _('Purchases from Suppliers');
 $ViewTopic = 'PurchaseOrdering';
 $BookMark = 'PurchasesReport';
 
-include('includes/header.php');
 
 // Merges gets into posts:
 if(isset($_GET['PeriodFrom'])) {
@@ -28,9 +27,35 @@ if(isset($_GET['PeriodTo'])) {
 if(isset($_GET['ShowDetails'])) {
 	$_POST['ShowDetails'] = $_GET['ShowDetails'];
 }
-
+$Result='';
+$PeriodFrom = '';
+$PeriodTo = '';
+$PageMode = 'INI';
 // Validates the data submitted in the form:
 if(isset($_POST['PeriodFrom']) AND isset($_POST['PeriodTo'])) {
+	$PeriodFrom = FormatDateForSQL($_POST['PeriodFrom']);
+	$PeriodTo = FormatDateForSQL($_POST['PeriodTo']);
+	$SQL = "SELECT
+				supptrans.supplierno,
+				suppliers.suppname,
+				suppliers.currcode,
+				supptrans.trandate,
+				supptrans.suppreference,
+				supptrans.transno,
+				supptrans.ovamount,
+				supptrans.ovgst,
+				supptrans.rate
+			FROM supptrans
+				INNER JOIN suppliers ON supptrans.supplierno=suppliers.supplierid
+			WHERE supptrans.trandate>='" . $PeriodFrom . "'
+				AND supptrans.trandate<='" . $PeriodTo . "'
+				AND supptrans.`type`=20
+			ORDER BY supptrans.supplierno, supptrans.trandate";
+	$Result = DB_query($SQL);
+	if(DB_num_rows($Result)==0){
+		prnMsg(_('There are no purchases in the selected period.'), 'warn');
+		$_POST['NewReport'] = 'on';
+	}
 	if(Date1GreaterThanDate2($_POST['PeriodFrom'], $_POST['PeriodTo'])) {
 		// The beginning is after the end.
 		$_POST['NewReport'] = 'on';
@@ -41,6 +66,54 @@ if(isset($_POST['PeriodFrom']) AND isset($_POST['PeriodTo'])) {
 // Main code:
 if(isset($_POST['PeriodFrom']) AND isset($_POST['PeriodTo']) AND !$_POST['NewReport']) {
 	// If PeriodFrom and PeriodTo are set and it is not a NewReport, generates the report:
+	
+	if($_POST['ShowDetails']) {// Parameters: PeriodFrom, PeriodTo, ShowDetails=on.
+		$PageMode = 'DETALLE';
+		$tableHeaders=array(_('Date'), 
+			_('Purchase Invoice'), 
+			_('Reference'));
+
+	} else {// Parameters: PeriodFrom, PeriodTo, ShowDetails=off.
+		$PageMode = 'RESUMEN';
+		$tableHeaders=array(_('Supplier Code'), 
+		_('Supplier Name'), 
+		_('Supplier\'s Currency'));
+		$SQL = "SELECT
+					supptrans.supplierno,
+					suppliers.suppname,
+					suppliers.currcode,
+					SUM(supptrans.ovamount) AS SupplierOvAmount,
+					SUM(supptrans.ovgst) AS SupplierOvTax,
+					SUM(supptrans.ovamount/supptrans.rate) AS SupplierGlAmount,
+					SUM(supptrans.ovgst/supptrans.rate) AS SupplierGlTax
+				FROM supptrans
+					INNER JOIN suppliers ON supptrans.supplierno=suppliers.supplierid
+				WHERE supptrans.trandate>='" . $PeriodFrom . "'
+					AND supptrans.trandate<='" . $PeriodTo . "'
+					AND supptrans.`type`=20
+				GROUP BY
+					supptrans.supplierno
+				ORDER BY supptrans.supplierno, supptrans.trandate";
+		$Result = DB_query($SQL);
+	}
+	$tableHeaders=array_merge($tableHeaders,array(_('Original Overall Amount') ,
+						_('Original Overall Taxes'), 
+						_('Original Overall Total'), 
+						_('GL Overall Amount'), 
+						_('GL Overall Taxes'), 
+						_('GL Overall Total') ));
+	if(isset($_POST['PrintBtn'])){
+		
+		include($PathPrefix.'purch/ordenes/reportes/PrintPurchReport.inc');
+	}
+}
+// END Procedure division ======================================================
+
+include('includes/header.php');
+// Main code:
+if($PageMode != 'INI') {
+	// If PeriodFrom and PeriodTo are set and it is not a NewReport, generates the report:
+
 	echo '<div class="sheet">', // Division to identify the report block.
 		'<p class="page_title_text"><img alt="" src="', $RootPath, '/css/', $Theme, '/images/reports.png" title="', // Icon image.
 		$Title, '" /> ', // Icon title.
@@ -51,14 +124,10 @@ if(isset($_POST['PeriodFrom']) AND isset($_POST['PeriodTo']) AND !$_POST['NewRep
 		<thead>
 			<tr>';
 	// $CommonHead is the common table head between ShowDetails=off and ShowDetails=on:
-	$CommonHead =
-				'<th>' . _('Original Overall Amount') . '</th>' .
-				'<th>' . _('Original Overall Taxes') . '</th>' .
-				'<th>' . _('Original Overall Total') . '</th>' .
-				'<th>' . _('GL Overall Amount') . '</th>' .
-				'<th>' . _('GL Overall Taxes') . '</th>' .
-				'<th>' . _('GL Overall Total') . '</th>' .
-			'</tr>' .
+	
+	displayTableHeaders($tableHeaders);
+
+	echo '</tr>' .
 		'</thead><tfoot>' .
 			'<tr>' .
 				'<td colspan="9"><br /><b>' .
@@ -69,13 +138,7 @@ if(isset($_POST['PeriodFrom']) AND isset($_POST['PeriodTo']) AND !$_POST['NewRep
 		'</tfoot><tbody>';
 	$TotalGlAmount = 0;
 	$TotalGlTax = 0;
-	$PeriodFrom = FormatDateForSQL($_POST['PeriodFrom']);
-	$PeriodTo = FormatDateForSQL($_POST['PeriodTo']);
 	if($_POST['ShowDetails']) {// Parameters: PeriodFrom, PeriodTo, ShowDetails=on.
-		echo		'<th>', _('Date'), '</th>',
-					'<th>', _('Purchase Invoice'), '</th>',
-					'<th>', _('Reference'), '</th>',
-					$CommonHead;
 		// Includes $CurrencyName array with currency three-letter alphabetic code and name based on ISO 4217:
 		include('includes/CurrenciesArray.php');
 		$SupplierId = '';
@@ -83,23 +146,7 @@ if(isset($_POST['PeriodFrom']) AND isset($_POST['PeriodTo']) AND !$_POST['NewRep
 		$SupplierOvTax = 0;
 		$SupplierGlAmount = 0;
 		$SupplierGlTax = 0;
-		$SQL = "SELECT
-					supptrans.supplierno,
-					suppliers.suppname,
-					suppliers.currcode,
-					supptrans.trandate,
-					supptrans.suppreference,
-					supptrans.transno,
-					supptrans.ovamount,
-					supptrans.ovgst,
-					supptrans.rate
-				FROM supptrans
-					INNER JOIN suppliers ON supptrans.supplierno=suppliers.supplierid
-				WHERE supptrans.trandate>='" . $PeriodFrom . "'
-					AND supptrans.trandate<='" . $PeriodTo . "'
-					AND supptrans.`type`=20
-				ORDER BY supptrans.supplierno, supptrans.trandate";
-		$Result = DB_query($SQL);
+	
 		foreach($Result as $MyRow) {
 			if($MyRow['supplierno'] != $SupplierId) {// If different, prints supplier totals:
 				if($SupplierId != '') {// If NOT the first line.
@@ -159,28 +206,8 @@ if(isset($_POST['PeriodFrom']) AND isset($_POST['PeriodTo']) AND !$_POST['NewRep
 		$TotalGlTax += $SupplierGlTax;
 
 	} else {// Parameters: PeriodFrom, PeriodTo, ShowDetails=off.
-		// RChacon: Needs to update the table_sort function to use in this table.
-		echo		'<th>', _('Supplier Code'), '</th>',
-					'<th>', _('Supplier Name'), '</th>',
-					'<th>', _('Supplier\'s Currency'), '</th>',
-					$CommonHead;
-		$SQL = "SELECT
-					supptrans.supplierno,
-					suppliers.suppname,
-					suppliers.currcode,
-					SUM(supptrans.ovamount) AS SupplierOvAmount,
-					SUM(supptrans.ovgst) AS SupplierOvTax,
-					SUM(supptrans.ovamount/supptrans.rate) AS SupplierGlAmount,
-					SUM(supptrans.ovgst/supptrans.rate) AS SupplierGlTax
-				FROM supptrans
-					INNER JOIN suppliers ON supptrans.supplierno=suppliers.supplierid
-				WHERE supptrans.trandate>='" . $PeriodFrom . "'
-					AND supptrans.trandate<='" . $PeriodTo . "'
-					AND supptrans.`type`=20
-				GROUP BY
-					supptrans.supplierno
-				ORDER BY supptrans.supplierno, supptrans.trandate";
-		$Result = DB_query($SQL);
+
+
 		foreach($Result as $MyRow) {
 			echo '<tr class="striped_row">',
 					'<td class="text">', $MyRow['supplierno'], '</td>',
@@ -196,6 +223,10 @@ if(isset($_POST['PeriodFrom']) AND isset($_POST['PeriodTo']) AND !$_POST['NewRep
 			$TotalGlAmount += $MyRow['SupplierGlAmount'];
 			$TotalGlTax += $MyRow['SupplierGlTax'];
 		}
+	}
+	if(isset($_POST['PrintBtn'])){
+		
+		include($PathPrefix.'purch/ordenes/reportes/PrintPurchReport.inc');
 	}
 	// Prints all suppliers total:
 	echo	'<tr>
@@ -214,7 +245,7 @@ if(isset($_POST['PeriodFrom']) AND isset($_POST['PeriodTo']) AND !$_POST['NewRep
 		'<input name="PeriodTo" type="hidden" value="', $_POST['PeriodTo'], '" />',
 		'<input name="ShowDetails" type="hidden" value="', $_POST['ShowDetails'], '" />',
 		'<div class="centre noprint">', // Form buttons:
-			'<button onclick="window.print()" type="button"><img alt="" src="', $RootPath, '/css/', $Theme, '/images/printer.png" /> ', _('Print'), '</button>', // "Print" button.
+			'<button name="PrintBtn" type="submit"><img alt="" src="', $RootPath, '/css/', $Theme, '/images/printer.png" /> ', _('Print'), '</button>', // "Print" button.
 			'<button name="NewReport" type="submit" value="on"><img alt="" src="', $RootPath, '/css/', $Theme, '/images/reports.png" /> ', _('New Report'), '</button>', // "New Report" button.
 			'<button onclick="window.location=\'index.php?Application=PO\'" type="button"><img alt="" src="', $RootPath, '/css/', $Theme, '/images/return.svg" /> ', _('Return'), '</button>', // "Return" button.
 		'</div>';
@@ -246,7 +277,7 @@ if(isset($_POST['PeriodFrom']) AND isset($_POST['PeriodTo']) AND !$_POST['NewRep
 	// Content of the body of the input table: idioma
 	// Select period from:
 			'<tr>',
-				'<td><label for="PeriodFrom">', _('Supplier\'s Currency'), '</label></td>';
+				'<td><label for="PeriodFrom">', _('Period from'), '</label></td>';
 	if(!isset($_POST['PeriodFrom'])) {
 		$_POST['PeriodFrom'] = date($_SESSION['DefaultDateFormat'], strtotime("-1 year", time()));// One year before current date.
 	}
@@ -276,5 +307,9 @@ if(isset($_POST['PeriodFrom']) AND isset($_POST['PeriodTo']) AND !$_POST['NewRep
 }
 echo	'</form>';
 include('includes/footer.php');
-// END Procedure division ======================================================
+function displayTableHeaders($headers){
+	foreach ($headers as $value) {
+		echo '<th>', $value, '</th>';
+	}
+}
 ?>

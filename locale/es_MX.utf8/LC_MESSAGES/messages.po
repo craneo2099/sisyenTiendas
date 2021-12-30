@@ -24063,6 +24063,9 @@ msgstr "Al utilizar éste botón se creará una orden de compra para todas las c
 msgid "Purchases from Suppliers"
 msgstr "Compras a proveedores"
 
+msgid "Search all purchases in selected period"
+msgstr "Buscar todas las compras en el periodo elegido"
+
 #: PurchasesReport.php:48 PurchasesReport.php:250 SalesReport.php:48
 #: SalesReport.php:250
 msgid "Period from"
@@ -24079,7 +24082,7 @@ msgstr "Monto global original"
 
 #: PurchasesReport.php:56 SalesReport.php:56
 msgid "Original Overall Taxes"
-msgstr "Impuesto global original"
+msgstr "Imp. global orig."
 
 #: PurchasesReport.php:57 SalesReport.php:57
 msgid "Original Overall Total"
@@ -24091,7 +24094,7 @@ msgstr "Monto global contable"
 
 #: PurchasesReport.php:59 SalesReport.php:59
 msgid "GL Overall Taxes"
-msgstr "Impuesto global contable"
+msgstr "Imp. global cont."
 
 #: PurchasesReport.php:60 SalesReport.php:60
 msgid "GL Overall Total"
@@ -24100,6 +24103,9 @@ msgstr "Total global contable"
 #: PurchasesReport.php:66
 msgid "Original amounts in the supplier's currency. GL amounts in the functional currency."
 msgstr "Montos originales en la moneda del proveedor. Montos contables en la moneda funcional."
+
+msgid "There are no purchases in the selected period."
+msgstr "No hay compras en el periodo seleccionado."
 
 #: PurchasesReport.php:76 SuppWhereAlloc.php:32 SuppWhereAlloc.php:37
 #: SuppWhereAlloc.php:41 SuppWhereAlloc.php:150
@@ -24174,6 +24180,9 @@ msgstr "No se pudo agregar en la base de datos el detalle de la compra al provee
 #: PurchData.php:115
 msgid "This supplier purchasing data has been added to the database"
 msgstr "Se han introducido los datos de compra al proveedor"
+
+msgid "This supplier purchasing data has been updated"
+msgstr "Se han actualizado los datos de compra al proveedor"
 
 #: PurchData.php:130
 msgid "The supplier purchasing details could not be updated because"
@@ -24296,6 +24305,9 @@ msgstr "No se pudieron obtener los detalles del proveedor seleccionado porque"
 #: PurchData.php:362 SupplierPriceList.php:390
 msgid "The supplier code"
 msgstr "El proveedor código"
+
+msgid "The preferred supplier was updated"
+msgstr "El proveedor preferido fue actualizado"
 
 #: PurchData.php:362 SupplierPriceList.php:390
 msgid "is not an existing supplier in the database"

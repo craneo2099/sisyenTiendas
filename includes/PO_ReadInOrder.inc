@@ -150,7 +150,8 @@
 									purchorderdetails.assetid,
 									purchorderdetails.conversionfactor,
 									purchorderdetails.suppliersunit,
-									purchorderdetails.suppliers_partno
+									purchorderdetails.suppliers_partno,
+									purchorderdetails.taxrate
 									FROM purchorderdetails
 									LEFT JOIN stockmaster
 									ON purchorderdetails.itemcode=stockmaster.stockid
@@ -207,7 +208,8 @@
 															$myrow['conversionfactor'],
 															1,
 															$myrow['suppliers_partno'],
-															$myrow['assetid'] );
+															$myrow['assetid'],
+															$myrow['taxrate']  );
 
 					$_SESSION['PO'.$identifier]->LineItems[$_SESSION['PO'.$identifier]->LinesOnOrder]->PODetailRec = $myrow['podetailitem'];
 					$_SESSION['PO'.$identifier]->LineItems[$_SESSION['PO'.$identifier]->LinesOnOrder]->StandardCost = $myrow['stdcostunit'];  /*Needed for receiving goods and GL interface */

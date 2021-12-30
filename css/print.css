@@ -15,6 +15,9 @@
 .printHeader div{
 	margin:auto auto;
 }
+td.Date {
+	white-space: nowrap;
+}
 
 h1 {
 	font-size: 173%;

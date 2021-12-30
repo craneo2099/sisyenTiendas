@@ -76,6 +76,45 @@ function getSalesTypesSelect($TypeAbbrev='' , $atts='', $all='', $deleted = '',$
 	}
 	echo '</select>';
 }
+function getCategorySelect($selected='' , $atts='', $all='',$none='',$types=''){
+	
+	$filter='';
+	$where='';
+	$qry_or='';
+	for ($i=0; $i < strlen($types) ; $i++) { 
+		$qry_type=$qry_or." stocktype='".$types[$i]."'";
+		$qry_or=' OR';
+	}
+	$filter.=$qry_type;
+	if($filter){
+		$where=' where'. $filter;
+	}
+	$SQL = "SELECT categoryid,
+				categorydescription
+			FROM stockcategory".$where.
+			" ORDER BY categorydescription";
+	$result = DB_query($SQL);
+
+    if(str_contains($atts,' name=')){
+        echo '<select '.$atts.'>';
+    }else{
+	    echo '<select name="StockCat" '.$atts.'>';
+    }
+	if($all){
+		echo '<option value="All">' . _('All') . '</option>';
+	}
+	if($none){
+		echo '<option '.($selected?'':'selected="selected" ').'value=" "> </option>';
+	}
+	while ($myrow = DB_fetch_array($result)) {
+		echo '<option ';
+		if ($myrow['categoryid']==$selected) {
+			echo 'selected="selected" ';
+		}
+		echo 'value="' . $myrow['categoryid'] . '">' . $myrow['categorydescription'] . '</option>';
+	}
+	echo '</select>';
+}
 
 function countSalesTypes(){
 	

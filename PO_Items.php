@@ -33,8 +33,9 @@ if (!isset($_POST['Commit'])) {
 	echo '<a href="'.$RootPath.'/PO_Header.php?identifier=' . $identifier. '">' ._('Back To Purchase Order Header') . '</a><br />';
 }
 
+$pOIden=$_SESSION['PO'.$identifier];
 if (isset($_POST['UpdateLines']) OR isset($_POST['Commit'])) {
-	foreach ($_SESSION['PO'.$identifier]->LineItems as $POLine) {
+	foreach ($pOIden->LineItems as $POLine) {
 		if ($POLine->Deleted == false) {
 			if (!is_numeric(filter_number_format($_POST['ConversionFactor'.$POLine->LineNo]))){
 				prnMsg(_('The conversion factor is expected to be numeric - the figure which converts from our units to the supplier units. e.g. if the supplier units is a tonne and our unit is a kilogram then the conversion factor that converts our unit to the suppliers unit is 1000'),'error');
@@ -47,10 +48,12 @@ if (isset($_POST['UpdateLines']) OR isset($_POST['Commit'])) {
 			} else { //ok to update the PO object variables
 				$_SESSION['PO'.$identifier]->LineItems[$POLine->LineNo]->Quantity = round(filter_number_format($_POST['SuppQty'.$POLine->LineNo])*$_SESSION['PO'.$identifier]->LineItems[$POLine->LineNo]->ConversionFactor,$_SESSION['PO'.$identifier]->LineItems[$POLine->LineNo]->DecimalPlaces);
 			}
-			if (!is_numeric(filter_number_format($_POST['SuppPrice'.$POLine->LineNo]))){
+			if (!is_numeric(filter_number_format($_POST['SuppPriceTax'.$POLine->LineNo]))){
 				prnMsg(_('The supplier price is expected to be numeric. Please re-enter as a number'),'error');
 			} else { //ok to update the PO object variables
-				$_SESSION['PO'.$identifier]->LineItems[$POLine->LineNo]->Price = filter_number_format($_POST['SuppPrice'.$POLine->LineNo])/$_SESSION['PO'.$identifier]->LineItems[$POLine->LineNo]->ConversionFactor;
+				$taxrate=GetTaxRateSupp ($pOIden->SupplierID, $pOIden->Location, $POLine->StockID);
+				$SuppPrice=$_POST['SuppPriceTax'.$POLine->LineNo]/(1+$taxrate);
+				$pOIden->LineItems[$POLine->LineNo]->Price = filter_number_format($SuppPrice)/$pOIden->LineItems[$POLine->LineNo]->ConversionFactor;
 			}
 			$_SESSION['PO'.$identifier]->LineItems[$POLine->LineNo]->ReqDelDate = $_POST['ReqDelDate'.$POLine->LineNo];
             $_SESSION['PO'.$identifier]->LineItems[$POLine->LineNo]->ItemDescription = $_POST['ItemDescription'.$POLine->LineNo];
@@ -202,6 +205,8 @@ if (isset($_POST['Commit'])){ /*User wishes to commit the order to the database 
 		     /*Insert the purchase order detail records */
 			foreach ($_SESSION['PO'.$identifier]->LineItems as $POLine) {
 				if ($POLine->Deleted==False) {
+					
+					$taxrate=GetTaxRateSupp ($_SESSION['PO'.$identifier]->SupplierID, $_SESSION['PO'.$identifier]->Location, $POLine->StockID);
 					$sql = "INSERT INTO purchorderdetails (orderno,
 														itemcode,
 														deliverydate,
@@ -214,7 +219,8 @@ if (isset($_POST['Commit'])){ /*User wishes to commit the order to the database 
 														suppliersunit,
 														suppliers_partno,
 														assetid,
-														conversionfactor )
+														conversionfactor,
+														taxrate )
 									VALUES ('" . $_SESSION['PO'.$identifier]->OrderNo . "',
 											'" . $POLine->StockID . "',
 											'" . FormatDateForSQL($POLine->ReqDelDate) . "',
@@ -227,7 +233,8 @@ if (isset($_POST['Commit'])){ /*User wishes to commit the order to the database 
 											'" . $POLine->SuppliersUnit . "',
 											'" . $POLine->Suppliers_PartNo . "',
 											'" . $POLine->AssetID . "',
-											'" . $POLine->ConversionFactor . "')";
+											'" . $POLine->ConversionFactor . "',
+											'".$taxrate."')";
 					$ErrMsg =_('One of the purchase order detail records could not be inserted into the database because');
 					$DbgMsg =_('The SQL statement used to insert the purchase order detail record and failed was');
 
@@ -311,6 +318,7 @@ if (isset($_POST['Commit'])){ /*User wishes to commit the order to the database 
 						 * field PODetailRec is given to the session for that POLine
 						 * So it will only be a new POLine if PODetailRec is empty
 						*/
+					$taxrate=GetTaxRateSupp ($_SESSION['PO'.$identifier]->SupplierID, $_SESSION['PO'.$identifier]->Location, $POLine->StockID);
 					$sql = "INSERT INTO purchorderdetails ( orderno,
 														itemcode,
 														deliverydate,
@@ -323,7 +331,8 @@ if (isset($_POST['Commit'])){ /*User wishes to commit the order to the database 
 														suppliersunit,
 														suppliers_partno,
 														assetid,
-														conversionfactor)
+														conversionfactor,
+														taxrate)
 													VALUES (
 														'" . $_SESSION['PO'.$identifier]->OrderNo . "',
 														'" . $POLine->StockID . "',
@@ -337,7 +346,8 @@ if (isset($_POST['Commit'])){ /*User wishes to commit the order to the database 
 														'" . $POLine->SuppliersUnit . "',
 														'" . $POLine->Suppliers_PartNo . "',
 														'" . $POLine->AssetID . "',
-														'" . $POLine->ConversionFactor . "')";
+														'" . $POLine->ConversionFactor . "',
+														'".$taxrate."')";
 
 				} else {
 					if ($POLine->Quantity==$POLine->QtyReceived){
@@ -883,33 +893,42 @@ if (count($_SESSION['PO'.$identifier]->LineItems)>0 and !isset($_GET['Edit'])){
 			<th class="ascending">' . _('Description') . '</th>
 			<th class="ascending">' . _('Quantity Our Units') . '</th>
 			<th>' . _('Our Unit')  . '</th>
-			<th class="ascending">' . _('Price Our Units') .' (' . $_SESSION['PO'.$identifier]->CurrCode .  ')</th>
+			<th class="ascending">' . _('Our Price') .'</th>
 			<th>' . _('Unit Conversion Factor') . '</th>
 			<th class="ascending">' . _('Order Quantity') . '<br />' . _('Supplier Units') . '</th>
 			<th>' .  _('Supplier Unit') . '</th>
-			<th class="ascending">' . _('Order Price') . '<br />' . _('Supp Units') . ' ('.$_SESSION['PO'.$identifier]->CurrCode.  ')</th>
+			<th class="ascending">' . _('Supplier Price') . '</th>
+			<th class="ascending">' . _('Supplier Price w/tax') . '</th>
 			<th class="ascending">' . _('Sub-Total') .' ('.$_SESSION['PO'.$identifier]->CurrCode.  ')</th>
 			<th class="ascending">' . _('Deliver By')  . '</th>
 			</tr>
 		</thead>
 		<tbody>';
 
-	$_SESSION['PO'.$identifier]->Total = 0;
+	$pOIden->Total = 0;
 
-	foreach ($_SESSION['PO'.$identifier]->LineItems as $POLine) {
+	foreach ($pOIden->LineItems as $POLine) {
 
 		if ($POLine->Deleted==False) {
-			$LineTotal = $POLine->Quantity * $POLine->Price;
-			$DisplayLineTotal = locale_number_format($LineTotal,$_SESSION['PO'.$identifier]->CurrDecimalPlaces);
 			// Note if the price is greater than 1 use 2 decimal place, if the price is a fraction of 1, use 4 decimal places
 			// This should help display where item-price is a fraction
+			$taxrate=GetTaxRateSupp ($pOIden->SupplierID, $pOIden->Location, $POLine->StockID);
+			$addDecimalPlaces=2;
 			if ($POLine->Price > 1) {
-				$DisplayPrice = locale_number_format($POLine->Price,$_SESSION['PO'.$identifier]->CurrDecimalPlaces);
-				$SuppPrice = locale_number_format(round(($POLine->Price *$POLine->ConversionFactor),$_SESSION['PO'.$identifier]->CurrDecimalPlaces),$_SESSION['PO'.$identifier]->CurrDecimalPlaces);
-			} else {
-				$DisplayPrice = locale_number_format($POLine->Price,($_SESSION['PO'.$identifier]->CurrDecimalPlaces + 2));
-				$SuppPrice = locale_number_format(round(($POLine->Price *$POLine->ConversionFactor),($_SESSION['PO'.$identifier]->CurrDecimalPlaces+2)),($_SESSION['PO'.$identifier]->CurrDecimalPlaces+2));
-			}
+				$addDecimalPlaces=0;
+			} 
+			$precioSinIva=$POLine->Price *$POLine->ConversionFactor;
+			$precioConIva=$precioSinIva*(1+$taxrate);
+			$LineTotal = $POLine->Quantity * $precioConIva;
+			
+			$DisplayPrice = locale_number_format($POLine->Price,
+				($pOIden->CurrDecimalPlaces + $addDecimalPlaces));
+			$DisplayPrecioSinIva = locale_number_format(
+				round($precioSinIva,
+				($pOIden->CurrDecimalPlaces + $addDecimalPlaces))
+				,($pOIden->CurrDecimalPlaces+$addDecimalPlaces));
+			$DisplayPrecioConIva= locale_number_format($precioConIva,($pOIden->CurrDecimalPlaces+$addDecimalPlaces));
+			$DisplayLineTotal = locale_number_format($LineTotal,$pOIden->CurrDecimalPlaces);
 
 			echo '<tr class="striped_row">
 				<td>' . $POLine->StockID  . '</td>
@@ -920,7 +939,8 @@ if (count($_SESSION['PO'.$identifier]->LineItems)>0 and !isset($_GET['Edit'])){
 				<td><input type="text" class="number" name="ConversionFactor' . $POLine->LineNo .'" size="8" value="' . locale_number_format($POLine->ConversionFactor,'Variable') . '" /></td>
 				<td><input type="text" class="number" name="SuppQty' . $POLine->LineNo .'" size="10" value="' . locale_number_format(round($POLine->Quantity/$POLine->ConversionFactor,$POLine->DecimalPlaces),$POLine->DecimalPlaces) . '" /></td>
 				<td>' . _($POLine->SuppliersUnit) . '</td>
-				<td><input type="text" class="number" name="SuppPrice' . $POLine->LineNo . '" size="10" value="' . $SuppPrice .'" /></td>
+				<td>' . $DisplayPrecioSinIva .'</td>
+				<td><input type="text" class="number" name="SuppPriceTax' . $POLine->LineNo . '" size="10" value="' . $DisplayPrecioConIva .'" /></td>
 				<td class="number">' . $DisplayLineTotal . '</td>
 				<td><input type="text" class="date" name="ReqDelDate' . $POLine->LineNo.'" size="10" value="' .$POLine->ReqDelDate .'" /></td>';
 			if ($POLine->QtyReceived !=0 AND $POLine->Completed!=1){
@@ -938,7 +958,7 @@ if (count($_SESSION['PO'.$identifier]->LineItems)>0 and !isset($_GET['Edit'])){
 		<tfoot>
 			<tr>',
 /*				'<td colspan="9" class="number">' . _('TOTAL') . _(' excluding Tax') . '</td>',*/
-				'<td class="number" colspan="9">', _('Total Excluding Tax'), '</td>',
+				'<td class="number" colspan="10">', _('Total Including Tax'), '</td>',
 				'<td class="number"><b>', $DisplayTotal, '</b></td>
 			</tr>
 		</tfoot>

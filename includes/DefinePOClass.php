@@ -81,7 +81,8 @@ Class PurchOrder {
 						$ConversionFactor=1,
 						$LeadTime=1,
 						$Suppliers_PartNo='',
-						$AssetID=0){
+						$AssetID=0,
+						$taxrate=0.16){
 
 		if ($Qty!=0 && isset($Qty)){
 
@@ -106,7 +107,8 @@ Class PurchOrder {
 													$ConversionFactor,
 													$LeadTime,
 													$Suppliers_PartNo,
-													$AssetID);
+													$AssetID,
+													$taxrate);
 			$this->LinesOnOrder++;
 			Return 1;
 		}
@@ -236,6 +238,7 @@ Class LineDetails {
 	Var $Serialised;
 	Var $SerialItems;  /*An array holding the batch/serial numbers and quantities in each batch*/
 	Var $AssetID;
+	Var $taxrate;
 
 	function __construct (	$LineNo,
 						$StockItem,
@@ -258,7 +261,8 @@ Class LineDetails {
 						$ConversionFactor,
 						$LeadTime,
 						$Suppliers_PartNo,
-						$AssetID)	{
+						$AssetID,
+						$taxrate)	{
 
 	/* Constructor function to add a new LineDetail object with passed params */
 		$this->LineNo = $LineNo;
@@ -292,6 +296,7 @@ Class LineDetails {
 		$this->SerialItems = array(); /*if Controlled then need to populate this later */
 		$this->SerialItemsValid=false;
 		$this->AssetID = $AssetID;
+		$this->taxrate = $taxrate;
 
 	}
 	function LineDetails($LineNo,
@@ -315,7 +320,8 @@ Class LineDetails {
 						$ConversionFactor,
 						$LeadTime,
 						$Suppliers_PartNo,
-						$AssetID) {
+						$AssetID,
+						$taxrate) {
 		self::__construct($LineNo,
 						$StockItem,
 						$Serialised,
@@ -337,7 +343,8 @@ Class LineDetails {
 						$ConversionFactor,
 						$LeadTime,
 						$Suppliers_PartNo,
-						$AssetID);
+						$AssetID,
+						$taxrate);
 	}
 }
 ?>

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form name="Purchase Order">
+	<PaperSize name="Paper size">letter</PaperSize>
+	<LineHeight name="Line height">16</LineHeight>
+	<logo type="image" name="Logo" id="Logo">
+		<x>-5</x>
+		<y>80</y>
+		<width>0</width>
+		<height>65</height>
+	</logo>
+	<PageNumber type="SimpleText" name="Page number" id="PageNumber">
+		<FontSize>10</FontSize>
+		<x>426</x>
+		<y>25</y>
+	</PageNumber>
+	<OrderNumber type="SimpleText" name="Order Number" id="OrderNumber">
+		<FontSize>13</FontSize>
+		<x>300</x>
+		<y>40</y>
+	</OrderNumber>
+	<CompanyName type="SimpleText" name="Company name" id="CompanyName">
+		<FontSize>12</FontSize>
+		<x>40</x>
+		<y>92</y>
+	</CompanyName>
+	<periodFrom type="SimpleText" name="Fecha en la que inicia el periodo" id="periodFrom">
+		<FontSize>12</FontSize>
+		<x>41</x>
+		<y>107</y>
+	</periodFrom>
+	<periodTo type="SimpleText" name="Fecha en la que termina el periodo" id="periodTo">
+		<FontSize>12</FontSize>
+		<x>41</x>
+		<y>122</y>
+	</periodTo>
+	<Currency type="SimpleText" name="Currency text" id="Currency">
+		<FontSize>12</FontSize>
+		<x>41</x>
+		<y>137</y>
+	</Currency>
+	<HeaderRectangle type="Rectangle" name="Header rectangle" id="HeaderRectangle">
+		<x>30</x>
+		<y>149</y>
+		<width>552</width>
+		<height>30</height>
+	</HeaderRectangle>
+	<Headings type="ElementArray" name="Column headings">
+		<Column1 type="SimpleText" name="Heading 1" id="Heading1">
+			<FontSize>10</FontSize>
+			<x>30</x>
+			<w>60</w>
+			<y>149 </y>
+		</Column1>
+		<Column2 type="SimpleText" name="Heading 2" id="Heading2">
+			<FontSize>10</FontSize>
+			<x>90</x>
+			<w>70</w>
+			<y>149 </y>
+		</Column2>
+		<Column3 type="SimpleText" name="Heading 3" id="Heading3">
+			<FontSize>10</FontSize>
+			<x>160</x>
+			<w>60</w>
+			<y>149 </y>
+		</Column3>
+		<Column4 type="SimpleText" name="Heading 4" id="Heading4">
+			<FontSize>10</FontSize>
+			<x>220</x>
+			<w>60</w>
+			<y>149 </y>
+		</Column4>
+		<Column5 type="SimpleText" name="Heading 5" id="Heading5">
+			<FontSize>10</FontSize>
+			<x>280</x>
+			<w>60</w>
+			<y>149 </y>
+		</Column5>
+		<Column6 type="SimpleText" name="Heading 6" id="Heading6">
+			<FontSize>10</FontSize>
+			<x>340</x>
+			<w>60</w>
+			<y>149 </y>
+		</Column6>
+		<Column7 type="SimpleText" name="Heading 7" id="Heading7">
+			<FontSize>10</FontSize>
+			<x>400</x>
+			<w>60</w>
+			<y>149 </y>
+		</Column7>
+		<Column8 type="SimpleText" name="Heading 8" id="Heading8">
+			<FontSize>10</FontSize>
+			<x>460</x>
+			<w>60</w>
+			<y>149 </y>
+		</Column8>
+		<Column9 type="SimpleText" name="Heading 9" id="Heading9">
+			<FontSize>10</FontSize>
+			<x>520</x>
+			<w>60</w>
+			<y>149 </y>
+		</Column9>
+	</Headings>
+	<DataRectangle type="Rectangle" name="Data rectangle" id="DataRectangle">
+		<x>30</x>
+		<y>179</y>
+		<width>552</width>
+		<height>590</height>
+	</DataRectangle>
+	<Data type="ElementArray" name="Column Data">
+		<y type="StartLine" name="Y co-ordinate of first data line" id="DataStartLine">194</y>
+		<Column1 type="DataText" name="Column 1" id="Data1">
+			<FontSize>10</FontSize>
+			<x>30</x>
+			<Length>60</Length>
+		</Column1>
+		<Column2 type="DataText" name="Column 2" id="Data2">
+			<FontSize>10</FontSize>
+			<x>90</x>
+			<Length>60</Length>
+		</Column2>
+		<Column3 type="DataText" name="Column 3" id="Data3">
+			<FontSize>10</FontSize>
+			<x>160</x>
+			<Length>60</Length>
+		</Column3>
+		<Column4 type="DataText" name="Column 4" id="Data4">
+			<FontSize>10</FontSize>
+			<x>220</x>
+			<Length>60</Length>
+		</Column4>
+		<Column5 type="DataText" name="Column 5" id="Data5">
+			<FontSize>10</FontSize>
+			<x>280</x>
+			<Length>60</Length>
+		</Column5>
+		<Column6 type="DataText" name="Column 6" id="Data6">
+			<FontSize>10</FontSize>
+			<x>340</x>
+			<Length>60</Length>
+		</Column6>
+		<Column7 type="DataText" name="Column 7" id="Data7">
+			<FontSize>10</FontSize>
+			<x>400</x>
+			<Length>60</Length>
+		</Column7>
+		<Column8 type="DataText" name="Column 8" id="Data8">
+			<FontSize>10</FontSize>
+			<x>460</x>
+			<Length>60</Length>
+		</Column8>
+		<Column9 type="DataText" name="Column 9" id="Data9">
+			<FontSize>10</FontSize>
+			<x>520</x>
+			<Length>60</Length>
+		</Column9>
+	</Data>
+	<OrderTotalCaption type="SimpleText" name="Order total caption" id="OrderTotalCaption">
+		<FontSize>14</FontSize>
+		<x>450</x>
+		<y>549</y>
+	</OrderTotalCaption>
+	<OrderTotal type="MultiLineText" name="Order total" id="OrderTotal">
+		<FontSize>14</FontSize>
+		<x>675</x>
+		<y>563</y>
+		<Length>125</Length>
+	</OrderTotal>
+</form>

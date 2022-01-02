@@ -79,8 +79,10 @@ if ($NoOfGRNs >0){
 				}
 				$pdf->addJpegFromFile($_SESSION['LogoFile'] ,$FormDesign->logo->x,$Page_Height-$FormDesign->logo->y,$FormDesign->logo->width,$FormDesign->logo->height);
 				$LeftOvers = $pdf->addText($FormDesign->ItemNbr->x,$Page_Height-$FormDesign->ItemNbr->y,$FormDesign->ItemNbr->FontSize,_('Item').': ' . $myrow['itemcode']);
-				$LeftOvers = $pdf->addText($FormDesign->ItemDesc->x,$Page_Height-$FormDesign->ItemDesc->y,$FormDesign->ItemDesc->FontSize,_('Description').': ' . $myrow['itemdescription']);
-				$LeftOvers = $pdf->addText($FormDesign->SupplierName->x,$Page_Height-$FormDesign->SupplierName->y,$FormDesign->SupplierName->FontSize,_('Supplier').': ' . $SuppRow['suppname']);
+				$pdf->MultiCell($FormDesign->ItemDesc->w,0,_('Description').': ' . $myrow['itemdescription'],0, 'L', false, 0, 
+				$FormDesign->ItemDesc->x, $FormDesign->ItemDesc->y);
+				$pdf->MultiCell($FormDesign->SupplierName->w,0,_('Supplier').': ' . $SuppRow['suppname'],0, 'L', false, 0, 
+				$FormDesign->SupplierName->x, $FormDesign->SupplierName->y);
 				$LeftOvers = $pdf->addText($FormDesign->SupplierLot->x,$Page_Height-$FormDesign->SupplierLot->y,$FormDesign->SupplierLot->FontSize,_('Supplier Lot').': ' . $SerialStockMoves['serialno']);
 				$LeftOvers = $pdf->addText($FormDesign->Lot->x,$Page_Height-$FormDesign->Lot->y,$FormDesign->Lot->FontSize,_('Lot').': ' . $SerialStockMoves['serialno']);
 				$LeftOvers = $pdf->addText($FormDesign->ReceiptDate->x,$Page_Height-$FormDesign->ReceiptDate->y,$FormDesign->ReceiptDate->FontSize,_('Receipt Date').': ' . $myrow['deliverydate']);
@@ -96,7 +98,9 @@ if ($NoOfGRNs >0){
 			$pdf->addJpegFromFile($_SESSION['LogoFile'] ,$FormDesign->logo->x,$Page_Height-$FormDesign->logo->y,$FormDesign->logo->width,$FormDesign->logo->height);
 			$LeftOvers = $pdf->addText($FormDesign->ItemNbr->x,$Page_Height-$FormDesign->ItemNbr->y,$FormDesign->ItemNbr->FontSize,_('Item').': ' . $myrow['itemcode']);
 			$LeftOvers = $pdf->addText($FormDesign->ItemDesc->x,$Page_Height-$FormDesign->ItemDesc->y,$FormDesign->ItemDesc->FontSize,_('Description').': ' . $myrow['itemdescription']);
-			$LeftOvers = $pdf->addText($FormDesign->SupplierName->x,$Page_Height-$FormDesign->SupplierName->y,$FormDesign->SupplierName->FontSize,_('Supplier').': ' . $SuppRow['suppname']);
+
+			$pdf->MultiCell($FormDesign->SupplierName->w,0,_('Supplier').': ' . $SuppRow['suppname'],0, 'L', false, 0, 
+			$FormDesign->SupplierName->x, $FormDesign->SupplierName->y);
 			//$LeftOvers = $pdf->addText($FormDesign->SupplierLot->x,$Page_Height-$FormDesign->SupplierLot->y,$FormDesign->SupplierLot->FontSize,'Supplier Lot: ' . $myrow['serialno']);
 			//$LeftOvers = $pdf->addText($FormDesign->Lot->x,$Page_Height-$FormDesign->Lot->y,$FormDesign->Lot->FontSize,'Lot: ' . $myrow['serialno']);
 			$LeftOvers = $pdf->addText($FormDesign->ReceiptDate->x,$Page_Height-$FormDesign->ReceiptDate->y,$FormDesign->ReceiptDate->FontSize,_('Receipt Date').': ' . $myrow['deliverydate']);

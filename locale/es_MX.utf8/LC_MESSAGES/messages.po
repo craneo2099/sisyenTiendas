@@ -20419,7 +20419,7 @@ msgstr "Factura de venta"
 #: PDFPeriodStockTransListing.php:42 PrintCustTrans.php:51
 #: PrintCustTransPortrait.php:51
 msgid "Sales Credit Note"
-msgstr "Abono"
+msgstr "Nota de credito de venta"
 
 #: PDFPeriodStockTransListing.php:43 includes/DatabaseTranslations.php:29
 msgid "Location Transfer"

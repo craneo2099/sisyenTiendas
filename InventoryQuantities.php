@@ -230,7 +230,7 @@ function PrintHeader(&$pdf,&$YPos,&$PageNumber,$Page_Height,$Top_Margin,$Left_Ma
 	$pdf->addJpegFromFile($_SESSION['LogoFile'],$Left_Margin,$YPos-60,0,60);
 	$YPos -=$line_height;
 	$pdf->addTextWrap(426,$YPos,160,$FontSize,_('Printed') . ': ' .
-		 Date($_SESSION['DefaultDateFormat']) . '   ' . _('Page') . ' ' . $PageNumber,'left');
+		 Date($_SESSION['DefaultDateFormat']) . '   ' . _('Page') . ' ' . $PageNumber,'right');
 	$YPos -=15;
 	$pdf->addTextWrap($Left_Margin+250,$YPos-5,300,13,_('Inventory Quantities Report'));
 	

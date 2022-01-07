@@ -43109,12 +43109,15 @@ msgid "ms stk"
 msgstr "ms stk"
 
 #: includes/PDFInventoryValnPageHeader.inc:14
-msgid "Inventory Valuation for Categories between"
-msgstr "Valoración de Inventario para las Categorí­as entre"
+msgid "Inventory Valuation for Categories%s at %s"
+msgstr "Valoración de Inventario para las Categorí­as%s en %s"
+
+msgid " between %s and %s"
+msgstr " entre %s y %s"
 
 #: includes/PDFInventoryValnPageHeader.inc:14
-msgid "location"
-msgstr "ubicación"
+msgid "%s location"
+msgstr "la ubicación %s"
 
 #: includes/PDFLowGPPageHeader.inc:14
 msgid "Low GP Sales Between"

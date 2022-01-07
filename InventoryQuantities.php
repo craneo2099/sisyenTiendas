@@ -147,7 +147,7 @@ If (isset($_POST['PrintPDF'])) {
 	}
 /*Print out the grand totals */
 
-	$pdf->OutputD($_SESSION['DatabaseName'] . '_Inventory_Quantities_' . Date('Y-m-d') . '.pdf');
+	$pdf->OutputD($_SESSION['CompanyRecord']['coyname'] . '_CantidadesDeInventario_' . $_POST['StockCat'].'_'.Date('Y-m-d') . '.pdf');
 	$pdf->__destruct();
 } else { /*The option to print PDF was not hit so display form */
 

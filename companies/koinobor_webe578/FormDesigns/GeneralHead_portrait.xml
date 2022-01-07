@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form name="Purchase Order">
+	<PaperSize name="Paper size">letter</PaperSize>
+	<LineHeight name="Line height">16</LineHeight>
+	<logo type="image" name="Logo" id="Logo">
+		<x>0</x>
+		<y>80</y>
+		<width>0</width>
+		<height>60</height>
+	</logo>
+	<PageNumber type="SimpleText" name="Page number" id="PageNumber">
+		<FontSize>10</FontSize>
+		<x>426</x>
+		<y>30</y>
+	</PageNumber>
+	<OrderNumber type="SimpleText" name="Order Number" id="OrderNumber">
+		<FontSize>13</FontSize>
+		<x>280</x>
+		<y>45</y>
+		<w>300</w>
+	</OrderNumber>
+	<CompanyName type="SimpleText" name="Company name" id="CompanyName">
+		<FontSize>12</FontSize>
+		<x>40</x>
+		<y>92</y>
+	</CompanyName>
+	<SupplierName type="SimpleText" name="Supplier name" id="SupplierName">
+		<FontSize>12</FontSize>
+		<x>41</x>
+		<y>107</y>
+	</SupplierName>
+	<Category type="SimpleText" name="categoria del articulo" id="Category">
+		<FontSize>12</FontSize>
+		<x>41</x>
+		<y>122</y>
+	</Category>
+	<Currency type="SimpleText" name="Currency text" id="Currency">
+		<FontSize>12</FontSize>
+		<x>41</x>
+		<y>137</y>
+	</Currency>
+</form>

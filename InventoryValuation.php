@@ -93,8 +93,23 @@ if (isset($_POST['PrintPDF'])){
 		exit;
 	}
 
+	include ('includes/devstar/reportes/general.inc');
+	$rango='';
+	$tituloUbicacion='';
+	if(!empty($_POST['FromCriteria'])){
+		$rango=sprintf(_(' between %s and %s'), $_POST['FromCriteria'] ,$_POST['ToCriteria']);
+	}
+	if($_POST['Location']=='All'){
+		$tituloUbicacion=strtolower(_('All Locations'));
+	}else{
+		$tituloUbicacion=sprintf(_('%s location'), _($_POST['Location']));
+	}
+	$data['titulo']=sprintf(_('Inventory Valuation for Categories%s at %s'),
+						$rango, $tituloUbicacion) ;
+	pdfGeneralHead($pdf,$YPos,$PageNumber,$Page_Height,$Top_Margin,$Left_Margin,
+	$Page_Width,$Right_Margin,$data);
+	$YPos-=95;
 	include ('includes/PDFInventoryValnPageHeader.inc');
-
 	$Tot_Val=0;
 	$Category = '';
 	$CatTot_Val=0;
@@ -194,6 +209,7 @@ if (isset($_POST['PrintPDF'])){
 } elseif (isset($_POST['CSV'])) {
 
 	$CSVListing = _('Category ID') .','. _('Category Description') .','. _('Stock ID') .','. _('Description') .','. _('Decimal Places') .','. _('Qty On Hand') .','. _('Units') .','. _('Unit Cost') .','. _('Total') . "\n";
+	$CSVListing = str_replace("\xC2\xAD","",$CSVListing);
 	while ($InventoryValn = DB_fetch_row($InventoryResult)) {
 		$CSVListing .= '"';
 		foreach ($InventoryValn as $key => $value) {

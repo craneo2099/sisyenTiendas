@@ -9,7 +9,7 @@ if ((isset($_POST['ShowLabels']) OR isset($_POST['SelectAll']))
 	AND isset($_POST['StockCategory'])
 	AND mb_strlen($_POST['StockCategory'])>=1){
 
-	$Title = _('Print Labels');
+	$Title = _('Print Price Labels');
 	include('includes/header.php');
 
 	$SQL = "SELECT prices.stockid,

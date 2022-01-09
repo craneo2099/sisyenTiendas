@@ -31177,7 +31177,7 @@ msgstr "Los cheques se emitirán para asegurarse de que no hay movimientos de la
 
 #: Stocks.php:1491
 msgid "No deletions will be allowed if they exist"
-msgstr "No se puede eliminr, si estos existen"
+msgstr "No se puede eliminar, si estos existen"
 
 #: Stocks.php:1493
 msgid "Delete This Item"
@@ -31232,8 +31232,8 @@ msgid "Pricing history for sales of"
 msgstr "Precio de la historia de las ventas de"
 
 #: StockStatus.php:352
-msgid "No history of sales of"
-msgstr "No hay historia de las ventas de"
+msgid "No history of sales of %s (%s) to %s (%s)"
+msgstr "No hay historal de ventas de %s (%s) para %s (%s)"
 
 #: StockStatus.php:357
 msgid "Show Usage"

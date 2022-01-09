@@ -654,12 +654,12 @@ if(empty($_SESSION['Transfer']->TransferItem[0]->StockID) and isset($_POST['Stoc
 }
 if(isset($_SESSION['Transfer'])) {
 	echo '<br />
-		<a href="'.$RootPath.'/StockStatus.php?StockID=' . $StockID . '">' . _('Show Stock Status') . '</a>';
+		<a href="'.$RootPath.'/StockStatus.php?StockID=' . $StockID . '">' . _('Inventory Item Status') . '</a>';
 	echo '<br />
-		<a href="'.$RootPath.'/StockMovements.php?StockID=' . $StockID . '">' . _('Show Movements') . '</a>';
+		<a href="'.$RootPath.'/StockMovements.php?StockID=' . $StockID . '">' . _('Inventory Item Movements') . '</a>';
 	echo '<br />
-		<a href="'.$RootPath.'/StockUsage.php?StockID=' . $StockID . '&amp;StockLocation=' . $_SESSION['Transfer']->StockLocationFrom . '">' . _('Show Stock Usage') . '</a>';
-		if (! in_array($_SESSION['PageSecurityArray']['SelectPendingSOrder'],$_SESSION['AllowedPageSecurityTokens'])){
+		<a href="'.$RootPath.'/StockUsage.php?StockID=' . $StockID . '&amp;StockLocation=' . $_SESSION['Transfer']->StockLocationFrom . '">' . _('Inventory Item Usage') . '</a>';
+		if ( in_array($_SESSION['PageSecurityArray']['SelectPendingSOrder'],$_SESSION['AllowedPageSecurityTokens'])){
 			?><br />
 			<a href="<?=$RootPath?>/SelectSalesOrder.php?SelectedStockItem=<?= $StockID?>&amp;StockLocation=<?= $_SESSION['Transfer']->StockLocationFrom?>"><?=  _('Search Outstanding Sales Orders') ?></a>
 			<?php 

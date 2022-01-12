@@ -24,38 +24,6 @@ if(isset($Title) && $Title == _('Copy a BOM to New Item Code')){//solve the cann
 	ob_start();
 }
 $compa=$_SESSION['CompanyRecord'];
-
-{
-	
-	$migajas=isset($_SESSION['migajas'])?$_SESSION['migajas']:array();
-	$BaseName = '/'.basename($_SERVER['PHP_SELF']);
-	$module=null;
-	if(recursive_search_array($BaseName,$MenuItems->{$_SESSION['Module']})){
-		$module=$_SESSION['Module'];
-	}else 
-	if($found=recursive_search_array($BaseName,$MenuItems)){
-		$module=explode('|',$found)[0];
-	}
-	if(!is_null($module)){
-		$migajas=array(
-			$ModuleList[
-				array_search( $module , $ModuleLink )]=>
-			$RootPath.'/index.php'
-		);
-	}
-	if(array_search($RootPath.$BaseName,$migajas)){
-		$terminado=false;
-		while(!$terminado){
-			$ultimoV=array_pop($migajas);
-			$terminado=$ultimoV===$RootPath.$BaseName;
-		}
-	}
-	$migajas+=[$Title=>$RootPath.$BaseName];
-	$_SESSION['migajas']=$migajas;
-	
-
-}
-
 // The "link" tag requires a "rel" attribute. In the "meta" tag, the "content" attribute gives the value associated with the "http-equiv" or "name" attributes.
 echo '<!DOCTYPE html>
 <head>
@@ -140,7 +108,36 @@ if (isset($Title)) {
 			'<li><a href="', $RootPath, '/ManualContents.php', $ViewTopic, $BookMark, '" rel="external" accesskey="8">', _('Manual'), '</a></li>';
 	}
 
+{
+	
+	$migajas=isset($_SESSION['migajas'])?$_SESSION['migajas']:array();
+	$BaseName = '/'.basename($_SERVER['PHP_SELF']);
+	$module=null;
+	if(recursive_search_array($BaseName,$MenuItems->{$_SESSION['Module']})){
+		$module=$_SESSION['Module'];
+	}else 
+	if($found=recursive_search_array($BaseName,$MenuItems)){
+		$module=explode('|',$found)[0];
+	}
+	if(!is_null($module)){
+		$migajas=array(
+			$ModuleList[
+				array_search( $module , $ModuleLink )]=>
+			$RootPath.'/index.php'
+		);
+	}
+	if(array_search($RootPath.$BaseName,$migajas)){
+		$terminado=false;
+		while(!$terminado){
+			$ultimoV=array_pop($migajas);
+			$terminado=$ultimoV===$RootPath.$BaseName;
+		}
+	}
+	$migajas+=[$Title=>$RootPath.$BaseName];
+	$_SESSION['migajas']=$migajas;
+	
 
+}
 
 	echo				'<li><a href="', $RootPath, '/Logout.php" onclick="return confirm(\'', _('Are you sure you wish to logout?'), '\');">', _('Logout'), '</a></li>',
 					'</ul>',

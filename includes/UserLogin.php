@@ -38,21 +38,14 @@ function userLogin($Name, $Password, $SysAdminEmail = '') {
 			$_SESSION['DatabaseName'] = '';
 		    $_SESSION['CompanyName'] = '';
 			return  UL_SHOWLOGIN;
-		}		
-		$sqlc = "SELECT modulesallowed
-				FROM companies
-				WHERE companies.coyname='" . $_SESSION['CompanyName'] . "'";
-		$ErrMsg = _('Could not retrieve modules allowed because');
-		$debug =0;
-		$Module_Result = DB_query($sqlc,$ErrMsg);
-		$modrow = DB_fetch_array($Module_Result);
-
+		}
 		/* The SQL to get the user info must use the * syntax because the field name could change between versions if the fields are specifed directly then the sql fails and the db upgrade will fail */
 		$sql = "SELECT *
 				FROM www_users
 				WHERE www_users.userid='" . $Name . "'";
 
 		$ErrMsg = _('Could not retrieve user details on login because');
+		$debug =0;
         $PasswordVerified = false;
 		$Auth_Result = DB_query($sql,$ErrMsg);
 
@@ -109,7 +102,7 @@ function userLogin($Name, $Password, $SysAdminEmail = '') {
 			$_SESSION['DefaultPageSize'] = $myrow['pagesize'];
 			$_SESSION['UserStockLocation'] = $myrow['defaultlocation'];
 			$_SESSION['UserEmail'] = $myrow['email'];
-			$_SESSION['ModulesEnabled'] = explode(",", $modrow['modulesallowed']);
+			$_SESSION['ModulesEnabled'] = explode(",", $myrow['modulesallowed']);
 			$_SESSION['UsersRealName'] = $myrow['realname'];
 			$_SESSION['Theme'] = $myrow['theme'];
 			$_SESSION['Language'] = $myrow['language'];

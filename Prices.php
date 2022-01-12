@@ -58,6 +58,7 @@ if ($myrow[1]=='K') {
 }
 
 if (isset($_POST['submit'])) {
+
 	/* actions to take once the user has clicked the submit button
 	ie the page has called itself with some user input */
 
@@ -320,25 +321,21 @@ echo '<tr><td>' . _('Price') . ':</td>
 	 <tr><td>' . _('Excl Tax') . ':</td>
           <td>
           <input type="text" class="number" readonly="readonly" name="Price" id="PriceNoTax" size="12" maxlength="11" value="';
+
           if (isset($_POST['Price'])) {
 	         echo $_POST['Price'];
           }
           echo '" />
-     </td></tr>';
-	 ?>
-
+     </td></tr>
 </table>
 <br /><div class="centre">
 <input type="submit" name="submit" value="<?=$submitValue?>" />
 </div>
 
 
-</div>
-      </form>
 
-<?php
-
-addScriptList("/javascripts/prices.js");
+echo '</div>
+      </form>';
 include('includes/footer.php');
 
 

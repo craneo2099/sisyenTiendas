@@ -33,8 +33,8 @@ require_once $PathPrefix."includes/devstar/novatech.php";
 <div id="container" class="container">
 	<div id="login_logo"></div>
 	<div id="login_box">
-	<form action="<?= htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8');?>" method="post">
-	<input type="hidden" name="FormID" value="<?=$_SESSION['FormID']; ?>" />
+	<form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8');?>" method="post">
+	<input type="hidden" name="FormID" value="<?php echo $_SESSION['FormID']; ?>" />
 	<script type="text/javascript">
 	$( document ).ready(function() {
    	$('.box-carousel').slick({
@@ -142,7 +142,7 @@ require_once $PathPrefix."includes/devstar/novatech.php";
 	
 				<div class="row">
 					<div class="col-sm-12">
-					<input class="btn btn-primary" type="submit" value="<?= _('Login'); ?>" name="SubmitUser" />
+					<input class="btn btn-primary" type="submit" value="<?php echo _('Login'); ?>" name="SubmitUser" />
 					
 					</div><!--col-->
 				</div><!--row-->

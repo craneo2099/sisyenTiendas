@@ -1,7 +1,4 @@
-<?php
 
-require_once($PathPrefix .'includes/devstar/novatech.php');
-?>
  	<style type="text/css">
 		#invoice-POS{
   padding:2mm;
@@ -31,19 +28,16 @@ p{
   border-bottom: 1px solid #EEE;
 }
 
-#top{
-  width: 100%;
-  height: 20vw;
-  min-height: 100px;}
+#top{min-height: 100px;}
 #mid{min-height: 80px;} 
 #bot{ min-height: 50px;}
 
 #top .logo{
-  float: left;
-	height: 20vw;
-	width: 50%;
+  //float: left;
+	height: 40vw;
+	width: 40vw;
 	background: url(<?=$RootPath. '/css/'. $_SESSION['Theme']. '/images/company.png'?>) no-repeat;
-	background-size: 20vw 20vw;
+	background-size: 40vw 40vw;
 }
 .clientlogo{
   float: left;
@@ -55,9 +49,8 @@ p{
 }
 .info{
   display: block;
-  float:left;
+  //float:left;
   margin-left: 0;
-	height: 40vw;
 }
 .title{
   float: right;
@@ -66,9 +59,6 @@ p{
 table{
   width: 100%;
   border-collapse: collapse;
-}
-table caption{
-  caption-side:top;
 }
 td{
   //padding: 5px 0 5px 15px;
@@ -98,82 +88,61 @@ td{
     
     <div id="mid">
       <div class="info">
+        <h2><?=_('Contact')?></h2>
         <p> 
             <?=_('Address')?> : <?=$_SESSION['CompanyRecord']['regOffice1']?></br>
+            <?=_('Email')?>   : <?=$_SESSION['CompanyRecord']['email']?></br>
+            <?=_('Phone')?>   : <?=$_SESSION['CompanyRecord']['telephone']?></br>
         </p>
       </div>
     </div><!--End Invoice Mid-->
     
     <div id="bot">
 
-      <div id="table">
-        <table>
-          <caption>Venta</caption>
-          <tr class="tabletitle">
-            <td class="item"><h2><?=_('Item')?></h2></td>
-            <td class="Hours"><h2><?=_('U/P')?></h2></td>
-            <td class="Hours"><h2><?=_('Qty')?></h2></td>
-            <td class="Rate"><h2><?=_('Sub-total')?></h2></td>
-          </tr>
-                        <?php 
-                        $currencyDecimal=$_SESSION['Items'.$identifier]->CurrDecimalPlaces;
-                        $TotalTaxes=$TotalPrice=0;
-                        foreach ($_SESSION['Items'.$identifier]->LineItems as $value) {
-                          $unitTax=$value->Price*$value->Taxes[1]->TaxRate;
-                          $itemTaxes=$unitTax*$value->Quantity;
-                          $unitPrice=$value->Price+$unitTax;
-                          $itemPrice=$unitPrice*$value->Quantity;
-                          $TotalTaxes+=$itemTaxes;
-                          $TotalPrice+=$itemPrice;
-                        ?>
-          <tr class="service">
-            <td class="tableitem"><p class="itemtext"><?=$value->ItemDescription?></p></td>
-            <td class="tableitem"><p class="itemtext"><?=round($unitPrice,$currencyDecimal)  ?></p></td>
-            <td class="tableitem"><p class="itemtext"><?=round($value->Quantity,$value->DecimalPlaces)?></p></td>
-            <td class="tableitem"><p class="itemtext"><?=round($itemPrice,$currencyDecimal)?></p></td>
-          </tr>
-                        <?php
-                        } 
-                        ?>
-          <tr class="tabletitle">
-            <td></td>
-            <td class="Rate"><h2><?=_('Inc tax')?></h2></td>
-            <td class="payment"><h2><?=round($TotalTaxes,$currencyDecimal)?></h2></td>
-          </tr>
+					<div id="table">
+						<table>
+							<tr class="tabletitle">
+								<td class="item"><h2><?=_('Item')?></h2></td>
+								<td class="Hours"><h2><?=_('Qty')?></h2></td>
+								<td class="Rate"><h2><?=_('Sub-total')?></h2></td>
+							</tr>
+                            <?php 
+                            $TotalTaxes=$TotalPrice=0;
+                            foreach ($_SESSION['Items'.$identifier]->LineItems as $value) {
+                            ?>
+							<tr class="service">
+								<td class="tableitem"><p class="itemtext"><?=$value->ItemDescription?></p></td>
+								<td class="tableitem"><p class="itemtext"><?=$value->Quantity?></p></td>
+								<td class="tableitem"><p class="itemtext"><?=$value->Price?></p></td>
+							</tr>
+                            <?php
+                            $currentTax=$value->Price*$value->Taxes[1]->TaxRate*$value->Quantity;
+                            $TotalTaxes+=$currentTax;
+                            $aucs=$value->Price*$value->Quantity;
+                            $TotalPrice+=$aucs+$currentTax;
+                            } 
+                            ?>
+							<tr class="tabletitle">
+								<td></td>
+								<td class="Rate"><h2><?=_('tax')?></h2></td>
+								<td class="payment"><h2><?=$TotalTaxes?></h2></td>
+							</tr>
 
-          <tr class="tabletitle">
-            <td></td>
-            <td class="Rate"><h2>Total</h2></td>
-            <td class="payment"><h2><?=round($TotalPrice,$currencyDecimal)?></h2></td>
-          </tr>
-        </table>
-            <div>
-              Tipo de pago: <span><?=_(getPaymentName($_POST['PaymentMethod']))?></span>
-            </div>
-            <div>
-              Vendedor: <span><?=getSalesmanName($_SESSION['Items'.$identifier]->SalesPerson)?></span>
-            </div>
-            <div>
-              Sucursal: <span><?=$_SESSION['Items'.$identifier]->Branch?></span>
-            </div>
-            <div>
-              Ticket: <span><?=$InvoiceNo?></span>
-            </div>
-            <div>
-              Fecha: <span><?=date('d/m/Y',$ticketTime)?></span>
-            </div>
-            <div>
-              Hora: <span><?=date('H:i',$ticketTime)?></span>
-            </div>
+							<tr class="tabletitle">
+								<td></td>
+								<td class="Rate"><h2>Total</h2></td>
+								<td class="payment"><h2><?=$TotalPrice?></h2></td>
+							</tr>
 
-      </div><!--End Table-->
+						</table>
+					</div><!--End Table-->
 
-      <div id="legalcopy">
-        <p class="legal"><strong>¡Gracias por su compra!</strong> Esta es una nota sin valor fiscal. 
-        </p>
-      </div>
+					<div id="legalcopy">
+						<p class="legal"><strong>Gracias por su compra</strong> Esta nota no es una factura de compra. 
+						</p>
+					</div>
 
-    </div><!--End InvoiceBot-->
+				</div><!--End InvoiceBot-->
   </div><!--End Invoice-->
 
 

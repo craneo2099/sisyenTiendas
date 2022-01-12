@@ -7,16 +7,13 @@ if ($PageNumber>1){
 $pdf->addJpegFromFile($_SESSION['LogoFile'] ,$FormDesign->logo->x,$Page_Height-$FormDesign->logo->y,$FormDesign->logo->width,$FormDesign->logo->height);
 
 $LeftOvers = $pdf->addText($FormDesign->SupplierName->x,$Page_Height-$FormDesign->SupplierName->y,$FormDesign->SupplierName->FontSize,$SuppRow['suppname']);
-$LeftOvers = $pdf->addText($FormDesign->SupplierAddress1->x,$Page_Height-$FormDesign->SupplierAddress1->y,$FormDesign->SupplierAddress1->FontSize,$SuppRow['address1']);
-$LeftOvers = $pdf->addText($FormDesign->SupplierAddress2->x,$Page_Height-$FormDesign->SupplierAddress2->y,$FormDesign->SupplierAddress2->FontSize,$SuppRow['address2']);
-$LeftOvers = $pdf->addText($FormDesign->SupplierAddress3->x,$Page_Height-$FormDesign->SupplierAddress3->y,$FormDesign->SupplierAddress3->FontSize,$SuppRow['address3']);
-$LeftOvers = $pdf->addText($FormDesign->SupplierAddress4->x,$Page_Height-$FormDesign->SupplierAddress4->y,$FormDesign->SupplierAddress4->FontSize,$SuppRow['address4']);
-$LeftOvers = $pdf->addText($FormDesign->SupplierAddress5->x,$Page_Height-$FormDesign->SupplierAddress5->y,$FormDesign->SupplierAddress5->FontSize,$SuppRow['address5']);
-$LeftOvers = $pdf->addText($FormDesign->SupplierAddress6->x,$Page_Height-$FormDesign->SupplierAddress6->y,$FormDesign->SupplierAddress6->FontSize,$SuppRow['address6']);
+$suppAddress=implode_list($SuppRow['address1'],$SuppRow['address2'],$SuppRow['address3'],$SuppRow['address4'],$SuppRow['address5'],$SuppRow['address6']);
+$pdf->MultiCell($FormDesign->SupplierAddress->w,0,$suppAddress,0, 'L', false, 0, 
+$FormDesign->SupplierAddress->x, $FormDesign->SupplierAddress->y);
 
 
 $LeftOvers = $pdf->addText($FormDesign->CompanyName->x,$Page_Height-$FormDesign->CompanyName->y,$FormDesign->CompanyName->FontSize,$_SESSION['CompanyRecord']['coyname']);
-$LeftOvers = $pdf->addText($FormDesign->GRNNumber->x,$Page_Height-$FormDesign->GRNNumber->y,$FormDesign->GRNNumber->FontSize, _('GRN number ').' ' . $GRNNo );
+$LeftOvers = $pdf->addText($FormDesign->GRNNumber->x,$Page_Height-$FormDesign->GRNNumber->y,$FormDesign->GRNNumber->FontSize, _('GRN number').' ' . $GRNNo );
 $LeftOvers = $pdf->addText($FormDesign->SupplierRef->x,$Page_Height-$FormDesign->SupplierRef->y,$FormDesign->SupplierRef->FontSize,_("Supplier's Ref") . ' ' . $SupplierRef);
 $LeftOvers = $pdf->addText($FormDesign->OrderNumber->x,$Page_Height-$FormDesign->OrderNumber->y,$FormDesign->OrderNumber->FontSize, _('PO number ').' ' . $_GET['PONo'] );
 $LeftOvers = $pdf->addText($FormDesign->PrintDate->x,$Page_Height-$FormDesign->PrintDate->y,$FormDesign->PrintDate->FontSize, _('Printed').': ' . Date($_SESSION['DefaultDateFormat']) . '   '. _('Page'). ' ' . $PageNumber);

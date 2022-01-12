@@ -1,7 +1,7 @@
 <?php
 
 include('includes/session.php');
-$Title=_('Reprint a GRN');
+$Title=_('Reprint GRN');
 include('includes/header.php');
 
 echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/supplier.png" title="' . $Title . '" alt="" />' . ' ' . $Title . '</p>';
@@ -102,7 +102,7 @@ if (isset($_POST['Show'])) {
 			<td>' . $myrow['deliverydate'] . '</td>
 			<td class="number">' . locale_number_format($myrow['qtyrecd'], $myrow['decimalplaces']) . '</td>
 			<td>' . $myrow['suppinv'] . '</td>
-			<td><a href="PDFGrn.php?GRNNo=' . $myrow['grnbatch'] .'&PONo=' . $_POST['PONumber'] . '">' . _('Reprint GRN ') . '</a>
+			<td><a href="PDFGrn.php?GRNNo=' . $myrow['grnbatch'] .'&PONo=' . $_POST['PONumber'] . '">' . _('Reprint GRN') . '</a>
 			&nbsp;<a href="PDFQALabel.php?GRNNo=' . $myrow['grnbatch'] .'&PONo=' . $_POST['PONumber'] . '">' . _('Reprint Labels') . '</a></td>
 		</tr>';
 	}

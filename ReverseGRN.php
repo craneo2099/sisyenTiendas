@@ -16,7 +16,7 @@ if ((isset($_SESSION['SupplierID']) and $_SESSION['SupplierID'] != '') or (!isse
 
 if (!isset($_POST['SupplierID']) or $_POST['SupplierID'] == "") {
 	echo '<br />' . _('This page is expected to be called after a supplier has been selected');
-	echo '<meta http-equiv="Refresh" content="0; url=' . $RootPath . '/SelectSupplier.php">';
+	echo '<meta http-equiv="Refresh" content="0; url=' . $RootPath . '/SelectSupplier.php?who=reversegrn">';
 	exit;
 } elseif (!isset($_POST['SuppName']) or $_POST['SuppName'] == "") {
 	$SQL = "SELECT suppname FROM suppliers WHERE supplierid='" . $_SESSION['SupplierID'] . "'";

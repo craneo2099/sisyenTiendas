@@ -527,11 +527,11 @@ if (!isset($_POST['StockLocation'])) {
 }
 
 echo '<br />
-	<a href="'. $RootPath. '/StockStatus.php?StockID='. $StockID . '">' . _('Show Stock Status') . '</a>';
+	<a href="'. $RootPath. '/StockStatus.php?StockID='. $StockID . '">' . _('Inventory Item Status') . '</a>';
 echo '<br />
-	<a href="'.$RootPath.'/StockMovements.php?StockID=' . $StockID . '">' . _('Show Movements') . '</a>';
+	<a href="'.$RootPath.'/StockMovements.php?StockID=' . $StockID . '">' . _('Inventory Item Movements') . '</a>';
 echo '<br />
-	<a href="'.$RootPath.'/StockUsage.php?StockID=' . $StockID . '&amp;StockLocation=' . $_POST['StockLocation'] . '">' . _('Show Stock Usage') . '</a>';
+	<a href="'.$RootPath.'/StockUsage.php?StockID=' . $StockID . '&amp;StockLocation=' . $_POST['StockLocation'] . '">' . _('Inventory Item Usage') . '</a>';
 	
 	if ( in_array($_SESSION['PageSecurityArray']['SelectPendingSOrder'],$_SESSION['AllowedPageSecurityTokens'])){
 ?>

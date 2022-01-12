@@ -183,16 +183,41 @@ if (isset($_POST['ShowUsage'])){
 } /* end if Show Usage is clicked */
 
 if (isset($_POST['ShowGraphUsage'])) {
-	echo '<img src="' . $RootPath . '/StockUsageGraph.php?StockLocation=' . $_POST['StockLocation'] .
-	'&amp;StockID=' . $StockID . '" >';
+	$qryStockloc=($_POST['StockLocation']=='All')?"":"AND stockmoves.loccode='" . $_POST['StockLocation'] . "'";
+
+	$sql = "SELECT periods.periodno,
+			SUM(-stockmoves.qty) 
+		FROM stockmoves INNER JOIN periods
+			ON stockmoves.prd=periods.periodno
+		INNER JOIN locationusers ON locationusers.loccode=stockmoves.loccode AND locationusers.userid='" .  $_SESSION['UserID'] . "' AND locationusers.canview=1
+		WHERE stockmoves.type in (10,11,28)
+		AND stockmoves.hidemovt=0
+		".$qryStockloc."
+		AND stockmoves.stockid = '" . trim(mb_strtoupper($StockID)) . "'
+		GROUP BY periods.periodno,
+			periods.lastdate_in_period
+		ORDER BY periodno  LIMIT 24";
+	$MovtsResult = DB_query($sql);
+	if (DB_error_no() !=0) {
+		echo _('The stock usage for the selected criteria could not be retrieved because') . ' - ' . DB_error_msg();
+		if ($debug==1){
+		echo '<br />' . _('The SQL that failed was') . $sql;
+		}
+	} else 
+	if (DB_num_rows($MovtsResult)==0){
+		prnMsg(_('There are no movements of this item from the selected location to graph'),'info');
+	} else{
+		echo '<img src="' . $RootPath . '/StockUsageGraph.php?StockLocation=' . $_POST['StockLocation'] .
+		'&amp;StockID=' . $StockID . '" >';
+	}
 }
 
 echo '<div class="centre">';
 echo '<br />
-    <a href="' . $RootPath . '/StockStatus.php?StockID=' . $StockID . '">' . _('Show Stock Status')  . '</a>';
+    <a href="' . $RootPath . '/StockStatus.php?StockID=' . $StockID . '">' . _('Inventory Item Status')  . '</a>';
 echo '<br />
-	<a href="' . $RootPath . '/StockMovements.php?StockID=' . $StockID . '&amp;StockLocation=' . $_POST['StockLocation'] . '">' . _('Show Stock Movements') . '</a>';
-	if (! in_array($_SESSION['PageSecurityArray']['SelectPendingSOrder'],$_SESSION['AllowedPageSecurityTokens'])){
+	<a href="' . $RootPath . '/StockMovements.php?StockID=' . $StockID . '&amp;StockLocation=' . $_POST['StockLocation'] . '">' . _('Inventory Item Movements') . '</a>';
+	if ( in_array($_SESSION['PageSecurityArray']['SelectPendingSOrder'],$_SESSION['AllowedPageSecurityTokens'])){
 		?><br />
 		<a href="<?=$RootPath?>/SelectSalesOrder.php?SelectedStockItem=<?= $StockID?>&amp;StockLocation=<?= $_POST['StockLocation']?>"><?=  _('Search Outstanding Sales Orders') ?></a>
 		<?php 

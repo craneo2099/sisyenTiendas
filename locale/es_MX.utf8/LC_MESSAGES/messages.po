@@ -20419,7 +20419,7 @@ msgstr "Factura de venta"
 #: PDFPeriodStockTransListing.php:42 PrintCustTrans.php:51
 #: PrintCustTransPortrait.php:51
 msgid "Sales Credit Note"
-msgstr "Abono"
+msgstr "Nota de credito de venta"
 
 #: PDFPeriodStockTransListing.php:43 includes/DatabaseTranslations.php:29
 msgid "Location Transfer"
@@ -31177,7 +31177,7 @@ msgstr "Los cheques se emitirán para asegurarse de que no hay movimientos de la
 
 #: Stocks.php:1491
 msgid "No deletions will be allowed if they exist"
-msgstr "No se puede eliminr, si estos existen"
+msgstr "No se puede eliminar, si estos existen"
 
 #: Stocks.php:1493
 msgid "Delete This Item"
@@ -31232,8 +31232,8 @@ msgid "Pricing history for sales of"
 msgstr "Precio de la historia de las ventas de"
 
 #: StockStatus.php:352
-msgid "No history of sales of"
-msgstr "No hay historia de las ventas de"
+msgid "No history of sales of %s (%s) to %s (%s)"
+msgstr "No hay historal de ventas de %s (%s) para %s (%s)"
 
 #: StockStatus.php:357
 msgid "Show Usage"
@@ -43109,12 +43109,15 @@ msgid "ms stk"
 msgstr "ms stk"
 
 #: includes/PDFInventoryValnPageHeader.inc:14
-msgid "Inventory Valuation for Categories between"
-msgstr "Valoración de Inventario para las Categorí­as entre"
+msgid "Inventory Valuation for Categories%s at %s"
+msgstr "Valoración de Inventario para las Categorí­as%s en %s"
+
+msgid " between %s and %s"
+msgstr " entre %s y %s"
 
 #: includes/PDFInventoryValnPageHeader.inc:14
-msgid "location"
-msgstr "ubicación"
+msgid "%s location"
+msgstr "la ubicación %s"
 
 #: includes/PDFLowGPPageHeader.inc:14
 msgid "Low GP Sales Between"

@@ -26,20 +26,23 @@ if (isset($_POST['submit']) OR isset($_POST['update'])) {
 					prices.debtorno,
 					prices.branchcode,
 					(stockmaster.materialcost + stockmaster.labourcost + stockmaster.overheadcost) as cost,
-					prices.price as price,
+					prices.price * (1+taxrate) as price,
 					prices.debtorno AS customer,
 					prices.branchcode AS branch,
 					prices.startdate,
 					prices.enddate,
 					currencies.decimalplaces,
-					currencies.rate
+					currencies.rate,
+					taxrate
 				FROM stockmaster INNER JOIN prices
 				ON stockmaster.stockid=prices.stockid
 				INNER JOIN currencies
 				ON prices.currabrev=currencies.currabrev
+				INNER JOIN taxauthrates tar on stockmaster.taxcatid=tar.taxcatid
+					AND tar.taxauthority=14 AND tar.dispatchtaxprovince=1
 				WHERE stockmaster.discontinued = 0
 				" . $Category . "
-				AND   prices.price" . $Comparator . "(stockmaster.materialcost + stockmaster.labourcost + stockmaster.overheadcost) * '" . filter_number_format($_POST['Margin']) . "'
+				AND   round(prices.price*(1+taxrate),2)" . $Comparator . "(stockmaster.materialcost + stockmaster.labourcost + stockmaster.overheadcost) * '" . filter_number_format($_POST['Margin']) . "'
 				AND prices.typeabbrev ='" . $_POST['SalesType'] . "'
 				AND prices.currabrev ='" . $_POST['CurrCode'] . "'
 				AND (prices.enddate>='" . Date('Y-m-d') . "' OR prices.enddate='0000-00-00')";
@@ -63,7 +66,7 @@ if (isset($_POST['submit']) OR isset($_POST['update'])) {
 								AND prices.branchcode ='" . $_POST['BranchCode_' . $PriceCounter] . "'
 								AND prices.startdate ='" . $_POST['StartDate_' . $PriceCounter] . "'
 								AND prices.enddate ='" . $_POST['EndDate_' . $PriceCounter] . "'
-								AND prices.price ='" . filter_number_format($_POST['Price_' . $PriceCounter]) . "'";
+								AND prices.price ='" . filter_number_format($_POST['Price_' . $PriceCounter]/(1+$myrow['taxrate'])) . "'";
 			$TestExistsResult = DB_query($SQLTestExists);
 			if (DB_num_rows($TestExistsResult)==0){ //the price doesn't currently exist
 				//now check to see if a new price has already been created from start date of today
@@ -78,7 +81,7 @@ if (isset($_POST['submit']) OR isset($_POST['update'])) {
 				$TestExistsResult = DB_query($SQLTestExists);
 				if (DB_num_rows($TestExistsResult)==1){
 	                 //then we are updating
-					$SQLUpdate = "UPDATE prices	SET price = '" . filter_number_format($_POST['Price_' . $PriceCounter]) . "'
+					$SQLUpdate = "UPDATE prices	SET price = '" . filter_number_format($_POST['Price_' . $PriceCounter]/(1+$myrow['taxrate'])) . "'
 									WHERE stockid = '" . $_POST['StockID_' . $PriceCounter] . "'
 									AND prices.typeabbrev ='" . $_POST['SalesType'] . "'
 									AND prices.currabrev ='" . $_POST['CurrCode'] . "'
@@ -108,7 +111,7 @@ if (isset($_POST['submit']) OR isset($_POST['update'])) {
 														startdate
 													) VALUES (
 														'" . $_POST['StockID_' . $PriceCounter] . "',
-														'" . filter_number_format($_POST['Price_' . $PriceCounter]) . "',
+														'" . filter_number_format($_POST['Price_' . $PriceCounter]/(1+$myrow['taxrate'])) . "',
 														'" . $_POST['SalesType'] . "',
 														'" . $_POST['CurrCode'] . "',
 														'" . $_POST['DebtorNo_' . $PriceCounter] . "',

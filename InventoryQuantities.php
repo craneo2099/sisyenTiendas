@@ -13,6 +13,7 @@ If (isset($_POST['PrintPDF'])) {
 	$FontSize=9;
 	$PageNumber=1;
 	$line_height=12;
+	$Top_Margin=$Left_Margin=30;
 
 	$Xpos = $Left_Margin+1;
 	$WhereCategory = ' ';
@@ -146,7 +147,7 @@ If (isset($_POST['PrintPDF'])) {
 	}
 /*Print out the grand totals */
 
-	$pdf->OutputD($_SESSION['DatabaseName'] . '_Inventory_Quantities_' . Date('Y-m-d') . '.pdf');
+	$pdf->OutputD($_SESSION['CompanyRecord']['coyname'] . '_CantidadesDeInventario_' . $_POST['StockCat'].'_'.Date('Y-m-d') . '.pdf');
 	$pdf->__destruct();
 } else { /*The option to print PDF was not hit so display form */
 
@@ -226,19 +227,24 @@ function PrintHeader(&$pdf,&$YPos,&$PageNumber,$Page_Height,$Top_Margin,$Left_Ma
 	$FontSize=9;
 	$YPos= $Page_Height-$Top_Margin;
 
-	$pdf->addTextWrap($Left_Margin,$YPos,300,$FontSize,$_SESSION['CompanyRecord']['coyname']);
-
+	$pdf->addJpegFromFile($_SESSION['LogoFile'],$Left_Margin,$YPos-60,0,60);
 	$YPos -=$line_height;
+	$pdf->addTextWrap(426,$YPos,160,$FontSize,_('Printed') . ': ' .
+		 Date($_SESSION['DefaultDateFormat']) . '   ' . _('Page') . ' ' . $PageNumber,'right');
+	$YPos -=15;
+	$pdf->addTextWrap($Left_Margin+250,$YPos-5,300,13,_('Inventory Quantities Report'));
+	
+	$YPos =($Page_Height-$Top_Margin)-70;
+	$pdf->addTextWrap($Left_Margin+10,$YPos,300,$FontSize,$_SESSION['CompanyRecord']['coyname']);
 
-	$pdf->addTextWrap($Left_Margin,$YPos,150,$FontSize,_('Inventory Quantities Report'));
-	$pdf->addTextWrap($Page_Width-$Right_Margin-150,$YPos,160,$FontSize,_('Printed') . ': ' .
-		 Date($_SESSION['DefaultDateFormat']) . '   ' . _('Page') . ' ' . $PageNumber,'left');
 	$YPos -= $line_height;
-	$pdf->addTextWrap($Left_Margin,$YPos,50,$FontSize,_('Category'));
-	$pdf->addTextWrap(95,$YPos,50,$FontSize,$_POST['StockCat']);
+	$pdf->addTextWrap($Left_Margin+10,$YPos,50,$FontSize,_('Category'));
+	$pdf->addTextWrap(95,$YPos,50,$FontSize,_($_POST['StockCat']));
 	$pdf->addTextWrap(160,$YPos,150,$FontSize,$CatDescription,'left');
+	$pdf->Rectangle(30, $YPos-5, 552,$line_height*3);
 	$YPos -=(2*$line_height);
 
+	$pdf->Rectangle(30, $YPos-($line_height)-5, 552,626);
 	/*set up the headings */
 	$Xpos = $Left_Margin+1;
 
@@ -246,9 +252,8 @@ function PrintHeader(&$pdf,&$YPos,&$PageNumber,$Page_Height,$Top_Margin,$Left_Ma
 	$pdf->addTextWrap(150,$YPos,150,$FontSize,_('Description'), 'left');
 	$pdf->addTextWrap(310,$YPos,60,$FontSize,_('Location'), 'left');
 	$pdf->addTextWrap(370,$YPos,50,$FontSize,_('Quantity'), 'right');
-	$pdf->addTextWrap(420,$YPos,50,$FontSize,_('Reorder'), 'right');
+	$pdf->addTextWrap(420,$YPos,100,$FontSize,_('Reorder level'), 'center');
 	$YPos -=$line_height;
-	$pdf->addTextWrap(415,$YPos,50,$FontSize,_('Level'), 'right');
 
 
 	$FontSize=8;

@@ -39,21 +39,23 @@ if ($fp==FALSE){
 	exit;
 }
 
+$first=true;
 While ($myrow = DB_fetch_row($result)){
 	$line='';
-	$first=true;
+	$comma='';
 	foreach ($myrow as $value) {
 		if(!$first){
-			$line=$line.',';
+			$line=$line.$comma;
 		}else{
 			$fline=_('code').','._('Description').','._('category').','
 			._('Net').','._('Units').','._('Perishable').','._('Stock');
-			fputs($fp,"\xEF\xBB\xBF" . $fline . "\n");
+			fputs($fp, "\xEF\xBB\xBF" .$fline . "\n");
 		}
+		$comma=',';
 		$first=false;
-		$line = $line.stripcomma($value);
+		$line = "\xEF\xBB\xBF" .$line.stripcomma($value);
 	}
-	fputs($fp,"\xEF\xBB\xBF" . $line . "\n");
+	fputs($fp, $line . "\n");
 }
 
 fclose($fp);

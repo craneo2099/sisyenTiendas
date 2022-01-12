@@ -7,6 +7,7 @@ $Title = _('Inventory Item Status');
 
 include('includes/header.php');
 include ('includes/SQL_CommonFunctions.inc');
+include ('api/catalog/customer.inc');
 
 if (isset($_GET['StockID'])){
 	$StockID = trim(mb_strtoupper($_GET['StockID']));
@@ -40,6 +41,7 @@ $myrow = DB_fetch_array($result);
 $DecimalPlaces = $myrow['decimalplaces'];
 $Serialised = $myrow['serialised'];
 $Controlled = $myrow['controlled'];
+$itenDescription=$myrow['description'];
 
 echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/inventory.png" title="' . _('Inventory') .
 	'" alt="" /><b>' . ' ' . $StockID . ' - ' . $myrow['description'] . ' : ' . _('in units of') . ' : ' . $myrow['units'] . '</b></p>';
@@ -352,16 +354,21 @@ if ($DebtorNo) { /* display recent pricing history for this debtor and this stoc
 	 echo '</tbody></table>';
 	 }
 	else {
-	  echo '<p>' . _('No history of sales of') . ' ' . $StockID . ' ' . _('to') . ' ' . $DebtorNo;
+	  echo '<p>' . sprintf(_('No history of sales of %s (%s) to %s (%s)') , $StockID , $itenDescription,$DebtorNo,getCustomerName($DebtorNo));
 	}
 }//end of displaying price history for a debtor
 if(isset($_GET['who'])){
 	echo '<br /><a href="#" onclick="window.open(\'\', \'_self\', \'\'); window.close();">' . _('Close') . '</a>';	
 }
-echo '<br /><a href="' . $RootPath . '/StockMovements.php?StockID=' . $StockID . '">' . _('Show Movements') . '</a>
-	<br /><a href="' . $RootPath . '/StockUsage.php?StockID=' . $StockID . '">' . _('Show Usage') . '</a>
-	<br /><a href="' . $RootPath . '/SelectSalesOrder.php?SelectedStockItem=' . $StockID . '">' . _('Search Outstanding Sales Orders') . '</a>
-	<br /><a href="' . $RootPath . '/SelectCompletedOrder.php?SelectedStockItem=' . $StockID . '">' . _('Search Completed Sales Orders') . '</a>';
+echo '<br /><a href="' . $RootPath . '/StockMovements.php?StockID=' . $StockID . '">' . _('Inventory Item Movements') . '</a>
+	<br /><a href="' . $RootPath . '/StockUsage.php?StockID=' . $StockID . '">' . _('Inventory Item Usage') . '</a>';
+	if ( in_array($_SESSION['PageSecurityArray']['SelectPendingSOrder'],$_SESSION['AllowedPageSecurityTokens'])){
+		?>
+		<br />
+		<a href="<?=$RootPath?>/SelectSalesOrder.php?SelectedStockItem=<?= $StockID?>&amp;StockLocation=<?= $StockLocation ?>"><?=  _('Search Outstanding Sales Orders') ?></a>
+		<?php 
+	} 
+echo '<br /><a href="' . $RootPath . '/SelectCompletedOrder.php?SelectedStockItem=' . $StockID . '">' . _('Search Completed Sales Orders') . '</a>';
 if ($Its_A_KitSet_Assembly_Or_Dummy ==False){
 	echo '<br /><a href="' . $RootPath . '/PO_SelectOSPurchOrder.php?SelectedStockItem=' . $StockID . '">' . _('Search Outstanding Purchase Orders') . '</a>';
 }

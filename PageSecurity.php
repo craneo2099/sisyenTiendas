@@ -8,12 +8,17 @@ include('includes/header.php');
 echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/security.png" title="' . _('Page Security Levels') . '" alt="" />' . ' ' . $Title . '</p><br />';
 
 if (isset($_POST['Update']) AND $AlloDemoMode!= true) {
+	$someError=false;
 	foreach ($_POST as $ScriptName => $PageSecurityValue) {
 		if ($ScriptName!='Update' and $ScriptName!='FormID') {
 				$sql="UPDATE scripts SET pagesecurity='". $PageSecurityValue . "' WHERE script='" . $ScriptName . "'";
 			$UpdateResult=DB_query($sql,_('Could not update the page security value for the script because'));
+			if(DB_error_no() !=0){
+				$someError=true;
+			}
 		}
 	}
+	prnMsg(_('The page security value has been updated'),'success');
 }
 
 $sql="SELECT script,

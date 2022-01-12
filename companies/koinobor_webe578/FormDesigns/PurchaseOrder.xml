@@ -3,19 +3,19 @@
 	<PaperSize name="Paper size">A4_Landscape</PaperSize>
 	<LineHeight name="Line height">16</LineHeight>
 	<logo type="image" name="Logo" id="Logo">
-		<x>-5</x>
-		<y>100</y>
+		<x>30</x>
+		<y>80</y>
 		<width>0</width>
-		<height>85</height>
+		<height>60</height>
 	</logo>
 	<OrderNumber type="SimpleText" name="Order Number" id="OrderNumber">
 		<FontSize>15</FontSize>
-		<x>391</x>
+		<x>281</x>
 		<y>46</y>
 	</OrderNumber>
 	<ViewingOnly type="SimpleText" name="Viewing only warning text" id="ViewingOnly">
 		<FontSize>16</FontSize>
-		<x>391</x>
+		<x>281</x>
 		<y>62</y>
 	</ViewingOnly>
 	<PageNumber type="SimpleText" name="Page number" id="PageNumber">
@@ -198,7 +198,7 @@
 		<y>300</y>
 	</Currency>
 	<HeaderRectangle type="Rectangle" name="Header rectangle" id="HeaderRectangle">
-		<x>40</x>
+		<x>30</x>
 		<y>320</y>
 		<width>772</width>
 		<height>32</height>
@@ -206,12 +206,12 @@
 	<Headings type="ElementArray" name="Column headings">
 		<Column1 type="SimpleText" name="Heading 1" id="Heading1">
 			<FontSize>10</FontSize>
-			<x>41</x>
+			<x>31</x>
 			<y>330</y>
 		</Column1>
 		<Column2 type="SimpleText" name="Heading 2" id="Heading2">
 			<FontSize>10</FontSize>
-			<x>136</x>
+			<x>126</x>
 			<y>330</y>
 		</Column2>
 		<Column3 type="SimpleText" name="Heading 3" id="Heading3">
@@ -246,22 +246,22 @@
 		</Column8>
 	</Headings>
 	<DataRectangle type="Rectangle" name="Data rectangle" id="DataRectangle">
-		<x>40</x>
+		<x>30</x>
 		<y>352</y>
-		<width>772</width>
+		<width>782</width>
 		<height>213</height>
 	</DataRectangle>
 	<Data type="ElementArray" name="Column Data">
 		<y type="StartLine" name="Y co-ordinate of first data line" id="DataStartLine">362</y>
 		<Column1 type="DataText" name="Column 1" id="Data1">
 			<FontSize>10</FontSize>
-			<x>41</x>
+			<x>31</x>
 			<Length>94</Length>
 		</Column1>
 		<Column2 type="DataText" name="Column 2" id="Data2">
 			<FontSize>10</FontSize>
-			<x>136</x>
-			<Length>270</Length>
+			<x>126</x>
+			<Length>280</Length>
 		</Column2>
 		<Column3 type="DataText" name="Column 3" id="Data3">
 			<FontSize>10</FontSize>

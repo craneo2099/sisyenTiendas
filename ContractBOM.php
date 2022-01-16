@@ -241,7 +241,7 @@ if (count($_SESSION['Contract'.$identifier]->ContractBOM)>0){
 			<th>' . _('Quantity') . '</th>
 			<th>' . _('UOM')  . '</th>
 			<th>' . _('Unit Cost') .  '</th>
-			<th>' . _('Sub-total') . '</th>
+			<th>' . _('Sub Total') . '</th>
 		</tr>';
 
 	$_SESSION['Contract'.$identifier]->total = 0;

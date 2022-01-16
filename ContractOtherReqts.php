@@ -96,7 +96,7 @@ if (count($_SESSION['Contract'.$identifier]->ContractReqts)>0){
 			<th>' . _('Description') . '</th>
 			<th>' . _('Quantity') . '</th>
 			<th>' . _('Unit Cost') .  '</th>
-			<th>' . _('Sub-total') . '</th>
+			<th>' . _('Sub Total') . '</th>
 		</tr>';
 
 	$_SESSION['Contract'.$identifier]->total = 0;

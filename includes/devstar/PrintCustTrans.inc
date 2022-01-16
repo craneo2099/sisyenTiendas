@@ -113,7 +113,7 @@ td{
             <td class="item"><h2><?=_('Item')?></h2></td>
             <td class="Hours"><h2><?=_('U/P')?></h2></td>
             <td class="Hours"><h2><?=_('Qty')?></h2></td>
-            <td class="Rate"><h2><?=_('Sub-total')?></h2></td>
+            <td class="Rate"><h2><?=_('Sub Total')?></h2></td>
           </tr>
                         <?php 
                         $currencyDecimal=$_SESSION['Items'.$identifier]->CurrDecimalPlaces;

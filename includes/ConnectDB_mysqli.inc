@@ -76,7 +76,7 @@ function DB_query_stmt($SQL, $ErrorMessage='', $DebugMessage= '', $types='',$var
 	if($DebugMessage == '') {
 		$DebugMessage = _('The SQL that failed was');
 	}
-		
+	
 	if(DB_error_no() != 0 AND $TrapErrors==true) {
 		require_once($PathPrefix . 'includes/header.php');
 		prnMsg($ErrorMessage . '<br />' . DB_error_msg(), 'error', _('Database Error'). ' ' . DB_error_no());

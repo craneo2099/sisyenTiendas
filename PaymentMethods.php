@@ -217,7 +217,7 @@ if (isset($_POST['submit'])) {
 				<td class="centre">' . ($myrow['receipttype'] ? _('Yes') : _('No')) . '</td>
 				<td class="centre">' . ($myrow['usepreprintedstationery'] ? _('Yes') : _('No')) . '</td>
 				<td class="centre">' . ($myrow['opencashdrawer'] ? _('Yes') : _('No')) . '</td>
-				<td class="centre">' . locale_number_format($myrow['percentdiscount']*100,2) . '</td>
+				<td class="centre">' . locale_number_format($myrow['percentdiscount'],2) . '</td>
 				<td><a href="' . htmlspecialchars($_SERVER['PHP_SELF'],ENT_QUOTES,'UTF-8') . '?SelectedPaymentID=' . $myrow['paymentid'] . '">' . _('Edit') . '</a></td>
 				<td><a href="' . htmlspecialchars($_SERVER['PHP_SELF'],ENT_QUOTES,'UTF-8') . '?SelectedPaymentID=' . $myrow['paymentid'] . '&amp;delete=1" onclick="return confirm(\'' . _('Are you sure you wish to delete this payment method?') . '\');">' . _('Delete')  . '</a></td>
 			</tr>';

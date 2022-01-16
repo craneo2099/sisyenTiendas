@@ -3837,6 +3837,9 @@ msgstr ""
 msgid "Select a Stock Category"
 msgstr "Seleccionar una categorí­a de inventario"
 
+msgid "Type Payment Adjustment"
+msgstr "Ajuste por tipo de pago"
+
 #: BOMs.php:979 BOMs.php:1079 ContractBOM.php:319 PO_Items.php:1325
 #: SelectCompletedOrder.php:479 SelectCreditItems.php:983
 msgid "Enter text extracts in the description"
@@ -5667,10 +5670,6 @@ msgstr "Lista de Materiales del Contrato"
 #: SelectContract.php:30 SelectContract.php:40 SuppContractChgs.php:135
 msgid "Contract Reference"
 msgstr "Referencia de Contrato"
-
-#: ContractBOM.php:244 ContractOtherReqts.php:99
-msgid "Sub-total"
-msgstr "Sub total"
 
 #: ContractBOM.php:259
 msgid "Enter the quantity of this component required to complete the contract"
@@ -18344,6 +18343,7 @@ msgstr "Niveles de Seguridad de Página"
 #: PageSecurity.php:15
 msgid "Could not update the page security value for the script because"
 msgstr "No se realizaron los cambios a los niveles de seguridad"
+
 msgid "The page security value has been updated"
 msgstr "Se actualizaron con éxito los niveles de seguridad"
 
@@ -22071,10 +22071,6 @@ msgstr "Precio de Pedidos"
 #: PO_Items.php:890
 msgid "Supp Units"
 msgstr "Unidades del proveedor"
-
-#: PO_Items.php:891
-msgid "Sub-Total"
-msgstr "Sub-Total"
 
 #: PO_Items.php:892
 msgid "Deliver By"

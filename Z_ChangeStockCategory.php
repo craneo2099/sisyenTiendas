@@ -18,25 +18,27 @@ if (isset($_POST['ProcessStockChange'])) {
 
 	/*First check the stock code exists */
 	$result = DB_query("SELECT categoryid FROM stockcategory WHERE categoryid='" . $_POST['OldStockCategory'] . "'");
-
+	$oldCodeError=false;
 	if (DB_num_rows($result) == 0) {
 		prnMsg(_('The stock Category') . ': ' . $_POST['OldStockCategory'] . ' ' . _('does not currently exist as a stock category in the system'), 'error');
-		include ('includes/footer.php');
-		exit;
+		$oldCodeError=true;
 	}
 
 	if (ContainsIllegalCharacters($_POST['NewStockCategory'])) {
 		prnMsg(_('The new stock category to change the old code to contains illegal characters - no changes will be made'), 'error');
-		include ('includes/footer.php');
-		exit;
+		$oldCodeError=true;
 	}
 
 	if ($_POST['NewStockCategory'] == '') {
 		prnMsg(_('The new stock category to change the old code to must be entered as well'), 'error');
+		$oldCodeError=true;
+	}
+
+	if($oldCodeError){
+		echo '<a href="' . $RootPath . '/Z_ChangeStockCategory.php" >'._('Return').'</a>';
 		include ('includes/footer.php');
 		exit;
 	}
-
 	/*Now check that the new code doesn't already exist */
 	$result = DB_query("SELECT categoryid FROM stockcategory WHERE categoryid='" . $_POST['NewStockCategory'] . "'");
 

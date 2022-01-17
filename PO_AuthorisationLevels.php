@@ -81,9 +81,7 @@ if (isset($_POST['Update'])) {
 
 	$ErrMsg = _('The authentication details cannot be updated because');
 	$Result=DB_query($sql,$ErrMsg);
-	if($Result){
-		prnMsg(_('The authentication details has been updated'),'success');
-	}
+	prnMsg(_('The authentication details has been updated'),'success');
 }
 
 if (isset($_GET['Delete'])) {
@@ -94,9 +92,8 @@ if (isset($_GET['Delete'])) {
 	$ErrMsg = _('The authentication details cannot be deleted because');
 	$Result=DB_query($sql,$ErrMsg);
 	
-	if($Result){
-		prnMsg(_('The authentication details has been deleted'),'success');
-	}
+	prnMsg(_('The authentication details has been deleted'),'success');
+	
 }
 
 if (isset($_GET['Edit'])) {

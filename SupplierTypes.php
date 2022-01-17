@@ -151,8 +151,8 @@ if (!isset($SelectedType)){
 	echo '<table class="selection">
 		<thead>
 			<tr>
-		<th class="ascending" >' . _('Type ID') . '</th>
-		<th class="ascending" >' . _('Type Name') . '</th>
+		<th class="ascending" >' . _('ID') . '</th>
+		<th class="ascending" >' . _('Name') . '</th>
 			</tr>
 		</thead>
 		<tbody>';
@@ -212,7 +212,7 @@ if (! isset($_GET['delete'])) {
 		// We dont allow the user to change an existing type code
 
 		echo '<tr>
-				<td>' ._('Type ID') . ': </td>
+				<td>' ._('ID') . ': </td>
 				<td>' . $_POST['TypeID'] . '</td>
 			</tr>';
 	}
@@ -221,7 +221,7 @@ if (! isset($_GET['delete'])) {
 		$_POST['TypeName']='';
 	}
 	echo '<tr>
-			<td>' . _('Type Name') . ':</td>
+			<td>' . _('Name') . ':</td>
 			<td><input type="text"  required="true" pattern="(?!^\s+$)[^<>+-]{1,100}" title="'._('The input should not be over 100 characters and contains illegal characters').'" name="TypeName" placeholder="'._('less than 100 characters').'" value="' . $_POST['TypeName'] . '" /></td>
 		</tr>';
 

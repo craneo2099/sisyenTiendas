@@ -99,34 +99,41 @@ td{
     
     <div id="bot">
 
-					<div id="table">
-						<table>
-							<tr class="tabletitle">
-								<td class="item"><h2><?=_('Item')?></h2></td>
-								<td class="Hours"><h2><?=_('Qty')?></h2></td>
-								<td class="Rate"><h2><?=_('Sub-total')?></h2></td>
-							</tr>
-                            <?php 
-                            $TotalTaxes=$TotalPrice=0;
-                            foreach ($_SESSION['Items'.$identifier]->LineItems as $value) {
-                            ?>
-							<tr class="service">
-								<td class="tableitem"><p class="itemtext"><?=$value->ItemDescription?></p></td>
-								<td class="tableitem"><p class="itemtext"><?=$value->Quantity?></p></td>
-								<td class="tableitem"><p class="itemtext"><?=$value->Price?></p></td>
-							</tr>
-                            <?php
-                            $currentTax=$value->Price*$value->Taxes[1]->TaxRate*$value->Quantity;
-                            $TotalTaxes+=$currentTax;
-                            $aucs=$value->Price*$value->Quantity;
-                            $TotalPrice+=$aucs+$currentTax;
-                            } 
-                            ?>
-							<tr class="tabletitle">
-								<td></td>
-								<td class="Rate"><h2><?=_('tax')?></h2></td>
-								<td class="payment"><h2><?=$TotalTaxes?></h2></td>
-							</tr>
+      <div id="table">
+        <table>
+          <caption>Venta</caption>
+          <tr class="tabletitle">
+            <td class="item"><h2><?=_('Item')?></h2></td>
+            <td class="Hours"><h2><?=_('U/P')?></h2></td>
+            <td class="Hours"><h2><?=_('Qty')?></h2></td>
+            <td class="Rate"><h2><?=_('Sub Total')?></h2></td>
+          </tr>
+                        <?php 
+                        $currencyDecimal=$_SESSION['Items'.$identifier]->CurrDecimalPlaces;
+                        $TotalTaxes=$TotalPrice=0;
+                        foreach ($_SESSION['Items'.$identifier]->LineItems as $value) {
+                          $unitTax=$value->Price*$value->Taxes[1]->TaxRate;
+                          $itemTaxes=$unitTax*$value->Quantity;
+                          $unitPrice=$value->Price+$unitTax;
+                          $itemPrice=$unitPrice*$value->Quantity;
+                          $TotalTaxes+=$itemTaxes;
+                          $TotalPrice+=$itemPrice;
+                        ?>
+          <tr class="service">
+            <td class="tableitem"><p class="itemtext"><?=$value->ItemDescription?></p></td>
+            <td class="tableitem"><p class="itemtext"><?=round($unitPrice,$currencyDecimal)  ?></p></td>
+            <td class="tableitem"><p class="itemtext"><?=round($value->Quantity,$value->DecimalPlaces)?></p></td>
+            <td class="tableitem"><p class="itemtext"><?=round($itemPrice,$currencyDecimal)?></p></td>
+          </tr>
+                        <?php
+                        } 
+                        ?>
+          <tr class="tabletitle">
+            <td></td>
+            <td class="Rate"><h2><?=_('Inc tax')?></h2></td>
+            <td class="payment"><h2><?=round($TotalTaxes,$currencyDecimal)?></h2></td>
+          </tr>
+
 
 							<tr class="tabletitle">
 								<td></td>

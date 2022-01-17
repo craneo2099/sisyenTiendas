@@ -849,20 +849,39 @@ if (count($_SESSION['Items'.$identifier]->LineItems)>0 ) { /*only show order lin
 		$_SESSION['Items'.$identifier]->totalWeight = $_SESSION['Items'.$identifier]->totalWeight + $OrderLine->Quantity * $OrderLine->Weight;
 
 	} /* end of loop around items */
-
-	echo '<tr class="striped_row">';
-	if (in_array($_SESSION['PageSecurityArray']['OrderEntryDiscountPricing'], $_SESSION['AllowedPageSecurityTokens'])) {
-		echo '<td colspan="8" class="number"><b>' . _('Total') . '</b></td>';
-	} else {
-		echo '<td colspan="6" class="number"><b>' . _('Total') . '</b></td>';
-	}
-	echo '<td class="number">' . locale_number_format(($_SESSION['Items'.$identifier]->total),$_SESSION['Items'.$identifier]->CurrDecimalPlaces) . '</td>
-			<td class="number">' . locale_number_format($TaxTotal,$_SESSION['Items'.$identifier]->CurrDecimalPlaces) . '</td>
-			<td id="total" class="number">' . locale_number_format(($_SESSION['Items'.$identifier]->total+$TaxTotal),$_SESSION['Items'.$identifier]->CurrDecimalPlaces) . '</td>
+	$currDecimals=$_SESSION['Items'.$identifier]->CurrDecimalPlaces;
+	$isEntryDiscount=in_array($_SESSION['PageSecurityArray']['OrderEntryDiscountPricing'], $_SESSION['AllowedPageSecurityTokens']);
+	$paymentAdjustment=locale_number_format(
+			(getPaymentAdjunstment($_POST['PaymentMethod'])/100) * ($CurrItem->total+$TaxTotal)
+		,$currDecimals);
+		if($paymentAdjustment!=0){
+			?>
+			<tr class="striped_row">
+				<td colspan="<?=$isEntryDiscount?8:6?>" class="number"><b><?=_('Sub Total') ?></b></td>
+				<td colspan="2"></td>
+				<td class="number"><?=locale_number_format($_SESSION['Items'.$identifier]->total,$currDecimals) ?></td>
+				<td ></td>
+			</tr>
+			<tr class="striped_row">
+				<td colspan="<?=$isEntryDiscount?8:6?>" class="number"><b><?=_('Type Payment Adjustment') ?></b></td>
+				<td colspan="2"></td>
+				<td class="number"><?=$paymentAdjustment ?></td>
+				<td ></td>
+			</tr>
+			<?php
+		}?>
+		<tr class="striped_row">
+			<td colspan="<?=$isEntryDiscount?8:6?>" class="number"><b><?=_('Total') ?></b></td>
+			<td class="number"><?=locale_number_format($_SESSION['Items'.$identifier]->total,$currDecimals)?></td>
+			<td class="number"><?=locale_number_format($TaxTotal,$currDecimals)?></td>
+			<td id="total" class="number"><?=locale_number_format(($_SESSION['Items'.$identifier]->total+$TaxTotal+$paymentAdjustment),$currDecimals) ?></td>
+			<td ></td>
 		</tr>
-		</table>';
-		echo '<input type="hidden" name="TaxTotal" value="'.$TaxTotal.'" />';
-		echo '<input type="hidden" id="LastTotalHdn" value="'.($_SESSION['Items'.$identifier]->total+$TaxTotal).'" />';
+		</table>
+		<input type="hidden" name="TaxTotal" value="<?=$TaxTotal?>" />
+		<input type="hidden" id="LastTotalHdn" value="<?=locale_number_format(($CurrItem->total+$TaxTotal),$_SESSION['Items'.$identifier]->CurrDecimalPlaces)?>" />
+	<?php
+
 	echo '<table class="noprint"><tr><td>';
 	//nested table
 	echo '<table>';
@@ -931,22 +950,27 @@ if (count($_SESSION['Items'.$identifier]->LineItems)>0 ) { /*only show order lin
 	if (!isset($_POST['AmountPaid'])) {
 		$_POST['AmountPaid'] =0;
 	}
-	echo '<tr>
-			<td>' . _('Amount given') . ':</td>
-			<td><input type="text" class="number" name="AmountGiven" id="AmountGiven" required="required"  
-			title="' . _('Enter the amount given by the customer, this must greater the amount of the sale') . '" 
-			maxlength="12" size="12" value="0"/></td>
-		</tr>';
-		
-	echo '<tr>
-		<td>' . _('Amount Paid') . ':</td>
-		<td><input type="text" class="number" name="AmountPaid" id="AmountPaid" required="required" readonly title="' . _('Enter the amount paid by the customer, this must equal the amount of the sale') . '" maxlength="12" size="12" value="' . $_POST['AmountPaid'] . '" /></td>
-	</tr>';
-		
-	echo '<tr>
-		<td>' . _('Amount return') . ':</td>
-		<td><input type="text" class="number" name="AmountReturn" id="AmountReturn" disabled  title="' . _('This is the amount to return to client.') . '" maxlength="12" size="12" value="0" /></td>
-	</tr>';
+	?>
+			<tr>
+					<td><?= _('Amount given')?>:</td>
+					<td><input type="text" class="number" name="AmountGiven" id="AmountGiven" required="required"  
+					title="<?= _('Enter the amount given by the customer, this must greater the amount of the sale') ?>" 
+					maxlength="12" size="12" value="<?=($_POST['AmountGiven'])?>" autofocus/></td>
+				</tr>
+				
+			<tr>
+				<td><?= _('Amount Paid') ?>:</td>
+				<td><input type="text" class="number" name="AmountPaid" id="AmountPaid" required="required" readonly 
+				title="<?= _('Enter the amount paid by the customer, this must equal the amount of the sale') ?>" maxlength="12" size="12" value="<?= $_POST['AmountPaid']?>" /></td>
+			</tr>
+				
+			<tr>
+				<td><?= _('Amount return') ?>:</td>
+				<td><input type="text" class="number" name="AmountReturn" id="AmountReturn" disabled  
+				title="<?= _('This is the amount to return to client.')?>" maxlength="12" size="12" 
+				value="<?=($_POST['AmountGiven']-$_POST['AmountPaid']??0)?>" /></td>
+			</tr>
+<?php
 
 	echo '</table>'; //end the sub table in the second column of master table
 	echo '</th>

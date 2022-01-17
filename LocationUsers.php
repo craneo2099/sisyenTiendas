@@ -203,7 +203,7 @@ if (isset($_POST['process']) or isset($SelectedLocation)) {
 				</tr>',
 				$MyRow['userid'],
 				$MyRow['realname'],
-				$MyRow['canview'],
+				_($MyRow['canview']?"Yes":"No"),
 				_($MyRow['canupd']?"Yes":"No"),
 				htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8'),
 				$MyRow['userid'],

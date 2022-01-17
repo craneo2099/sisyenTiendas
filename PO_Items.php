@@ -899,7 +899,7 @@ if (count($_SESSION['PO'.$identifier]->LineItems)>0 and !isset($_GET['Edit'])){
 			<th>' .  _('Supplier Unit') . '</th>
 			<th class="ascending">' . _('Supplier Price') . '</th>
 			<th class="ascending">' . _('Supplier Price w/tax') . '</th>
-			<th class="ascending">' . _('Sub-Total') .' ('.$_SESSION['PO'.$identifier]->CurrCode.  ')</th>
+			<th class="ascending">' . _('Sub Total') .' ('.$_SESSION['PO'.$identifier]->CurrCode.  ')</th>
 			<th class="ascending">' . _('Deliver By')  . '</th>
 			</tr>
 		</thead>

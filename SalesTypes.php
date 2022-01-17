@@ -222,7 +222,7 @@ if (! isset($_GET['delete'])) {
 				<th colspan="4"><b>' . _('Sales Type/Price List Setup') . '</b></th>
 			</tr>
 			<tr>
-				<td>' . _('Type Code') . ':</td>
+				<td>' . _('Code') . ':</td>
 				<td>' . $_POST['TypeAbbrev'] . '</td>
 			</tr>';
 
@@ -235,7 +235,7 @@ if (! isset($_GET['delete'])) {
 					<th colspan="4"><b>' . _('Sales Type/Price List Setup') . '</b></th>
 				</tr>
 				<tr>
-					<td>' . _('Type Code') . ':</td>
+					<td>' . _('Code') . ':</td>
 					<td><input type="text" ' . (in_array('SalesType',$Errors) ? 'class="inputerror"' : '' ) .' size="3" maxlength="2" name="TypeAbbrev" /></td>
 				</tr>';
 	}
@@ -244,7 +244,7 @@ if (! isset($_GET['delete'])) {
 		$_POST['Sales_Type']='';
 	}
 	echo '<tr>
-			<td>' . _('Sales Type Name') . ':</td>
+			<td>' . _('Name') . ':</td>
 			<td><input type="text" name="Sales_Type" value="' . $_POST['Sales_Type'] . '" /></td>
 		</tr>
 		</table>'; // close main table

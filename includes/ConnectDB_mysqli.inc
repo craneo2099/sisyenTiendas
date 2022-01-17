@@ -60,7 +60,7 @@ function DB_query($SQL, $ErrorMessage='', $DebugMessage= '', $Transaction=false,
 	if($DebugMessage == '') {
 		$DebugMessage = _('The SQL that failed was');
 	}
-		
+	
 	if(DB_error_no() != 0 AND $TrapErrors==true) {
 		require_once($PathPrefix . 'includes/header.php');
 		prnMsg($ErrorMessage . '<br />' . DB_error_msg(), 'error', _('Database Error'). ' ' . DB_error_no());

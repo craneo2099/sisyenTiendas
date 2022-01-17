@@ -123,21 +123,20 @@ if (isset($_POST['ProcessStockChange'])){
 		ChangeFieldInTable("mrpdemands", "stockid", $_POST['OldStockID'], $_POST['NewStockID']);
 
 		//check if MRP tables exist before assuming
-		$sql = "SELECT * FROM mrpparameters";
-		$result = DB_query($sql, '', '', false, false);
-		if (DB_error_no() == 0) {
-			$result = DB_query("SELECT COUNT(*) FROM mrpplannedorders",'','',false,false);
-			if (DB_error_no()==0) {
+		$result = DB_query("SHOW TABLES LIKE 'mrpparameters'" ,'','',false,false);
+		if(DB_num_rows($result)===1) {
+			$result = DB_query("SHOW TABLES LIKE 'mrpplannedorders'" ,'','',false,false);
+			if(DB_num_rows($result)===1) {
 				ChangeFieldInTable("mrpplannedorders", "part", $_POST['OldStockID'], $_POST['NewStockID']);
 			}
-
-			$result = DB_query("SELECT * FROM mrprequirements" ,'','',false,false);
-			if (DB_error_no()==0){
+			$result = DB_query("SHOW TABLES LIKE 'mrprequirements'" ,'','',false,false);
+			if(DB_num_rows($result)===1) {
 				ChangeFieldInTable("mrprequirements", "part", $_POST['OldStockID'], $_POST['NewStockID']);
 			}
+			
 
-			$result = DB_query("SELECT * FROM mrpsupplies" ,'','',false,false);
-			if (DB_error_no()==0){
+			$result = DB_query("SHOW TABLES LIKE 'mrpsupplies'" ,'','',false,false);
+			if(DB_num_rows($result)===1) {
 				ChangeFieldInTable("mrpsupplies", "part", $_POST['OldStockID'], $_POST['NewStockID']);
 			}
 		}

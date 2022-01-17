@@ -264,12 +264,6 @@ or deletion of the records*/
 				<th class="ascending">' . _('Category Description') . '</th>' . '
 				<th class="ascending">' . _('Stock Type') . '</th>' . '
 				<th class="ascending">' . _('Default Tax Category') . '</th>' . '
-				<th class="ascending">' . _('Stock GL') . '</th>' . '
-				<th class="ascending">' . _('Adjts GL') . '</th>
-				<th class="ascending">' . _('Issues GL') . '</th>
-				<th class="ascending">' . _('Price Var GL') . '</th>
-				<th class="ascending">' . _('Usage Var GL') . '</th>
-				<th class="ascending">' . _('WIP GL') . '</th>
 				<th colspan="2">' . _('Maintenance') . '</th>
 			</tr>
 		</thead>
@@ -281,12 +275,6 @@ or deletion of the records*/
 				<td>%s</td>
 				<td>%s</td>
 				<td>%s</td>
-				<td class="number">%s</td>
-				<td class="number">%s</td>
-				<td class="number">%s</td>
-				<td class="number">%s</td>
-				<td class="number">%s</td>
-				<td class="number">%s</td>
 				<td><a href="%sSelectedCategory=%s">' . _('Edit') . '</a></td>
 				<td><a href="%sSelectedCategory=%s&amp;delete=yes" onclick="return confirm(\'' . _('Are you sure you wish to delete this stock category? Additional checks will be performed before actual deletion to ensure data integrity is not compromised.') . '\');">' . _('Delete') . '</a></td>
 			</tr>',

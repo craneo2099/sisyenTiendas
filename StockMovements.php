@@ -235,9 +235,9 @@ if($StockID!=''){
 
 echo '</table>
 		<div class="centre">
-			<br /><a href="', $RootPath, '/StockStatus.php?StockID=', urlencode($StockID), '">', _('Show Stock Status'), '</a>
-			<br /><a href="', $RootPath, '/StockUsage.php?StockID=', urlencode($StockID), '&amp;StockLocation=', urlencode($_POST['StockLocation']), '">', _('Show Stock Usage'), '</a>';
-			if (! in_array($_SESSION['PageSecurityArray']['SelectPendingSOrder'],$_SESSION['AllowedPageSecurityTokens'])){
+			<br /><a href="', $RootPath, '/StockStatus.php?StockID=', urlencode($StockID), '">', _('Inventory Item Status'), '</a>
+			<br /><a href="', $RootPath, '/StockUsage.php?StockID=', urlencode($StockID), '&amp;StockLocation=', urlencode($_POST['StockLocation']), '">', _('Inventory Item Usage'), '</a>';
+			if ( in_array($_SESSION['PageSecurityArray']['SelectPendingSOrder'],$_SESSION['AllowedPageSecurityTokens'])){
 				?><br />
 				<a href="<?=$RootPath?>/SelectSalesOrder.php?SelectedStockItem=<?= $StockID?>&amp;StockLocation=<?= urlencode($_POST['StockLocation'])?>"><?=  _('Search Outstanding Sales Orders') ?></a>
 				<?php 

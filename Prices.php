@@ -58,6 +58,7 @@ if ($myrow[1]=='K') {
 }
 
 if (isset($_POST['submit'])) {
+
 	/* actions to take once the user has clicked the submit button
 	ie the page has called itself with some user input */
 
@@ -262,7 +263,9 @@ if (DB_num_rows($result) > 0) {
 echo '<form method="post" action="' . htmlspecialchars($_SERVER['PHP_SELF'],ENT_QUOTES,'UTF-8') . '" class="col-12">';
 echo '<div>';
 echo '<input type="hidden" name="FormID" value="' . $_SESSION['FormID'] . '" />';
+$submitValue=_('Enter');
 if (isset($_GET['Edit'])){
+	$submitValue=_('Amend Price');
 	echo '<input type="hidden" name="OldTypeAbbrev" value="' . $_GET['SalesType'] .'" />';
 	echo '<input type="hidden" name="OldCurrAbrev" value="' . $_GET['CurrAbrev'] . '" />';
 	echo '<input type="hidden" name="OldStartDate" value="' . $_GET['StartDate'] . '" />';
@@ -311,32 +314,28 @@ echo '<tr><td>' . _('Price') . ':</td>
           <td>
           <input type="text" class="number" required="required" name="PriceTx" id="PriceTx" size="12" maxlength="11" value="';
           if (isset($_POST['Price'])) {
-	         echo $_POST['Price']*1.16;
+	         echo round($_POST['Price']*1.16,2,PHP_ROUND_HALF_UP);
           }
           echo '" />
      </td></tr>
 	 <tr><td>' . _('Excl Tax') . ':</td>
           <td>
           <input type="text" class="number" readonly="readonly" name="Price" id="PriceNoTax" size="12" maxlength="11" value="';
+
           if (isset($_POST['Price'])) {
 	         echo $_POST['Price'];
           }
           echo '" />
-     </td></tr>';
-	 ?>
-
+     </td></tr>
 </table>
 <br /><div class="centre">
-<input type="submit" name="submit" value="<?= _('Enter')?>/<?=_('Amend Price')?>" />
+<input type="submit" name="submit" value="<?=$submitValue?>" />
 </div>
 
 
-</div>
-      </form>
 
-<?php
-
-addScriptList("/javascripts/prices.js");
+echo '</div>
+      </form>';
 include('includes/footer.php');
 
 

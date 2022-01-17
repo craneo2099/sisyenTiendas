@@ -406,12 +406,12 @@ if (!isset($_POST['Search']) AND (isset($_POST['Select']) OR isset($_SESSION['Se
 			'<tr>
 				<td valign="top" class="select">';
 	/*Stock Inquiry Options */
-	echo '<a href="' . $RootPath . '/StockMovements.php?StockID=' . urlencode($StockID) . '">' . _('Show Stock Movements') . '</a><br />';
+	echo '<a href="' . $RootPath . '/StockMovements.php?StockID=' . urlencode($StockID) . '">' . _('Inventory Item Movements') . '</a><br />';
 	if ($Its_A_Kitset_Assembly_Or_Dummy == False) {
-		echo '<a href="' . $RootPath . '/StockStatus.php?StockID=' . urlencode($StockID) . '">' . _('Show Stock Status') . '</a><br />';
-		echo '<a href="' . $RootPath . '/StockUsage.php?StockID=' . urlencode($StockID) . '">' . _('Show Stock Usage') . '</a><br />';
+		echo '<a href="' . $RootPath . '/StockStatus.php?StockID=' . urlencode($StockID) . '">' . _('Inventory Item Status') . '</a><br />';
+		echo '<a href="' . $RootPath . '/StockUsage.php?StockID=' . urlencode($StockID) . '">' . _('Inventory Item Usage') . '</a><br />';
 	}
-	if (! in_array($_SESSION['PageSecurityArray']['SelectPendingSOrder'],$_SESSION['AllowedPageSecurityTokens'])){
+	if ( in_array($_SESSION['PageSecurityArray']['SelectPendingSOrder'],$_SESSION['AllowedPageSecurityTokens'])){
 		?>
 				<a href="<?=$RootPath?>/SelectSalesOrder.php?SelectedStockItem=<?= urlencode($StockID)?>"><?=  _('Search Outstanding Sales Orders') ?></a>
 				<?php 
@@ -425,7 +425,7 @@ if (!isset($_POST['Search']) AND (isset($_POST['Select']) OR isset($_SESSION['Se
 		$imagefile = reset((glob($_SESSION['part_pics_dir'] . '/' . $StockID . '.{' . implode(",", $SupportedImgExt) . '}', GLOB_BRACE)));
 		echo '<a href="' . $RootPath . '/' . $imagefile . '" target="_blank">' . _('Show Part Picture (if available)') . '</a><br />';
 	}
-	if($func_Otras){
+	if ( in_array($_SESSION['PageSecurityArray']['manufactura'],$_SESSION['AllowedPageSecurityTokens'],true)){
 		if ($Its_A_Dummy == False) {
 			echo '<a href="' . $RootPath . '/BOMInquiry.php?StockID=' . urlencode($StockID) . '">' . _('View Costed Bill Of Material') . '</a><br />';
 			echo '<a href="' . $RootPath . '/WhereUsedInquiry.php?StockID=' . urlencode($StockID) . '">' . _('Where This Item Is Used') . '</a><br />';
@@ -507,8 +507,8 @@ if (!isset($_POST['Search']) AND (isset($_POST['Select']) OR isset($_SESSION['Se
 		if($func_Otras)
 			echo '<a href="' . $RootPath . '/StockReorderLevel.php?StockID=' . urlencode($StockID) . '">' . _('Maintain Reorder Levels') . '</a><br />';
 		echo '<a href="' . $RootPath . '/StockCostUpdate.php?StockID=' . urlencode($StockID) . '">' . _('Maintain Standard Cost') . '</a><br />';
-		if($func_Otras){
-			echo '<a href="' . $RootPath . '/PurchData.php?StockID=' . urlencode($StockID) . '">' . _('Maintain Purchasing Data') . '</a><br />';
+		echo '<a href="' . $RootPath . '/PurchData.php?StockID=' . urlencode($StockID) . '">' . _('Maintain Purchasing Data') . '</a><br />';
+		if ( in_array($_SESSION['PageSecurityArray']['CustItem.php'],$_SESSION['AllowedPageSecurityTokens'],true)){
 			echo '<a href="' . $RootPath . '/CustItem.php?StockID=' . urlencode($StockID) . '">' . _('Maintain Customer Item Data') . '</a><br />';
 		}
 	}
@@ -517,14 +517,17 @@ if (!isset($_POST['Search']) AND (isset($_POST['Select']) OR isset($_SESSION['Se
 	}
 	if (!$Its_A_Kitset) {
 		echo '<a href="' . $RootPath . '/Prices.php?Item=' . urlencode($StockID) . '">' . _('Maintain Pricing') . '</a><br />';
-		if (isset($_SESSION['CustomerID'])
+		if (in_array($_SESSION['PageSecurityArray']['Prices_Customer.php'],$_SESSION['AllowedPageSecurityTokens'],true)
+			AND isset($_SESSION['CustomerID'])
 			AND $_SESSION['CustomerID'] != ''
 			AND mb_strlen($_SESSION['CustomerID']) > 0) {
 			echo '<a href="' . $RootPath . '/Prices_Customer.php?Item=' . urlencode($StockID) . '">' . _('Special Prices for customer') . ' - ' . $_SESSION['CustomerID'] . '</a><br />';
 		}
-		echo '<a href="' . $RootPath . '/DiscountCategories.php?StockID=' . urlencode($StockID) . '">' . _('Maintain Discount Category') . '</a><br />';
+		if ( in_array($_SESSION['PageSecurityArray']['DiscountCategories.php'],$_SESSION['AllowedPageSecurityTokens'],true)){
+			echo '<a href="' . $RootPath . '/DiscountCategories.php?StockID=' . urlencode($StockID) . '">' . _('Maintain Discount Category') . '</a><br />';
+		}
 	    echo '<a href="' . $RootPath . '/StockClone.php?OldStockID=' . urlencode($StockID) . '">' . _('Clone This Item') . '</a><br />';
-		if($func_Otras){
+		if ( in_array($_SESSION['PageSecurityArray']['PriceMatrix.php'],$_SESSION['AllowedPageSecurityTokens'],true)){
 			echo '<a href="' . $RootPath . '/RelatedItemsUpdate.php?Item=' . urlencode($StockID) . '">' . _('Maintain Related Items') . '</a><br />';
 			echo '<a href="' . $RootPath . '/PriceMatrix.php?StockID=' . urlencode($StockID) . '">' . _('Maintain Price Matrix') . '</a><br />';
 		}

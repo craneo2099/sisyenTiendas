@@ -3,20 +3,20 @@
 	<PaperSize name="Paper size">letter</PaperSize>
 	<LineHeight name="Line height">16</LineHeight>
 	<logo type="image" name="Logo" id="Logo">
-		<x>-5</x>
+		<x>0</x>
 		<y>80</y>
 		<width>0</width>
-		<height>65</height>
+		<height>60</height>
 	</logo>
 	<PageNumber type="SimpleText" name="Page number" id="PageNumber">
 		<FontSize>10</FontSize>
 		<x>426</x>
-		<y>25</y>
+		<y>30</y>
 	</PageNumber>
 	<OrderNumber type="SimpleText" name="Order Number" id="OrderNumber">
 		<FontSize>13</FontSize>
 		<x>300</x>
-		<y>40</y>
+		<y>45</y>
 	</OrderNumber>
 	<CompanyName type="SimpleText" name="Company name" id="CompanyName">
 		<FontSize>12</FontSize>

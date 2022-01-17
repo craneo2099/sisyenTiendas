@@ -17,52 +17,23 @@ $graph->SetDrawYGrid(TRUE);
 $graph->SetMarginsPixels(40,40,40,40);
 $graph->SetDataType('text-data');
 
-if($_GET['StockLocation']=='All'){
-	$sql = "SELECT periods.periodno,
-			periods.lastdate_in_period,
-			SUM(-stockmoves.qty) AS qtyused
-		FROM stockmoves INNER JOIN periods
-			ON stockmoves.prd=periods.periodno
-		INNER JOIN locationusers ON locationusers.loccode=stockmoves.loccode AND locationusers.userid='" .  $_SESSION['UserID'] . "' AND locationusers.canview=1
-		WHERE (stockmoves.type=10 OR stockmoves.type=11 OR stockmoves.type=28)
-		AND stockmoves.hidemovt=0
-		AND stockmoves.stockid = '" . trim(mb_strtoupper($_GET['StockID'])) . "'
-		GROUP BY periods.periodno,
-			periods.lastdate_in_period
-		ORDER BY periodno  LIMIT 24";
-} else {
-	$sql = "SELECT periods.periodno,
-			periods.lastdate_in_period,
-			SUM(-stockmoves.qty) AS qtyused
-		FROM stockmoves INNER JOIN periods
-			ON stockmoves.prd=periods.periodno
-		INNER JOIN locationusers ON locationusers.loccode=stockmoves.loccode AND locationusers.userid='" .  $_SESSION['UserID'] . "' AND locationusers.canview=1
-		WHERE (stockmoves.type=10 Or stockmoves.type=11 OR stockmoves.type=28)
-		AND stockmoves.hidemovt=0
-		AND stockmoves.loccode='" . $_GET['StockLocation'] . "'
-		AND stockmoves.stockid = '" . trim(mb_strtoupper($_GET['StockID'])) . "'
-		GROUP BY periods.periodno,
-			periods.lastdate_in_period
-		ORDER BY periodno  LIMIT 24";
-}
+
+$qryStockloc=($_POST['StockLocation']=='All')?"":"AND stockmoves.loccode='" . $_GET['StockLocation'] . "'";
+
+$sql = "SELECT periods.periodno,
+		periods.lastdate_in_period,
+		SUM(-stockmoves.qty) AS qtyused
+	FROM stockmoves INNER JOIN periods
+		ON stockmoves.prd=periods.periodno
+	INNER JOIN locationusers ON locationusers.loccode=stockmoves.loccode AND locationusers.userid='" .  $_SESSION['UserID'] . "' AND locationusers.canview=1
+	WHERE (stockmoves.type=10 Or stockmoves.type=11 OR stockmoves.type=28)
+	AND stockmoves.hidemovt=0
+	".$qryStockloc."
+	AND stockmoves.stockid = '" . trim(mb_strtoupper($_GET['StockID'])) . "'
+	GROUP BY periods.periodno,
+		periods.lastdate_in_period
+	ORDER BY periodno  LIMIT 24";
 $MovtsResult = DB_query($sql);
-if (DB_error_no() !=0) {
-	$Title = _('Stock Usage Graph Problem');
-	include ('includes/header.php');
-	echo _('The stock usage for the selected criteria could not be retrieved because') . ' - ' . DB_error_msg();
-	if ($debug==1){
-	echo '<br />' . _('The SQL that failed was') . $sql;
-	}
-	include('includes/footer.php');
-	exit;
-}
-if (DB_num_rows($MovtsResult)==0){
-	$Title = _('Stock Usage Graph Problem');
-	include ('includes/header.php');
-	prnMsg(_('There are no movements of this item from the selected location to graph'),'info');
-	include('includes/footer.php');
-	exit;
-}
 
 $UsageArray = array();
 $NumberOfPeriodsUsage = DB_num_rows($MovtsResult);
@@ -110,5 +81,4 @@ $graph->SetDataColors(
 
 //Draw it
 $graph->DrawGraph();
-echo '<a href="' . $RootPath . '/StockUsage.php?ShowUsage=y&StockID='.$_GET['StockID'].'">'._('Return').'</a>';
 ?>

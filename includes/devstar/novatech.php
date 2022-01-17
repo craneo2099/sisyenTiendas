@@ -166,4 +166,5 @@ function getPaymentAdjunstment($id){
 }
 function confirmacion($migajas,$titulo){
 	echo '<div></div>';
+
 }

@@ -21,8 +21,6 @@ include('includes/GetPrice.inc');
 include('includes/SQL_CommonFunctions.inc');
 include('includes/GetSalesTransGLCodes.inc');
 
-
-
 $AlreadyWarnedAboutCredit = false;
 
 if (empty($_GET['identifier'])) {
@@ -30,7 +28,6 @@ if (empty($_GET['identifier'])) {
 } else {
 	$identifier=$_GET['identifier'];
 }
-
 if (isset($_SESSION['Items'.$identifier]) AND isset($_POST['CustRef'])) {
 	//update the Items object variable with the data posted from the form
 	$_SESSION['Items'.$identifier]->CustRef = $_POST['CustRef'];
@@ -60,21 +57,15 @@ if (isset($_POST['SelectingOrderItems'])) {
 if (isset($_GET['NewItem'])) {
 	$NewItem = trim($_GET['NewItem']);
 }
-if (isset($_POST['CancelOrder'])) {
 
-	prnMsg(_('This sale has been cancelled as requested'),'success');
-
-} 
-if (isset($_GET['NewOrder']) or isset($_POST['NewOrder']) or isset($_POST['CancelOrder'])) {
+if (isset($_GET['NewOrder'])) {
 	/*New order entry - clear any existing order details from the Items object and initiate a newy*/
 	 if (isset($_SESSION['Items'.$identifier])) {
 		unset ($_SESSION['Items'.$identifier]->LineItems);
 		$_SESSION['Items'.$identifier]->ItemsOrdered=0;
 		unset ($_SESSION['Items'.$identifier]);
-		unset($_POST);
 	}
 }
-
 
 
 if (!isset($_SESSION['Items'.$identifier])) {
@@ -223,10 +214,26 @@ if (!isset($_SESSION['Items'.$identifier])) {
 } // end if its a new sale to be set up ...
 
 if (isset($_POST['CancelOrder'])) {
+
+
+	unset($_SESSION['Items'.$identifier]->LineItems);
+	$_SESSION['Items'.$identifier]->ItemsOrdered = 0;
+	unset($_SESSION['Items'.$identifier]);
+	$_SESSION['Items'.$identifier] = new cart;
+
+	echo '<br /><br />';
+	prnMsg(_('This sale has been cancelled as requested'),'success');
+	echo '<br /><br /><a href="' .htmlspecialchars($_SERVER['PHP_SELF'],ENT_QUOTES,'UTF-8') . '">' . _('Start a new Counter Sale') . '</a>';
+	include('includes/footer.php');
+	exit;
+
+} else { /*Not cancelling the order */
+
 	echo '<div class="page_title_text noprint"><img src="'.$RootPath.'/css/'.$Theme.'/images/inventory.png" title="' . _('Counter Sales') . '" alt="" />' . ' ';
 	echo $_SESSION['Items'.$identifier]->CustomerName . ' ' . _('Counter Sale') . ' ' ._('from') . ' ' . $_SESSION['Items'.$identifier]->LocationName . ' ' . _('inventory') . ' (' . _('all amounts in') . ' ' . $_SESSION['Items'.$identifier]->DefaultCurrency . ')';
 	echo '</div>';
 }
+
 if (isset($_POST['Search']) or isset($_POST['Next']) or isset($_POST['Previous'])) {
 
 	if ($_POST['Keywords']!='' AND $_POST['StockCode']=='') {
@@ -499,37 +506,31 @@ if ((isset($_SESSION['Items'.$identifier])) OR isset($NewItem)) {
 
 			$Quantity = round(filter_number_format($_POST['Quantity_' . $OrderLine->LineNumber]),$OrderLine->DecimalPlaces);
 
-			$editPrice=filter_number_format($_POST['Price_' . $OrderLine->LineNumber]);
-			if ($editPrice=="0.00"){
-				$editPrice=$OrderLine->Price;
-			}
-			if($OrderLine->Price=="0.00"){
-				$Price = GetPrice($OrderLine->StockID, $_SESSION['Items'.$identifier]->DebtorNo,$_SESSION['Items'.$identifier]->Branch, $OrderLine->Quantity);
-			}else if(ABS($OrderLine->Price - $editPrice)>0.01) {
-				/*There is a new price being input for the line item */
+				if (ABS($OrderLine->Price - filter_number_format($_POST['Price_' . $OrderLine->LineNumber]))>0.01) {
+					/*There is a new price being input for the line item */
 
-				$Price = $editPrice;
-				$_POST['GPPercent_' . $OrderLine->LineNumber] = (($Price*(1-(filter_number_format($_POST['Discount_' . $OrderLine->LineNumber])/100))) - $OrderLine->StandardCost*$ExRate)/($Price *(1-filter_number_format($_POST['Discount_' . $OrderLine->LineNumber]))/100);
+					$Price = filter_number_format($_POST['Price_' . $OrderLine->LineNumber]);
+					$_POST['GPPercent_' . $OrderLine->LineNumber] = (($Price*(1-(filter_number_format($_POST['Discount_' . $OrderLine->LineNumber])/100))) - $OrderLine->StandardCost*$ExRate)/($Price *(1-filter_number_format($_POST['Discount_' . $OrderLine->LineNumber]))/100);
 
-			} elseif (ABS($OrderLine->GPPercent - filter_number_format($_POST['GPPercent_' . $OrderLine->LineNumber]))>=0.01) {
-				/* A GP % has been input so need to do a recalculation of the price at this new GP Percentage */
+				} elseif (ABS($OrderLine->GPPercent - filter_number_format($_POST['GPPercent_' . $OrderLine->LineNumber]))>=0.01) {
+					/* A GP % has been input so need to do a recalculation of the price at this new GP Percentage */
 
-				prnMsg(_('Recalculated the price from the GP % entered - the GP % was') . ' ' . $OrderLine->GPPercent . '  the new GP % is ' . filter_number_format($_POST['GPPercent_' . $OrderLine->LineNumber]),'info');
+					prnMsg(_('Recalculated the price from the GP % entered - the GP % was') . ' ' . $OrderLine->GPPercent . '  the new GP % is ' . filter_number_format($_POST['GPPercent_' . $OrderLine->LineNumber]),'info');
 
-				$Price = ($OrderLine->StandardCost*$ExRate)/(1 -((filter_number_format($_POST['GPPercent_' . $OrderLine->LineNumber]) + filter_number_format($_POST['Discount_' . $OrderLine->LineNumber]))/100));
-			}else{
-				$Price = $editPrice;
-			}
-			$DiscountPercentage = filter_number_format($_POST['Discount_' . $OrderLine->LineNumber]);
-			if ($_SESSION['AllowOrderLineItemNarrative'] == 1) {
-				$Narrative = $_POST['Narrative_' . $OrderLine->LineNumber];
-			} else {
-				$Narrative = '';
-			}
+					$Price = ($OrderLine->StandardCost*$ExRate)/(1 -((filter_number_format($_POST['GPPercent_' . $OrderLine->LineNumber]) + filter_number_format($_POST['Discount_' . $OrderLine->LineNumber]))/100));
+				} else {
+					$Price = filter_number_format($_POST['Price_' . $OrderLine->LineNumber]);
+				}
+				$DiscountPercentage = filter_number_format($_POST['Discount_' . $OrderLine->LineNumber]);
+				if ($_SESSION['AllowOrderLineItemNarrative'] == 1) {
+					$Narrative = $_POST['Narrative_' . $OrderLine->LineNumber];
+				} else {
+					$Narrative = '';
+				}
 
-			if (!isset($OrderLine->DiscountPercent)) {
-				$OrderLine->DiscountPercent = 0;
-			}
+				if (!isset($OrderLine->DiscountPercent)) {
+					$OrderLine->DiscountPercent = 0;
+				}
 
 			if ($Quantity<0 OR $Price < 0 OR $DiscountPercentage >100 OR $DiscountPercentage <0) {
 				prnMsg(_('The item could not be updated because you are attempting to set the quantity ordered to less than 0 or the price less than 0 or the discount more than 100% or less than 0%'),'warn');
@@ -745,7 +746,7 @@ if (count($_SESSION['Items'.$identifier]->LineItems)>0 ) { /*only show order lin
 //   T H I S   W H E R E   T H E   S A L E  I S   D I S P L A Y E D
 // *************************************************************************
 */
-	$CurrItem=$_SESSION['Items'.$identifier];
+
 	echo '<br />
 		<table width="90%" cellpadding="2" class="noprint">
 		<tr style="tableheader">';
@@ -773,7 +774,7 @@ if (count($_SESSION['Items'.$identifier]->LineItems)>0 ) { /*only show order lin
 
 	foreach ($_SESSION['Items'.$identifier]->LineItems as $OrderLine) {
 
-		$SubTotal = ($OrderLine->Quantity * $OrderLine->Price * (1 - $OrderLine->DiscountPercent));
+		$SubTotal = round($OrderLine->Quantity * $OrderLine->Price * (1 - $OrderLine->DiscountPercent),$_SESSION['Items'.$identifier]->CurrDecimalPlaces);
 		$DisplayDiscount = locale_number_format(($OrderLine->DiscountPercent * 100),2);
 		$QtyOrdered = $OrderLine->Quantity;
 		$QtyRemain = $QtyOrdered - $OrderLine->QtyInv;
@@ -786,43 +787,21 @@ if (count($_SESSION['Items'.$identifier]->LineItems)>0 ) { /*only show order lin
 		}
 
 		echo $RowStarter;
-		?>
-		<td><input type="hidden" name="POLine_<?=$OrderLine->LineNumber ?>" value="" />
-			<input type="hidden" name="ItemDue_<?=$OrderLine->LineNumber ?>" value="<?=$OrderLine->ItemDue?>" />
-			<a target="_blank" href="<?=$RootPath?>/StockStatus.php?identifier=<?=$identifier?>&amp;StockID=<?=$OrderLine->StockID?>&amp;DebtorNo=<?= $_SESSION['Items'.$identifier]->DebtorNo ?>"><?=$OrderLine->StockID?></a>
-		</td>
-		<td title="<?=$OrderLine->LongDescription?>">
-			<?php 
-			if(in_array($_SESSION['PageSecurityArray']['SelectProduct.php'], $_SESSION['AllowedPageSecurityTokens'])){
-				?>
-				<a target="_blank" href="<?=$RootPath?>/SelectProduct.php?StockID=<?=$OrderLine->StockID?>"><?= $OrderLine->ItemDescription?></a>
-				<?php 
-			} else { 
-				echo $OrderLine->ItemDescription;
-			}
-			?>
-		</td>
-<?php
+		echo '<td><input type="hidden" name="POLine_' .	 $OrderLine->LineNumber . '" value="" />';
+		echo '<input type="hidden" name="ItemDue_' .	 $OrderLine->LineNumber . '" value="'.$OrderLine->ItemDue.'" />';
+
+		echo '<a target="_blank" href="' . $RootPath . '/StockStatus.php?identifier='.$identifier . '&amp;StockID=' . $OrderLine->StockID . '&amp;DebtorNo=' . $_SESSION['Items'.$identifier]->DebtorNo . '">' . $OrderLine->StockID . '</a></td>
+			<td title="' . $OrderLine->LongDescription . '">' . $OrderLine->ItemDescription . '</td>';
+
 		echo '<td><input class="number" tabindex="'.strval($tabidx++).'" type="text" name="Quantity_' . $OrderLine->LineNumber . '" required="required" size="6" maxlength="6" value="' . locale_number_format($OrderLine->Quantity,$OrderLine->DecimalPlaces) . '" />';
 
 		echo '</td>
 			<td class="number">' . locale_number_format($OrderLine->QOHatLoc,$OrderLine->DecimalPlaces) . '</td>
 			<td>' . $OrderLine->Units . '</td>';
 		if (in_array($_SESSION['PageSecurityArray']['OrderEntryDiscountPricing'], $_SESSION['AllowedPageSecurityTokens'])) {
-			
-			?>
-			<td>
-				<input id="hidPriceNoRound" type="hidden" name="Price_<?= $OrderLine->LineNumber ?>" 
-					value="<?=$OrderLine->Price  ?>"/>
-				<input class="number" type="text" name="viewPrice_<?= $OrderLine->LineNumber ?>" 
-					required="required" size="16" maxlength="16" 
-					value="<?=locale_number_format($OrderLine->Price,$_SESSION['Items'.$identifier]->CurrDecimalPlaces);  ?>" 
-					onchange="
-						$('#hidPriceNoRound').val(this.value).trigger('change');
-					"/></td>
-				<td><input class="number" type="text" name="Discount_<?= $OrderLine->LineNumber ?>" required="required" size="5" maxlength="4" value="<?=locale_number_format(($OrderLine->DiscountPercent * 100),2) ?>" /></td>
-				<td><input class="number" type="text" name="GPPercent_<?= $OrderLine->LineNumber ?>" required="required" size="3" maxlength="40" value="<?=locale_number_format($OrderLine->GPPercent,2)?>" /></td>
-				<?php
+			echo '<td><input class="number" type="text" name="Price_' . $OrderLine->LineNumber . '" required="required" size="16" maxlength="16" value="' . locale_number_format($OrderLine->Price,$_SESSION['Items'.$identifier]->CurrDecimalPlaces) . '" /></td>
+				<td><input class="number" type="text" name="Discount_' . $OrderLine->LineNumber . '" required="required" size="5" maxlength="4" value="' . locale_number_format(($OrderLine->DiscountPercent * 100),2) . '" /></td>
+				<td><input class="number" type="text" name="GPPercent_' . $OrderLine->LineNumber . '" required="required" size="3" maxlength="40" value="' . locale_number_format($OrderLine->GPPercent,2) . '" /></td>';
 		} else {
 			echo '<td class="number">' . locale_number_format($OrderLine->Price,$_SESSION['Items'.$identifier]->CurrDecimalPlaces) . '<input type="hidden" name="Price_' . $OrderLine->LineNumber . '"  value="' . locale_number_format($OrderLine->Price,$_SESSION['Items'.$identifier]->CurrDecimalPlaces) . '" />
 				<input type="hidden" name="Discount_' . $OrderLine->LineNumber . '" value="' . locale_number_format(($OrderLine->DiscountPercent * 100),2) . '" />
@@ -957,7 +936,7 @@ if (count($_SESSION['Items'.$identifier]->LineItems)>0 ) { /*only show order lin
 	$BankAccountsResult = DB_query("SELECT bankaccountname, accountcode, currcode FROM bankaccounts ORDER BY bankaccountname");
 
 	echo '<tr>
-			<td>' . _('Bank Account') . ':</td>
+			<td>' . _('Banked to') . ':</td>
 			<td><select name="BankAccount">';
 	while ($MyRow = DB_fetch_array($BankAccountsResult)) {
 		// Lists bank accounts order by bankaccountname
@@ -991,19 +970,18 @@ if (count($_SESSION['Items'.$identifier]->LineItems)>0 ) { /*only show order lin
 				title="<?= _('This is the amount to return to client.')?>" maxlength="12" size="12" 
 				value="<?=($_POST['AmountGiven']-$_POST['AmountPaid']??0)?>" /></td>
 			</tr>
+<?php
 
-		</table>
-		</th>
-	</tr>
-	</table>
-	<?php
+	echo '</table>'; //end the sub table in the second column of master table
+	echo '</th>
+		</tr>
+		</table>';	//end of column/row/master table
 	if (!isset($_POST['ProcessSale'])) {
 		echo '<br />
 				<div class="centre">
-					<input type="submit" name="ProcessSale" value="' . _('Process The Sale') . '" />
 					<input type="submit" name="Recalculate" value="' . _('Re-Calculate') . '" />
+					<input type="submit" name="ProcessSale" value="' . _('Process The Sale') . '" />
 				</div>';
-				
 	}
 	echo '<hr />';
 
@@ -1151,7 +1129,7 @@ if (isset($_POST['ProcessSale']) AND $_POST['ProcessSale'] != '') {
 												'" . $_SESSION['Items'.$identifier]->Branch . "',
 												'". $_SESSION['Items'.$identifier]->CustRef ."',
 												'". $_SESSION['Items'.$identifier]->Comments ."',
-												'" . Date('Y-m-d H:i',$ticketTime) . "',
+												'" . Date('Y-m-d H:i') . "',
 												'" . $_SESSION['Items'.$identifier]->DefaultSalesType . "',
 												'" . $_SESSION['Items'.$identifier]->ShipVia . "',
 												'". $_SESSION['Items'.$identifier]->DeliverTo . "',
@@ -1344,7 +1322,7 @@ if (isset($_POST['ProcessSale']) AND $_POST['ProcessSale'] != '') {
 			}//end if auto create WOs in on
 		} /* end inserted line items into sales order details */
 
-		prnMsg(sprintf(_('Order Number %d has been entered'),$OrderNo),'success');
+		prnMsg(_('Order Number') . ' ' . $OrderNo . ' ' . _('has been entered'),'success');
 
 	/* End of insertion of new sales order */
 
@@ -1363,7 +1341,6 @@ if (isset($_POST['ProcessSale']) AND $_POST['ProcessSale'] != '') {
 		$Result = DB_query($SQL,$ErrMsg,$DbgMsg,true);
 
 	/*Now insert the DebtorTrans */
-	$ticketTime=time();
 
 		$SQL = "INSERT INTO debtortrans (transno,
 										type,
@@ -1389,7 +1366,7 @@ if (isset($_POST['ProcessSale']) AND $_POST['ProcessSale'] != '') {
 				'" . $_SESSION['Items'.$identifier]->DebtorNo . "',
 				'" . $_SESSION['Items'.$identifier]->Branch . "',
 				'" . $DefaultDispatchDate . "',
-				'" . date('Y-m-d H-i-s',$ticketTime) . "',
+				'" . date('Y-m-d H-i-s') . "',
 				'" . $PeriodNo . "',
 				'" . $_SESSION['Items'.$identifier]->CustRef  . "',
 				'" . $_SESSION['Items'.$identifier]->DefaultSalesType . "',
@@ -2055,7 +2032,7 @@ if (isset($_POST['ProcessSale']) AND $_POST['ProcessSale'] != '') {
 						12,
 						'" . $_SESSION['Items'.$identifier]->DebtorNo . "',
 						'" . $DefaultDispatchDate . "',
-						'" . date('Y-m-d H-i-s',$ticketTime) . "',
+						'" . date('Y-m-d H-i-s') . "',
 						'" . $PeriodNo . "',
 						'" . $InvoiceNo . "',
 						'" . $ExRate . "',
@@ -2101,7 +2078,7 @@ if (isset($_POST['ProcessSale']) AND $_POST['ProcessSale'] != '') {
 
 
 
-		echo prnMsg( _('Ticket number'). ' '. $InvoiceNo .' '. _('processed'), 'success');
+		echo prnMsg( _('Invoice number'). ' '. $InvoiceNo .' '. _('processed'), 'success');
 
 		echo '<br /><div class="centre">';
 
@@ -2118,9 +2095,7 @@ if (isset($_POST['ProcessSale']) AND $_POST['ProcessSale'] != '') {
 		unset($_SESSION['Items'.$identifier]->LineItems);
 		unset($_SESSION['Items'.$identifier]);
 
-		echo '<br /><br />
-		
-		<input type="submit" name="NewOrder" id="NewOrder" value="' . _('Start a new Counter Sale') . '" /></div>';
+		echo '<br /><br /><a class="noprint" href="' .htmlspecialchars($_SERVER['PHP_SELF'],ENT_QUOTES,'UTF-8') . '">' . _('Start a new Counter Sale') . '</a></div>';
 
 	}
 	// There were input errors so don't process nuffin
@@ -2426,15 +2401,12 @@ if (!isset($_POST['ProcessSale'])) {
 				<tr>
 					<th>' . _('Item Code') . '</th>
 					<th>' . _('Quantity') . '</th>
-					<th></th>
 				</tr>';
 		$DefaultDeliveryDate = DateAdd(Date($_SESSION['DefaultDateFormat']),'d',$_SESSION['Items'.$identifier]->DeliveryDays);
 		for ($i=1;$i<=$_SESSION['QuickEntries'];$i++) {
 			$onBlur="";
-			if($i==$_SESSION['QuickEntries']){
+			if($i==$_SESSION['QuickEntries'])
 				$lastEntryClass=" lastQkEntry";
-				$addBtn='<a href="#" id="adderLink" class="icon-inline" onclick="triggerEntry()"><i class="fas fa-plus-circle"></i></a>';
-			}
 
 	 		echo '<tr class="striped_row'.$lastEntryClass.'">';
 	 		/* Do not display colum unless customer requires po line number by sales order line*/
@@ -2443,23 +2415,19 @@ if (!isset($_POST['ProcessSale'])) {
 			 		title="' . _('Enter a part code to be sold. Part codes can contain any alpha-numeric characters underscore or hyphen.') . '"size="21" maxlength="20" /></td>
 					<td><input type="text" class="number entryQty" name="qty_' . $i . '" size="6" maxlength="6" />
 						<input type="hidden" class="date" name="ItemDue_' . $i . '" value="' . $DefaultDeliveryDate . '" />
-						</td>
-						<td>'.$addBtn.'
-						</td>
-						</tr>';
+						</td></tr>';
    		}
 	 	echo '</table>
 				<br />
 				<div class="centre">
-					<input type="submit" name="QuickEntry" id="QuickEntry" disabled value="' . _('Next') . '" formnovalidate="formnovalidate"/>
-					<input type="submit" name="PartSearch" id="PartSearch" value="' . _('Search Parts') . '(F8)" formnovalidate="formnovalidate"/>
+					<input type="submit" name="QuickEntry" value="' . _('Next') . '" />
+					<input type="submit" name="PartSearch" value="' . _('Search Parts') . '" />
 				</div>
 			</div>';
 
   	}
 	if ($_SESSION['Items'.$identifier]->ItemsOrdered >=1) {
-  		echo '<br /><div class="centre"><input type="submit" name="CancelOrder" id="CancelOrder"  formnovalidate="formnovalidate"
-		  value="' . _('Cancel Sale') . '" onclick="return confirm(\'' . _('Are you sure you wish to cancel this sale?') . '\');" /></div>';
+  		echo '<br /><div class="centre"><input type="submit" name="CancelOrder" value="' . _('Cancel Sale') . '" onclick="return confirm(\'' . _('Are you sure you wish to cancel this sale?') . '\');" /></div>';
 	}
 	echo '</form>';
 }

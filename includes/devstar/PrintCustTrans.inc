@@ -1,7 +1,4 @@
-<?php
 
-require_once($PathPrefix .'includes/devstar/novatech.php');
-?>
  	<style type="text/css">
 		#invoice-POS{
   padding:2mm;
@@ -31,19 +28,16 @@ p{
   border-bottom: 1px solid #EEE;
 }
 
-#top{
-  width: 100%;
-  height: 20vw;
-  min-height: 100px;}
+#top{min-height: 100px;}
 #mid{min-height: 80px;} 
 #bot{ min-height: 50px;}
 
 #top .logo{
-  float: left;
-	height: 20vw;
-	width: 50%;
+  //float: left;
+	height: 40vw;
+	width: 40vw;
 	background: url(<?=$RootPath. '/css/'. $_SESSION['Theme']. '/images/company.png'?>) no-repeat;
-	background-size: 20vw 20vw;
+	background-size: 40vw 40vw;
 }
 .clientlogo{
   float: left;
@@ -55,9 +49,8 @@ p{
 }
 .info{
   display: block;
-  float:left;
+  //float:left;
   margin-left: 0;
-	height: 40vw;
 }
 .title{
   float: right;
@@ -66,9 +59,6 @@ p{
 table{
   width: 100%;
   border-collapse: collapse;
-}
-table caption{
-  caption-side:top;
 }
 td{
   //padding: 5px 0 5px 15px;
@@ -98,8 +88,11 @@ td{
     
     <div id="mid">
       <div class="info">
+        <h2><?=_('Contact')?></h2>
         <p> 
             <?=_('Address')?> : <?=$_SESSION['CompanyRecord']['regOffice1']?></br>
+            <?=_('Email')?>   : <?=$_SESSION['CompanyRecord']['email']?></br>
+            <?=_('Phone')?>   : <?=$_SESSION['CompanyRecord']['telephone']?></br>
         </p>
       </div>
     </div><!--End Invoice Mid-->
@@ -141,39 +134,22 @@ td{
             <td class="payment"><h2><?=round($TotalTaxes,$currencyDecimal)?></h2></td>
           </tr>
 
-          <tr class="tabletitle">
-            <td></td>
-            <td class="Rate"><h2>Total</h2></td>
-            <td class="payment"><h2><?=round($TotalPrice,$currencyDecimal)?></h2></td>
-          </tr>
-        </table>
-            <div>
-              Tipo de pago: <span><?=_(getPaymentName($_POST['PaymentMethod']))?></span>
-            </div>
-            <div>
-              Vendedor: <span><?=getSalesmanName($_SESSION['Items'.$identifier]->SalesPerson)?></span>
-            </div>
-            <div>
-              Sucursal: <span><?=$_SESSION['Items'.$identifier]->Branch?></span>
-            </div>
-            <div>
-              Ticket: <span><?=$InvoiceNo?></span>
-            </div>
-            <div>
-              Fecha: <span><?=date('d/m/Y',$ticketTime)?></span>
-            </div>
-            <div>
-              Hora: <span><?=date('H:i',$ticketTime)?></span>
-            </div>
 
-      </div><!--End Table-->
+							<tr class="tabletitle">
+								<td></td>
+								<td class="Rate"><h2>Total</h2></td>
+								<td class="payment"><h2><?=$TotalPrice?></h2></td>
+							</tr>
 
-      <div id="legalcopy">
-        <p class="legal"><strong>¡Gracias por su compra!</strong> Esta es una nota sin valor fiscal. 
-        </p>
-      </div>
+						</table>
+					</div><!--End Table-->
 
-    </div><!--End InvoiceBot-->
+					<div id="legalcopy">
+						<p class="legal"><strong>Gracias por su compra</strong> Esta nota no es una factura de compra. 
+						</p>
+					</div>
+
+				</div><!--End InvoiceBot-->
   </div><!--End Invoice-->
 
 

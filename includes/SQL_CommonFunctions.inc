@@ -80,7 +80,7 @@ Function GetTaxRateSupp ($SupplierId, $location, $stockid){
 	left join taxgrouptaxes tg on tg.taxauthid=tar.taxauthority
 	left join suppliers sp on tg.taxgroupid=sp.taxgroupid
 	left join locations lc on lc.taxprovinceid=tar.dispatchtaxprovince
-	LEFT JOIN stockmaster sm on tar.taxcatid=tar.taxcatid
+	LEFT JOIN stockmaster sm on sm.taxcatid=tar.taxcatid
 		where sp.supplierid=? and lc.loccode=? and sm.stockid=?";
 
 	$ErrMsg = _('The tax rate for this item could not be retrieved because');

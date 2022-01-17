@@ -38046,7 +38046,7 @@ msgstr "Nuevo Nombre de Localidad"
 
 #: Z_ChangeSalesmanCode.php:6
 msgid "UTILITY PAGE To Change A Salesman Code In All Tables"
-msgstr ""
+msgstr "PAGINA AUXILIAR Para cambiar un código de vendedor en todas las tablas"
 
 #: Z_ChangeSalesmanCode.php:13 includes/MainMenuLinksArray.php:110
 msgid "Change A Salesman Code"
@@ -38086,7 +38086,7 @@ msgstr "el código de vendedor debe ser único"
 
 #: Z_ChangeSalesmanCode.php:55
 msgid "Inserting the new salesman master record"
-msgstr "registrando el vendedor"
+msgstr "Registrando vendedor"
 
 #: Z_ChangeSalesmanCode.php:76
 msgid "The SQL to insert the new salesman master record failed"
@@ -38094,11 +38094,11 @@ msgstr "El Query para cambiar el código de vendedor ha fallado"
 
 #: Z_ChangeSalesmanCode.php:79
 msgid "Changing debtor branch records"
-msgstr ""
+msgstr "Cambiando registros de sucursales del deudor"
 
 #: Z_ChangeSalesmanCode.php:82
 msgid "The SQL to update debtor branch records failed"
-msgstr ""
+msgstr "Fallo el SQL para actualizar los registros de sucursales del deudor"
 
 #: Z_ChangeSalesmanCode.php:103
 msgid "Changing user salesman records"
@@ -38110,7 +38110,7 @@ msgstr "Eliminando el codigo de vendedor del sistema"
 
 #: Z_ChangeSalesmanCode.php:114
 msgid "The SQL to delete the old salesman record failed"
-msgstr ""
+msgstr "Falló el SQL para eliminar viejos registros del vendedor"
 
 #: Z_ChangeSalesmanCode.php:127
 msgid "Existing Salesman Code"

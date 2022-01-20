@@ -326,16 +326,20 @@ echo '<tr><td>' . _('Price') . ':</td>
 	         echo $_POST['Price'];
           }
           echo '" />
-     </td></tr>
+     </td></tr>';
+	 ?>
 </table>
 <br /><div class="centre">
 <input type="submit" name="submit" value="<?=$submitValue?>" />
 </div>
 
 
+</div>
+      </form>
 
-echo '</div>
-      </form>';
+<?php
+
+addScriptList("/javascripts/prices.js");
 include('includes/footer.php');
 
 

@@ -11748,6 +11748,9 @@ msgstr "Despachado A"
 msgid "PO Line"
 msgstr "Lí­nea de orden de compra"
 
+msgid "Order Line"
+msgstr "Lí­nea de orden"
+
 #: EmailConfirmation.php:219 EmailConfirmation.php:349 GoodsReceived.php:129
 #: GoodsReceived.php:133 PO_AuthoriseMyOrders.php:117 WorkOrderIssue.php:771
 #: WorkOrderReceive.php:838 WorkOrderStatus.php:74
@@ -13074,6 +13077,9 @@ msgstr "Orden FTP para Radio Beacon"
 msgid "No orders were returned because"
 msgstr "No hay pedido de regreso porque"
 
+msgid "No orders were found"
+msgstr "No se encontraron ordenes"
+
 #: FTP_RadioBeacon.php:49
 msgid "Send to"
 msgstr "Enviar a"
@@ -14190,6 +14196,9 @@ msgstr "Inversión"
 msgid "Commission"
 msgstr "Comisión"
 
+msgid "Negative if it's a commission"
+msgstr "Negativo para comisiones"
+
 #: GLCashFlowsSetup.php:78
 msgid "Share"
 msgstr "Acción"
@@ -14236,7 +14245,7 @@ msgstr "Cuenta por pagar"
 
 #: GLCashFlowsSetup.php:117 includes/PDFStockComparisonPageHeader.inc:36
 msgid "Adjustment"
-msgstr "Ajuste/Regularización/Diferencia"
+msgstr "Ajuste"
 
 #: GLCashFlowsSetup.php:120
 msgid "Amortisation"
@@ -18173,11 +18182,11 @@ msgstr "Detalles de la Orden"
 
 #: OrderDetails.php:57
 msgid "Return to Sales Order Inquiry"
-msgstr ""
+msgstr "Regresar a la consulta de ordenes de venta"
 
 #: OrderDetails.php:58
 msgid "Return to Customer Inquiry Interface"
-msgstr ""
+msgstr "Regresar al panel de clientes"
 
 #: OrderDetails.php:64
 msgid "Your customer login will only allow you to view your own purchase orders"
@@ -18321,7 +18330,10 @@ msgstr "Precio Unitario"
 
 
 msgid "U/P"
-msgstr "P. Unit."
+msgstr "P.U."
+
+msgid "U/P+IVA"
+msgstr "P.U.+IVA"
 
 #: OutstandingGRNs.php:185 OutstandingGRNs.php:187 PO_AuthoriseMyOrders.php:120
 #: SupplierCredit.php:316 SupplierInvoice.php:677 SupplierTenders.php:329
@@ -19753,11 +19765,14 @@ msgstr "Flete"
 
 #: PDFAck.php:257
 msgid "Total Including Tax and Freight"
-msgstr ""
+msgstr "Total incuyendo impuestos y flete"
 
 #: PDFAck.php:257
 msgid "Total Including Tax"
 msgstr "Total IVA incluido"
+
+msgid "Total + Tax"
+msgstr "Total + IVA"
 
 #: PDFAck.php:278
 msgid "There were no items on the Acknowledgement"
@@ -26434,7 +26449,7 @@ msgstr "No fueron devueltos los activos por esta búsqueda, por favor vuelva a i
 
 #: SelectCompletedOrder.php:6
 msgid "Search All Sales Orders"
-msgstr "Buscar Todas las Pedidos de Venta"
+msgstr "Buscar Todos los Pedidos de Venta"
 
 #: SelectCompletedOrder.php:11
 msgid "Search Sales Orders"

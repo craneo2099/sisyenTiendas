@@ -1,6 +1,8 @@
 <?php
 
 require_once($PathPrefix .'includes/devstar/novatech.php');
+$itemIden=$_SESSION['Items'.$identifier];
+
 ?>
  	<style type="text/css">
 		#invoice-POS{
@@ -108,7 +110,7 @@ td{
 
       <div id="table">
         <table>
-          <caption>Venta</caption>
+          <caption>Devolución</caption>
           <tr class="tabletitle">
             <td class="item"><h2><?=_('Item')?></h2></td>
             <td class="Hours"><h2><?=_('U/P')?></h2></td>
@@ -116,9 +118,9 @@ td{
             <td class="Rate"><h2><?=_('Sub Total')?></h2></td>
           </tr>
                         <?php 
-                        $currencyDecimal=$_SESSION['Items'.$identifier]->CurrDecimalPlaces;
+                        $currencyDecimal=$itemIden->CurrDecimalPlaces;
                         $TotalTaxes=$TotalPrice=0;
-                        foreach ($_SESSION['Items'.$identifier]->LineItems as $value) {
+                        foreach ($itemIden->LineItems as $value) {
                           $unitTax=$value->Price*$value->Taxes[1]->TaxRate;
                           $itemTaxes=$unitTax*$value->Quantity;
                           $unitPrice=$value->Price+$unitTax;
@@ -148,13 +150,13 @@ td{
           </tr>
         </table>
             <div>
-              Tipo de pago: <span><?=_(getPaymentName($_POST['PaymentMethod']))?></span>
+              Tipo de devolución: <span><?=_(getPaymentName($_POST['PaymentMethod']))?></span>
             </div>
             <div>
-              Vendedor: <span><?=getSalesmanName($_SESSION['Items'.$identifier]->SalesPerson)?></span>
+              Vendedor: <span><?=getSalesmanName($itemIden->SalesPerson)?></span>
             </div>
             <div>
-              Sucursal: <span><?=$_SESSION['Items'.$identifier]->Branch?></span>
+              Sucursal: <span><?=$itemIden->Branch?></span>
             </div>
             <div>
               Ticket: <span><?=$InvoiceNo?></span>

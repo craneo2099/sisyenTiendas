@@ -49,18 +49,34 @@ if(isset($DatabaseName)) {
 
 function DB_query($SQL, $ErrorMessage='', $DebugMessage= '', $Transaction=false, $TrapErrors=true) {
 
+	$result=DB_query_stmt($SQL, $ErrorMessage, $DebugMessage, '',null,$Transaction, $TrapErrors);
+	return $result;
+}
+function DB_query_stmt($SQL, $ErrorMessage='', $DebugMessage= '', $types='',$variables=null,$Transaction=false, $TrapErrors=true) {
 	global $debug;
 	global $PathPrefix;
 	global $db;
 	global $Messages;
 
-	$result = mysqli_query($db, $SQL);
+	
+	$stmt = mysqli_stmt_init($db);
+	mysqli_stmt_prepare($stmt,$SQL);
+	if(!empty($types)){
+		if(empty($variables)){
+			throw new Exception('Las variables del DB_query_stmt son requeridas.');
+		}
+		mysqli_stmt_bind_param($stmt,$types,...$variables);
+	}
+	mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+	
+	mysqli_stmt_close($stmt);
 	$_SESSION['LastInsertId'] = mysqli_insert_id($db);
 
 	if($DebugMessage == '') {
 		$DebugMessage = _('The SQL that failed was');
 	}
-	
+		
 	if(DB_error_no() != 0 AND $TrapErrors==true) {
 		require_once($PathPrefix . 'includes/header.php');
 		prnMsg($ErrorMessage . '<br />' . DB_error_msg(), 'error', _('Database Error'). ' ' . DB_error_no());

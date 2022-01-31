@@ -323,7 +323,10 @@ Class Cart {
 	function GetTaxes($LineNumber){
 		/*Gets the Taxes and rates applicable to this line from the TaxGroup of the branch and TaxCategory of the item
 		and the taxprovince of the dispatch location */
-
+		$sqlTaxCat='""';
+		if(!empty($this->LineItems)){
+			$sqlTaxCat=$this->LineItems[$LineNumber]->TaxCategory;
+		}
 		$SQL = "SELECT taxgrouptaxes.calculationorder,
 					taxauthorities.description,
 					taxgrouptaxes.taxauthid,
@@ -336,7 +339,7 @@ Class Cart {
 				taxauthrates.taxauthority=taxauthorities.taxid
 			WHERE taxgrouptaxes.taxgroupid=" . $this->TaxGroup . "
 			AND taxauthrates.dispatchtaxprovince=" . $this->DispatchTaxProvince . "
-			AND taxauthrates.taxcatid = " . $this->LineItems[$LineNumber]->TaxCategory . "
+			AND taxauthrates.taxcatid = " . $sqlTaxCat . "
 			ORDER BY taxgrouptaxes.calculationorder";
 
 		$ErrMsg = _('The taxes and rates for this item could not be retrieved because');

@@ -18,6 +18,9 @@
 td.Date {
 	white-space: nowrap;
 }
+body {
+	min-width: 1px !important;;
+}
 
 h1 {
 	font-size: 173%;
@@ -127,6 +130,9 @@ body, #CanvasDiv {
 #Report table {
 	width:100%;
 	/* Expands the body of the report to use the full width of the page. */
+}
+.col-12{
+	padding-left: 0px!important;
 }
 
 }

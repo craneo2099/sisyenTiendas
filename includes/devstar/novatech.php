@@ -115,11 +115,62 @@ function getCategorySelect($selected='' , $atts='', $all='',$none='',$types=''){
 	}
 	echo '</select>';
 }
+function getpaymentMethodSelect($selected='' , $atts='', $all='',$none=''){
+	
+	$filter='';
+	$where='';
+	$qry_or='';
+	if($filter){
+		$where=' where'. $filter;
+	}
+	$SQL = "SELECT paymentid, paymentname
+			FROM paymentmethods".$where.
+			" ORDER BY paymentname";
+	$result = DB_query($SQL);
+
+    if(str_contains($atts,' name=')){
+        echo '<select '.$atts.'>';
+    }else{
+	    echo '<select name="PaymentMethod" '.$atts.'>';
+    }
+	if($all){
+		echo '<option value="All">' . _('All') . '</option>';
+	}
+	if($none){
+		echo '<option '.($selected?'':'selected="selected" ').'value=" "> </option>';
+	}
+	while ($myrow = DB_fetch_array($result)) {
+		echo '<option ';
+		if ($myrow['paymentid']==$selected) {
+			echo 'selected="selected" ';
+		}
+		echo 'value="' . $myrow['paymentid'] . '">' . _($myrow['paymentname']) . '</option>';
+	}
+	echo '</select>';
+}
 
 function countSalesTypes(){
 	
 	$SQL = "SELECT typeabbrev, sales_type FROM salestypes where activo=1";
 	return DB_fetch_row(DB_query($sql))[0];
+}
+function getOrderTax($orderno,$lineno=false){
+	
+	$SQL = "SELECT stmt.taxrate
+	FROM salesorders so
+	left join stockmoves stm on stm.reference=orderno and type=10
+	left join stockmovestaxes stmt on stmt.stkmoveno = stm.stkmoveno
+	where
+	orderno=?";
+	$variables=array($orderno);
+	$types='s';
+	if($lineno){
+		$SQL.=" and stm.stockid?";
+		$variables=array_push($variables,$orderno);
+		$types.='s';
+	}
+
+	return DB_fetch_row(DB_query_stmt($SQL,'', '', $types,$variables))[0];
 }
 function recursive_search_array($needle, $haystack){
 	foreach ( $haystack as $key => $value) {

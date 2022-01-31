@@ -37,6 +37,7 @@ $OrderHeaderSQL = "SELECT salesorders.debtorno,
 							salesorders.contactemail,
 							salesorders.freightcost,
 							salesorders.deliverydate,
+							salesorders.ajuste,
 							debtorsmaster.currcode,
 							salesorders.fromstkloc,
 							currencies.decimalplaces
@@ -59,6 +60,7 @@ if (DB_num_rows($GetOrdHdrResult)==1) {
 
 	$myrow = DB_fetch_array($GetOrdHdrResult);
 	$CurrDecimalPlaces = $myrow['decimalplaces'];
+	$ajuste = $myrow['ajuste'];
 
 	if ($CustomerLogin ==1 AND $myrow['debtorno']!= $_SESSION['CustomerID']) {
 		prnMsg (_('Your customer login will only allow you to view your own purchase orders'),'error');
@@ -113,7 +115,7 @@ if (DB_num_rows($GetOrdHdrResult)==1) {
 							actualdispatchdate,
 							qtyinvoiced,
 							itemdue,
-							poline,
+							orderlineno,
 							narrative
 						FROM salesorderdetails INNER JOIN stockmaster
 						ON salesorderdetails.stkcode = stockmaster.stockid
@@ -122,32 +124,37 @@ if (DB_num_rows($GetOrdHdrResult)==1) {
 	$ErrMsg =  _('The line items of the order cannot be retrieved because');
 	$DbgMsg =  _('The SQL used to retrieve the line items, that failed was');
 	$LineItemsResult = DB_query($LineItemsSQL, $ErrMsg, $DbgMsg);
+	
 
 	if (DB_num_rows($LineItemsResult)>0) {
 
 		$OrderTotal = 0;
 		$OrderTotalVolume = 0;
 		$OrderTotalWeight = 0;
+		$tax=getOrderTax($_GET['OrderNumber'],$myrow['orderlineno']);
 
 		echo '<br />
-			<table class="selection">
+			<table class="selection">';
+			?>
 			<tr>
-				<th colspan="9"><h3>' . _('Order Line Details For Order No').' '.$_GET['OrderNumber'] . '</h3></th>
+				<th colspan="9"><h3><?= _('Order Line Details For Order No')?> <?=$_GET['OrderNumber'] ?></h3></th>
 			</tr>
 			<tr>
-				<th>' . _('PO Line') . '</th>
-				<th>' . _('Item Code') . '</th>
-				<th>' . _('Item Description') . '</th>
-				<th>' . _('Quantity') . '</th>
-				<th>' . _('Unit') . '</th>
-				<th>' . _('Price') . '</th>
-				<th>' . _('Discount') . '</th>
-				<th>' . _('Total') . '</th>
-				<th>' . _('Qty Del') . '</th>
-				<th>' . _('Last Del') . '/' . _('Due Date') . '</th>
-				<th>' . _('Narrative') . '</th>
-			</tr>';
-
+				<th><?= _('Order Line') ?></th>
+				<th><?= _('Item Code') ?></th>
+				<th><?= _('Item Description') ?></th>
+				<th><?= _('Quantity') ?></th>
+				<th><?= _('Unit') ?></th>
+				<th><label title="<?=_("Unit Price") ?>"><?=_('U/P') ?></label></th>
+				<th><?= _('Tax') ?></th>
+				<th><?= _('Discount') ?></th>
+				<th><?= _('Total') ?></th>
+				<th><?= _('Total + Tax') ?></th>
+				<th><?= _('Qty Del') ?></th>
+				<th><?= _('Last Del') . '/' . _('Due Date') ?></th>
+				<th><?= _('Narrative') ?></th>
+			</tr>
+<?php
 		while ($myrow=DB_fetch_array($LineItemsResult)) {
 
 			if ($myrow['qtyinvoiced']>0){
@@ -155,35 +162,47 @@ if (DB_num_rows($GetOrdHdrResult)==1) {
 			} else {
 		  		$DisplayActualDeliveryDate = '<span style="color:red;">' . ConvertSQLDate($myrow['itemdue']) . '</span>';
 			}
-
+			$subTotalLine=$myrow['quantity'] * $myrow['unitprice'] * (1 - $myrow['discountpercent']);
+			$totalLine=$subTotalLine*(1+$tax);
 			echo '<tr class="striped_row">
-				<td>' . $myrow['poline'] . '</td>
+				<td>' . $myrow['orderlineno'] . '</td>
 				<td>' . $myrow['stkcode'] . '</td>
 				<td>' . $myrow['description'] . '</td>
 				<td class="number">' . $myrow['quantity'] . '</td>
 				<td>' . $myrow['units'] . '</td>
 				<td class="number">' . locale_number_format($myrow['unitprice'],$CurrDecimalPlaces) . '</td>
+				<td class="number">' . locale_number_format($myrow['unitprice']*$tax,$CurrDecimalPlaces) . '</td>
 				<td class="number">' . locale_number_format(($myrow['discountpercent'] * 100),2) . '%' . '</td>
-				<td class="number">' . locale_number_format($myrow['quantity'] * $myrow['unitprice'] * (1 - $myrow['discountpercent']),$CurrDecimalPlaces) . '</td>
+				<td class="number">' . locale_number_format($subTotalLine,$CurrDecimalPlaces) . '</td>
+				<td class="number">' . locale_number_format($totalLine,$CurrDecimalPlaces) . '</td>
 				<td class="number">' . locale_number_format($myrow['qtyinvoiced'],$myrow['decimalplaces']) . '</td>
 				<td>' . $DisplayActualDeliveryDate . '</td>
 				<td>' . $myrow['narrative'] . '</td>
 			</tr>';
 
-			$OrderTotal += ($myrow['quantity'] * $myrow['unitprice'] * (1 - $myrow['discountpercent']));
+			$OrderTotal += $totalLine;
 			$OrderTotalVolume += ($myrow['quantity'] * $myrow['volume']);
 			$OrderTotalWeight += ($myrow['quantity'] * $myrow['grossweight']);
 
 		}
-		$DisplayTotal = locale_number_format($OrderTotal,$CurrDecimalPlaces);
+		$DisplayTotal = locale_number_format($OrderTotal+$ajuste,$CurrDecimalPlaces);
 		$DisplayVolume = locale_number_format($OrderTotalVolume,2);
 		$DisplayWeight = locale_number_format($OrderTotalWeight,2);
-
-		echo '<tr>
-				<td colspan="5" class="number"><b>' . _('TOTAL Excl Tax/Freight') . '</b></td>
-				<td colspan="2" class="number">' . $DisplayTotal . '</td>
+		if($ajuste){
+			?>
+			<tr>
+				<td colspan="8" class="number"><b><?= _('Adjustment') ?></b></td>
+				<td colspan="2" class="number"><?= $ajuste ?></td>
 			</tr>
-			</table>';
+			<?php
+		}
+		?>
+		<tr>
+			<td colspan="8" class="number"><b><?= _('Total Including Tax') ?></b></td>
+			<td colspan="2" class="number"><?= $DisplayTotal ?></td>
+		</tr>
+		<?php
+		echo '</table>';
 
 		echo '<br />
 			<table class="selection">

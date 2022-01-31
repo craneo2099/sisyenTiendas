@@ -368,8 +368,13 @@ if (isset($_POST['EnterAdjustment']) AND $_POST['EnterAdjustment']!= ''){
 		EnsureGLEntriesBalance(17, $AdjustmentNumber);
 
 		$Result = DB_Txn_Commit();
+		$sign=($_SESSION['Adjustment' . $identifier]->Quantity>0)?'+':'';
 		$AdjustReason = $_SESSION['Adjustment' . $identifier]->Narrative?  _('Narrative') . ' ' . $_SESSION['Adjustment' . $identifier]->Narrative:'';
-		$ConfirmationText = _('A stock adjustment for'). ' ' . $_SESSION['Adjustment' . $identifier]->StockID . ' -  ' . $_SESSION['Adjustment' . $identifier]->ItemDescription . ' '._('has been created from location').' ' . $_SESSION['Adjustment' . $identifier]->StockLocation .' '. _('for a quantity of') . ' ' . locale_number_format($_SESSION['Adjustment' . $identifier]->Quantity,$_SESSION['Adjustment' . $identifier]->DecimalPlaces) . ' ' . $AdjustReason;
+		$ConfirmationText = _('A stock adjustment for'). ' ' . $_SESSION['Adjustment' . $identifier]->StockID . ' -  ' . 
+		$_SESSION['Adjustment' . $identifier]->ItemDescription . ' '._('has been created from location').' ' . 
+		$_SESSION['Adjustment' . $identifier]->StockLocation .' '. _('for a quantity of') . ' ' . $sign . 
+		locale_number_format($_SESSION['Adjustment' . $identifier]->Quantity,$_SESSION['Adjustment' . $identifier]->DecimalPlaces) 
+		. ' ' . $AdjustReason;
 		prnMsg( $ConfirmationText,'success');
 
 		if ($_SESSION['InventoryManagerEmail']!=''){
@@ -489,7 +494,12 @@ if ($Controlled==1){
 				[<a href="'.$RootPath.'/StockAdjustmentsControlled.php?AdjType=REMOVE&identifier='.$identifier.'">' . _('Remove') . '</a>]
 				[<a href="'.$RootPath.'/StockAdjustmentsControlled.php?AdjType=ADD&identifier='.$identifier.'">' . _('Add') . '</a>]';
 } else {
-	echo '<input type="text" class="number" name="Quantity" size="12" maxlength="12" value="' . locale_number_format($Quantity,$DecimalPlaces) . '" />';
+	?>
+	<input type="text" class="number" name="Quantity" size="12" maxlength="12" 
+	onchange="setTipoMod(this.value)" 
+	value="<?= locale_number_format($Quantity,$DecimalPlaces)?>" />
+	<span id="modificacion"></span>
+	<?php
 }
 echo '</td></tr>';
 	//Select the tag
@@ -544,6 +554,18 @@ echo '<br />
 	</div>
     </div>
 </form>
+<script type="text/javascript">
+	function setTipoMod(valor){
+		var msg="";
+		if(valor>0){
+			msg="<?=_("Add")?>";
+		}else if (valor<0){
+			msg="<?=_("Remove")?>";
+
+		}
+		$('#modificacion').text(msg);
+	}
+</script>
 <?php
 include('includes/footer.php');
 ?>

@@ -552,7 +552,11 @@ echo '<form action="' . htmlspecialchars($_SERVER['PHP_SELF'],ENT_QUOTES,'UTF-8'
 		' class="col-12">';
 echo '<div>';
 echo '<input type="hidden" name="FormID" value="' . $_SESSION['FormID'] . '" />';
-
+if(isset($_GET['Search']) OR isset($_POST['redirect'])){
+	?>
+	<input type="hidden" name="redirect" value="stmv" />
+	<?php
+}
 echo '<DIV class="page_title_text"><img src="' . $RootPath . '/css/' . $Theme . '/images/magnifier.png" title="' . _('Search') . '" alt="" />' . ' ' . _('Search for Inventory Items'). '</DIV>';
 echo '<table class="selection"><tr>';
 echo '<td>' . _('In Stock Category') . ':';
@@ -880,6 +884,7 @@ if (isset($SearchResult) AND !isset($_POST['Select'])) {
 				<br />
 				</div>';
 		}
+		
 		echo '<table id="ItemSearchTable" class="selection">
 			<thead>
 				<tr>
@@ -926,8 +931,9 @@ if (isset($SearchResult) AND !isset($_POST['Select'])) {
 				$StockImgLink = '<p>'._('No Image').'</p>';
 			}
 			$onclick="document.getElementById('Select".$RowIndex."').click();";
-			if(isset($_GET['Search'])){
+			if(isset($_GET['Search']) OR isset($_POST['redirect'])){
 				$onclick='window.open(\'' . $RootPath . '/StockMovements.php?StockID='. $myrow['stockid'].'\',\'_self\')';
+
 			}
 
 			echo '<tr class="striped_row linkRow" data-href="'.$onclick.'">

@@ -73,7 +73,8 @@ function alPresionar(e){
 function setCambio(){
     var lastTotal=Number($('#LastTotalHdn').val()),
     given=Number($('#AmountGiven').val());
-    $('#AmountPaid').val((given>lastTotal?lastTotal:given).toLocaleString('en'));
+    var paid=(given>lastTotal?lastTotal:given);
+    $('#AmountPaid').val(paid.toLocaleString('en'));
     $('#AmountPaid').trigger("change");
     $('#AmountReturn').val((given-lastTotal).toLocaleString('en'));
 }

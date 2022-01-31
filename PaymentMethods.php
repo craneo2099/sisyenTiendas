@@ -313,7 +313,7 @@ if (! isset($_GET['delete'])) {
 			</select></td>
 		</tr>';
 	echo '<tr>
-			<td>' . _('Payment Discount Percent on Receipts') . ':' . '</td>
+			<td>' . _('Payment Discount Percent on Receipts') . ':' . '<br>('._("Negative if it's a commission").'))</td>
 			<td><input type="text" class="number" min="0" max="1" name="DiscountPercent" value="' . locale_number_format($_POST['DiscountPercent'],2) . '" /></td>
 		</tr>';
 	echo '</table>';

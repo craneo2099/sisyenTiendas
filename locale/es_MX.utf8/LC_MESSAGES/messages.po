@@ -43109,7 +43109,7 @@ msgstr ""
 #: includes/PDFInventoryPlanPageHeader.inc:54
 #: includes/PDFTransPageHeaderPortrait.inc:251
 msgid "Qty"
-msgstr "Cantidad"
+msgstr "Cant."
 
 #: includes/PDFInventoryPlanPageHeader.inc:55
 msgid "MTD"

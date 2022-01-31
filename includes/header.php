@@ -92,7 +92,7 @@ if (isset($_SESSION['ShowPageHelp']) AND !$_SESSION['ShowPageHelp']) {
 
 echo '
 </head>
-<body>
+<body style="min-width:1px!important;">
 	<div id="CanvasDiv" class="container-fluid">
 		<input type="hidden" name="Lang" id="Lang" value="', $Lang, '" />
 		<div id="HeaderDiv" class="row justify-content-between">';

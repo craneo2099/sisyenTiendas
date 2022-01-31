@@ -1031,7 +1031,7 @@ if (count($_SESSION['Items'.$identifier]->LineItems)>0 ) { /*only show order lin
 				</div>';
 				
 	}
-	echo '<hr />';
+	echo '<hr class="noprint"/>';
 
 } # end of if lines
 
@@ -2131,7 +2131,7 @@ if (isset($_POST['ProcessSale']) AND $_POST['ProcessSale'] != '') {
 
 		echo prnMsg( _('Ticket number'). ' '. $InvoiceNo .' '. _('processed'), 'success');
 
-		echo '<br /><div class="centre">';
+		echo '<br class="noprint"/><div class="centre">';
 
 		if ($_SESSION['InvoicePortraitFormat']==0) {
 			include "includes/devstar/PrintCustTrans.inc";
@@ -2148,7 +2148,7 @@ if (isset($_POST['ProcessSale']) AND $_POST['ProcessSale'] != '') {
 
 		echo '<br /><br />
 		
-		<input type="submit" name="NewOrder" id="NewOrder" value="' . _('Start a new Counter Sale') . '" /></div>';
+		<input type="submit" name="NewOrder" id="NewOrder" class="noprint" value="' . _('Start a new Counter Sale') . '" /></div>';
 
 	}
 	// There were input errors so don't process nuffin
@@ -2492,7 +2492,12 @@ if (!isset($_POST['ProcessSale'])) {
 	echo '</form>';
 }
 if($doPrint){
-	echo '<Script type="text/javascript">window.onload = function() { window.print(); }</script>';
+	?>
+		<img src="<?=$RootPath. '/companies/'. $_SESSION['DatabaseName']. '/logoBN.jpg'?>" style="display:none;">
+		<Script type="text/javascript">window.onload = function() {
+			window.print(); }
+		</script>
+	<?php
 }
 addScriptList("/javascripts/CounterSales.js");
 

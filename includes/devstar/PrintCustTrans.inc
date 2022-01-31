@@ -1,105 +1,128 @@
 <?php
 
 require_once($PathPrefix .'includes/devstar/novatech.php');
+$coyr=$_SESSION['CompanyRecord'];
+$paymentAdjustment=locale_number_format(
+  (getPaymentAdjunstment($_POST['PaymentMethod'])/-100) * ($subTotalTax)
+  ,$currDecimals);
 ?>
  	<style type="text/css">
-		#invoice-POS{
-  padding:2mm;
-  margin: 0 auto;
-  width: 100%;
-  background: #FFF;
-    font-size: 9vw;
+        @media print{
+          #invoice-POS{
 
-        }
-h1{
-  font-size: 1.5em;
-  color: #222;
-}
-h2{font-size: .9em;}
-h3{
-  font-size: 1.2em;
-  font-weight: 300;
-  line-height: 2em;
-}
+            padding:0mm 5mm;
+margin: 10 auto;
+width: 90vw;
+  font-size: 5vw;
+        color:#000;
+font-family: "Lucida Console", Courier, monospace;
+      }
+h2{
+margin: 4vw auto;
+font-size: .9em;
+        font-weight: bold;}
+
 p{
-  font-size: .7em;
-  color: #666;
-  line-height: 1.2em;
+line-height: 1.2em;
+margin-bottom: 1vw;
 }
- 
-#top, #mid,#bot{ /* Targets all id with 'col-' */
-  border-bottom: 1px solid #EEE;
+
+#top, #mid{ 
+border-bottom: 2px solid #000;
+
+}
+#mid,#pFoot,#legalcopy{
+  font-size: .7em;
+
+}
+#pFoot{
+  text-align: left;
+  margin-top: 4vw;
+}
+
+#pFoot div{
+  float: left;
+  margin-right: 5vw;
 }
 
 #top{
-  width: 100%;
-  height: 20vw;
-  min-height: 100px;}
+width: 100%;
+min-height: 100px;}
 #mid{min-height: 80px;} 
-#bot{ min-height: 50px;}
+#bot{ min-height: 50px;	
+  width: 100%;
+
+}
 
 #top .logo{
-  float: left;
-	height: 20vw;
-	width: 50%;
-	background: url(<?=$RootPath. '/css/'. $_SESSION['Theme']. '/images/company.png'?>) no-repeat;
-	background-size: 20vw 20vw;
-}
-.clientlogo{
-  float: left;
-	height: 40vw;
-	width: 40vw;
-	background: url(<?=$RootPath. '/css/'. $_SESSION['Theme']. '/images/company.png'?>) no-repeat;
-	background-size: 40vw 40vw;
-  border-radius: 50px;
+height: 21vw;
+width: 100%;
+background: url(<?=$RootPath. '/companies/'. $_SESSION['DatabaseName']. '/logoBN.jpg'?>) no-repeat;
+background-size: 82vw 21vw;
 }
 .info{
-  display: block;
-  float:left;
-  margin-left: 0;
-	height: 40vw;
+display: block;
+text-align: center;
+margin-left: 0;
+  width: 100%;
 }
 .title{
-  float: right;
+float: right;
 }
 .title p{text-align: right;} 
 table{
-  width: 100%;
-  border-collapse: collapse;
+width: 100%;
+border-collapse: collapse;
+font-size: 4vw;
+}
+tbody{
+border-bottom: 2px solid #000;
+}
+table h2{
+  margin: 1vw auto;
 }
 table caption{
-  caption-side:top;
+text-align: center;
+caption-side:top;
+color:#000;
+margin-bottom: 0px;
+padding-bottom: 1px;
 }
-td{
-  //padding: 5px 0 5px 15px;
-  //border: 1px solid #EEE
-}
+
+
 .tabletitle{
-  //padding: 5px;
-  font-size: .5em;
-  background: #EEE;
+        color:#000;
+
 }
-.service{border-bottom: 1px solid #EEE;}
-.item{width: 24mm;}
-.itemtext{font-size: .5em;}
+.service{text-align: left;}
+.item{width: 40vw;}
+.payment{
+text-align: right;}
+.itemtext{font-size: .9em;
+        color:#000;
+}
 
 #legalcopy{
-  margin-top: 5mm;
+margin-top: 2vw;
+float: left;
 }
+        }
 	</style>
+
+
  <div id="invoice-POS" class="onlyprint">
     
     <center id="top">
       <div class="logo"></div>
       <div class="info"> 
-        <h2><?=stripslashes($_SESSION['CompanyRecord']['coyname'])?></h2>
+        <h2><?=stripslashes($coyr['coyname'])?></h2>
       </div><!--End Info-->
     </center><!--End InvoiceTop-->
     
     <div id="mid">
       <div class="info">
         <p> 
-            <?=_('Address')?> : <?=$_SESSION['CompanyRecord']['regOffice1']?></br>
+            <?=_('Address')?> : <?=implode_list($coyr['regoffice1'],$coyr['regoffice2'],$coyr['regoffice3'],$coyr['regoffice4'],$coyr['regoffice5'],$coyr['regoffice6'])?></br>
         </p>
       </div>
     </div><!--End Invoice Mid-->
@@ -108,7 +131,7 @@ td{
 
       <div id="table">
         <table>
-          <caption>Venta</caption>
+          <caption><h2><?=_('Sale')?><h2></caption>
           <tr class="tabletitle">
             <td class="item"><h2><?=_('Item')?></h2></td>
             <td class="Hours"><h2><?=_('U/P')?></h2></td>
@@ -117,7 +140,8 @@ td{
           </tr>
                         <?php 
                         $currencyDecimal=$_SESSION['Items'.$identifier]->CurrDecimalPlaces;
-                        $TotalTaxes=$TotalPrice=0;
+                        $TotalTaxes=0;
+                        $TotalPrice=$paymentAdjustment;
                         foreach ($_SESSION['Items'.$identifier]->LineItems as $value) {
                           $unitTax=$value->Price*$value->Taxes[1]->TaxRate;
                           $itemTaxes=$unitTax*$value->Quantity;
@@ -128,43 +152,55 @@ td{
                         ?>
           <tr class="service">
             <td class="tableitem"><p class="itemtext"><?=$value->ItemDescription?></p></td>
-            <td class="tableitem"><p class="itemtext"><?=round($unitPrice,$currencyDecimal)  ?></p></td>
-            <td class="tableitem"><p class="itemtext"><?=round($value->Quantity,$value->DecimalPlaces)?></p></td>
-            <td class="tableitem"><p class="itemtext"><?=round($itemPrice,$currencyDecimal)?></p></td>
+            <td class="tableitem"><p class="itemtext payment"><?=locale_number_format($unitPrice ,$currencyDecimal)  ?></p></td>
+            <td class="tableitem"><p class="itemtext payment"><?=locale_number_format($value->Quantity,$value->DecimalPlaces)?></p></td>
+            <td class="tableitem"><p class="itemtext payment"><?=locale_number_format($itemPrice,$currencyDecimal)?></p></td>
           </tr>
                         <?php
                         } 
                         ?>
+                        
+      <tfoot>
           <tr class="tabletitle">
             <td></td>
-            <td class="Rate"><h2><?=_('Inc tax')?></h2></td>
-            <td class="payment"><h2><?=round($TotalTaxes,$currencyDecimal)?></h2></td>
+            <td colspan="2"  class="Rate"><h2><?=_('Inc tax')?></h2></td>
+            <td class="payment"><h2><?=locale_number_format($TotalTaxes,$currencyDecimal)?></h2></td>
           </tr>
-
+          <?php
+          if($paymentAdjustment!=0){
+          ?>
           <tr class="tabletitle">
             <td></td>
-            <td class="Rate"><h2>Total</h2></td>
-            <td class="payment"><h2><?=round($TotalPrice,$currencyDecimal)?></h2></td>
+            <td colspan="2"  class="Rate"><h2><?=_('Adjustment')?></h2></td>
+            <td class="payment"><h2><?=locale_number_format($paymentAdjustment,$currencyDecimal)?></h2></td>
           </tr>
+          <?php
+          }
+          ?>
+          <tr class="tabletitle">
+            <td></td>
+            <td colspan="2"  class="Rate"><h2><?=_("TOTAL")?></h2></td>
+            <td class="payment"><h2><?=locale_number_format($TotalPrice,$currencyDecimal)?></h2></td>
+          </tr>
+          </tfoot>
         </table>
+        <div id="pFoot">
             <div>
-              Tipo de pago: <span><?=_(getPaymentName($_POST['PaymentMethod']))?></span>
+            <strong><?=_("Payment Type")?></strong>: <span><?=_(getPaymentName($_POST['PaymentMethod']))?></span>
             </div>
             <div>
-              Vendedor: <span><?=getSalesmanName($_SESSION['Items'.$identifier]->SalesPerson)?></span>
+            <strong><?=_("Sales person")?></strong>: <span><?=getSalesmanName($_SESSION['Items'.$identifier]->SalesPerson)?></span>
             </div>
             <div>
-              Sucursal: <span><?=$_SESSION['Items'.$identifier]->Branch?></span>
+            <strong><?=_("Branch")?></strong>: <span><?=$_SESSION['Items'.$identifier]->Branch?></span>
             </div>
             <div>
-              Ticket: <span><?=$InvoiceNo?></span>
+            <strong><?=_("Ticket")?></strong>: <span><?=$InvoiceNo?></span>
             </div>
             <div>
-              Fecha: <span><?=date('d/m/Y',$ticketTime)?></span>
+            <strong><?=_("Date")?></strong>: <span><?=date('d/m/Y H:i',$ticketTime)?></span>
             </div>
-            <div>
-              Hora: <span><?=date('H:i',$ticketTime)?></span>
-            </div>
+          </div>
 
       </div><!--End Table-->
 

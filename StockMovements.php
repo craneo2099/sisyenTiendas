@@ -101,8 +101,11 @@ $SQL = "SELECT stockmoves.stockid,
 				stockmoves.narrative,
 				stockmaster.decimalplaces,
 				stockmaster.controlled,
-				stockmaster.serialised
+				stockmaster.serialised,
+				smt.taxrate
 		FROM stockmoves
+		inner join stockmovestaxes smt
+			on smt.stkmoveno=stockmoves.stkmoveno
 		INNER JOIN systypes
 			ON stockmoves.type=systypes.typeid
 		INNER JOIN stockmaster
@@ -134,7 +137,8 @@ if (DB_num_rows($MovtsResult) > 0) {
 			<th>', _('Branch'), '</th>
 			<th>', _('Quantity'), '</th>
 			<th>', _('Reference'), '</th>
-			<th>', _('Price'), '</th>
+			<th>', _('U/P'), '</th>
+			<th>', _('U/P+IVA'), '</th>
 			<th>', _('Discount'), '</th>
 			<th>', _('New Qty'), '</th>
 			<th>', _('Narrative'), '</th>';
@@ -174,7 +178,8 @@ if (DB_num_rows($MovtsResult) > 0) {
 					<td class="number">', locale_number_format($MyRow['qty'], $MyRow['decimalplaces']), '</td>
 					<td>', $MyRow['reference'], '</td>
 					<td class="number">', locale_number_format($MyRow['price'], $_SESSION['CompanyRecord']['decimalplaces']), '</td>
-					<td class="number">', locale_number_format($MyRow['discountpercent'] * 100, 2), '%%</td>
+					<td class="number">', locale_number_format($MyRow['price']*(1+$MyRow['taxrate']), $_SESSION['CompanyRecord']['decimalplaces']), '</td>
+					<td class="number">', locale_number_format($MyRow['discountpercent'] * 100, 2), '%</td>
 					<td class="number">', locale_number_format($MyRow['newqoh'], $MyRow['decimalplaces']), '</td>
 					<td>', $MyRow['narrative'], '</td>';
 			if ($MyRow['controlled'] == 1) {
@@ -194,7 +199,7 @@ if (DB_num_rows($MovtsResult) > 0) {
 					<td class="number">', locale_number_format($MyRow['qty'], $MyRow['decimalplaces']), '</td>
 					<td>', $MyRow['reference'], '</td>
 					<td class="number">', locale_number_format($MyRow['price'], $_SESSION['CompanyRecord']['decimalplaces']), '</td>
-					<td class="number">', locale_number_format($MyRow['discountpercent'] * 100, 2), '%%</td>
+					<td class="number">', locale_number_format($MyRow['discountpercent'] * 100, 2), '%</td>
 					<td class="number">', locale_number_format($MyRow['newqoh'], $MyRow['decimalplaces']), '</td>
 					<td>', $MyRow['narrative'], '</td>';
 			if ($MyRow['controlled'] == 1) {

@@ -21,32 +21,7 @@ echo '<p class="page_title_text"><img alt="" src="', $RootPath, '/css/', $Theme,
 	$Title, '</p>';// Page title.
 echo '<br />';// Extra line after page_title_text.
 
-$ModuleList = array(
-	_('Sales'),
-	_('Receivables'),
-	_('Purchases'),
-	_('Payables'),
-	_('Inventory'),
-	_('Manufacturing'),
-	_('General Ledger'),
-	_('Asset Manager'),
-	_('Petty Cash'),
-	_('Setup'),
-	_('Utilities')
-);
-$ModuleListLabel = array(
-	_('Display Sales module'),
-	_('Display Receivables module'),
-	_('Display Purchases module'),
-	_('Display Payables module'),
-	_('Display Inventory module'),
-	_('Display Manufacturing module'),
-	_('Display General Ledger module'),
-	_('Display Asset Manager module'),
-	_('Display Petty Cash module'),
-	_('Display Setup module'),
-	_('Display Utilities module')
-);
+
 $PDFLanguages = array(
 	_('Latin Western Languages - Times'),
 	_('Eastern European Russian Japanese Korean Hebrew Arabic Thai'),
@@ -134,15 +109,7 @@ if(isset($_POST['submit'])) {
 		}
 	}
 
-	/* Make a comma separated list of modules allowed ready to update the database*/
-	$i=0;
-	$ModulesAllowed = '';
-	while($i < count($ModuleList)) {
-		$FormVbl = 'Module_' . $i;
-		$ModulesAllowed .= $_POST[($FormVbl)] . ',';
-		$i++;
-	}
-	$_POST['ModulesAllowed']= $ModulesAllowed;
+
 
 	if(isset($SelectedUser) AND $InputError !=1) {
 
@@ -171,7 +138,6 @@ if(isset($_POST['submit'])) {
 						theme='" . $_POST['Theme'] . "',
 						language ='" . $_POST['UserLanguage'] . "',
 						defaultlocation='" . $_POST['DefaultLocation'] ."',
-						modulesallowed='" . $ModulesAllowed . "',
 						showdashboard='" . $_POST['ShowDashboard'] . "',
 						showpagehelp='" . $_POST['ShowPageHelp'] . "',
 						showfieldhelp='" . $_POST['ShowFieldHelp'] . "',
@@ -199,7 +165,6 @@ if(isset($_POST['submit'])) {
 					fullaccess,
 					cancreatetender,
 					defaultlocation,
-					modulesallowed,
 					showdashboard,
 					showpagehelp,
 					showfieldhelp,
@@ -221,7 +186,6 @@ if(isset($_POST['submit'])) {
 					'" . $_POST['Access'] . "',
 					'" . $_POST['CanCreateTender'] . "',
 					'" . $_POST['DefaultLocation'] ."',
-					'" . $ModulesAllowed . "',
 					'" . $_POST['ShowDashboard'] . "',
 					'" . $_POST['ShowPageHelp'] . "',
 					'" . $_POST['ShowFieldHelp'] . "',
@@ -276,7 +240,6 @@ if(isset($_POST['submit'])) {
 		unset($_POST['Access']);
 		unset($_POST['CanCreateTender']);
 		unset($_POST['DefaultLocation']);
-		unset($_POST['ModulesAllowed']);
 		unset($_POST['ShowDashboard']);
 		unset($_POST['ShowPageHelp']);
 		unset($_POST['ShowFieldHelp']);
@@ -419,7 +382,6 @@ if(isset($SelectedUser)) {
 				fullaccess,
 				cancreatetender,
 				defaultlocation,
-				modulesallowed,
 				showdashboard,
 				showpagehelp,
 				showfieldhelp,
@@ -446,7 +408,6 @@ if(isset($SelectedUser)) {
 	$_POST['Access'] = $myrow['fullaccess'];
 	$_POST['CanCreateTender'] = $myrow['cancreatetender'];
 	$_POST['DefaultLocation'] = $myrow['defaultlocation'];
-	$_POST['ModulesAllowed'] = $myrow['modulesallowed'];
 	$_POST['ShowDashboard'] = $myrow['showdashboard'];
 	$_POST['ShowPageHelp'] = $myrow['showpagehelp'];
 	$_POST['ShowFieldHelp'] = $myrow['showfieldhelp'];
@@ -458,7 +419,6 @@ if(isset($SelectedUser)) {
 
 	echo '<input type="hidden" name="SelectedUser" value="' . $SelectedUser . '" />';
 	echo '<input type="hidden" name="UserID" value="' . $_POST['UserID'] . '" />';
-	echo '<input type="hidden" name="ModulesAllowed" value="' . $_POST['ModulesAllowed'] . '" />';
 
 	echo '<table class="selection">
 			<tr>
@@ -474,19 +434,7 @@ if(isset($SelectedUser)) {
 				<td><input pattern="(?!^([aA]{1}[dD]{1}[mM]{1}[iI]{1}[nN]{1})$)[^?+.&\\>< ]{4,}" type="text" required="required" name="UserID" size="22" maxlength="20" placeholder="'._('At least 4 characters').'" title="'._('Please input not less than 4 characters and canot be admin or contains illegal characters').'" /></td>
 			</tr>';
 
-	/*set the default modules to show to all
-	this had trapped a few people previously*/
-	$i=0;
-	if(!isset($_POST['ModulesAllowed'])) {
-		$_POST['ModulesAllowed']='';
-	}
-	foreach($ModuleList as $ModuleName) {
-		if($i>0) {
-			$_POST['ModulesAllowed'] .=',';
-		}
-		$_POST['ModulesAllowed'] .= '1';
-		$i++;
-	}
+
 	$_POST['ShowDashboard'] = 0;
 	$_POST['ShowPageHelp'] = 1;
 	$_POST['ShowFieldHelp'] = 1;
@@ -703,24 +651,7 @@ foreach($LanguagesArray as $LanguageEntry => $LanguageName) {
 echo '</select></td>
 	</tr>';
 
-/*Make an array out of the comma separated list of modules allowed*/
-$ModulesAllowed = explode(',',$_POST['ModulesAllowed']);
-$i = 0;
-foreach($ModuleList as $ModuleName) {
-	echo '<tr>
-			<td><label for="Module_', $i, '">', $ModuleListLabel[$i], ':</label></td>
-			<td><select id="Module_', $i, '" name="Module_', $i, '">';
-	if($ModulesAllowed[$i] == 0) {
-		echo '<option selected="selected" value="0">', _('No'), '</option>',
-			 '<option value="1">', _('Yes'), '</option>';
-	} else {
-		echo '<option value="0">', _('No'), '</option>',
-	 		 '<option selected="selected" value="1">', _('Yes'), '</option>';
-	}
-	echo '</select></td>
-		</tr>';
-	$i++;
-}// END foreach($ModuleList as $ModuleName).
+
 
 // Turn off/on dashboard:
 echo '<tr>

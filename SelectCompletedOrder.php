@@ -3,7 +3,7 @@
 
 include('includes/session.php');
 
-$Title = _('Search Purchase Orders');
+$Title = _('Sales Order Inquiry');
 
 include('includes/header.php');
 
@@ -63,6 +63,12 @@ if (isset($SelectedCustomer) AND $SelectedCustomer==''){
 if (isset($_POST['ResetPart'])) {
 		unset($SelectedStockItem);
 }
+if (isset($SelectedStockItem)) {
+
+	$PartString = _('for the part') . ': <b>' . $SelectedStockItem . '</b> ' . _('and') . ' ' .
+		'<input type="hidden" name="SelectedStockItem" value="'.$SelectedStockItem.'" />';
+
+}
 
 if (isset($OrderNumber)&&$OrderNumber!=0) {
 	echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/sales.png" title="' . _('Sales Order') . '" alt="" />
@@ -83,16 +89,13 @@ if (isset($OrderNumber)&&$OrderNumber!=0) {
 		echo '<input type="hidden" name="SelectedCustomer" value="'.$SelectedCustomer.'" />';
 	}
 
-	if (isset($SelectedStockItem)) {
-
-		$PartString = _('for the part') . ': <b>' . $SelectedStockItem . '</b> ' . _('and') . ' ' .
-			'<input type="hidden" name="SelectedStockItem" value="'.$SelectedStockItem.'" />';
-
-	}
 }
 
 if (isset($_POST['SearchParts']) AND $_POST['SearchParts']!=''){
-
+	$stockCatWhere="";
+	if(!empty($_POST['StockCat'])){
+		$stockCatWhere="AND stockmaster.categoryid='" . $_POST['StockCat'] . "'";
+	}
 	if ($_POST['Keywords']!='' AND $_POST['StockCode']!='') {
 		echo _('Stock description keywords have been used in preference to the Stock code extract entered');
 	}
@@ -113,7 +116,7 @@ if (isset($_POST['SearchParts']) AND $_POST['SearchParts']!=''){
 							 LEFT JOIN purchorderdetails on stockmaster.stockid = purchorderdetails.itemcode)
 						WHERE salesorderdetails.completed =1
 						AND stockmaster.description " . LIKE . " '" . $SearchString. "'
-						AND stockmaster.categoryid='" . $_POST['StockCat'] . "'
+						".$stockCatWhere."
 						GROUP BY stockmaster.stockid,
 							stockmaster.description,
 							stockmaster.decimalplaces,
@@ -131,7 +134,7 @@ if (isset($_POST['SearchParts']) AND $_POST['SearchParts']!=''){
 							 LEFT JOIN locstock ON stockmaster.stockid=locstock.stockid)
 							 LEFT JOIN purchorderdetails on stockmaster.stockid = purchorderdetails.itemcode)
 						WHERE stockmaster.description " . LIKE . " '" . $SearchString. "'
-						AND stockmaster.categoryid='" . $_POST['StockCat'] . "'
+						".$stockCatWhere."
 						GROUP BY stockmaster.stockid,
 							stockmaster.description,
 							stockmaster.decimalplaces,
@@ -154,7 +157,7 @@ if (isset($_POST['SearchParts']) AND $_POST['SearchParts']!=''){
 							 LEFT JOIN purchorderdetails on stockmaster.stockid = purchorderdetails.itemcode)
 						WHERE salesorderdetails.completed =1
 						AND stockmaster.stockid " . LIKE . " '%" . $_POST['StockCode'] . "%'
-						AND stockmaster.categoryid='" . $_POST['StockCat'] . "'
+						".$stockCatWhere."
 						GROUP BY stockmaster.stockid,
 							stockmaster.description,
 							stockmaster.decimalplaces,
@@ -172,7 +175,7 @@ if (isset($_POST['SearchParts']) AND $_POST['SearchParts']!=''){
 							 LEFT JOIN locstock ON stockmaster.stockid=locstock.stockid)
 							 LEFT JOIN purchorderdetails on stockmaster.stockid = purchorderdetails.itemcode)
 						WHERE stockmaster.stockid " . LIKE  . " '%" . $_POST['StockCode'] . "%'
-						AND stockmaster.categoryid='" . $_POST['StockCat'] . "'
+						".$stockCatWhere."
 						GROUP BY stockmaster.stockid,
 							stockmaster.description,
 							stockmaster.decimalplaces,
@@ -218,6 +221,22 @@ if (isset($_POST['SearchParts']) AND $_POST['SearchParts']!=''){
 							stockmaster.units
 						ORDER BY stockmaster.stockid";
 		}
+	}else{
+		$SQL = "SELECT stockmaster.stockid,
+			stockmaster.description,
+			stockmaster.decimalplaces,
+			SUM(locstock.quantity) AS qoh,
+			SUM(purchorderdetails.quantityord-purchorderdetails.quantityrecd) AS qoo,
+			SUM(salesorderdetails.quantity - salesorderdetails.qtyinvoiced) AS qdem,
+			stockmaster.units
+		FROM (((stockmaster LEFT JOIN salesorderdetails on stockmaster.stockid = salesorderdetails.stkcode)
+			LEFT JOIN locstock ON stockmaster.stockid=locstock.stockid)
+			LEFT JOIN purchorderdetails on stockmaster.stockid = purchorderdetails.itemcode)
+		GROUP BY stockmaster.stockid,
+			stockmaster.description,
+			stockmaster.decimalplaces,
+			stockmaster.units
+		ORDER BY stockmaster.stockid";
 	}
 
 	if (mb_strlen($SQL)<2){
@@ -238,172 +257,55 @@ if (isset($_POST['SearchParts']) AND $_POST['SearchParts']!=''){
 	}
 } else if ((isset($_POST['SearchOrders']) AND Is_Date($_POST['OrdersAfterDate'])==1) OR (isset($CustomerGet))) {
 
-	//figure out the SQL required from the inputs available
+	$sqlOrderNum=$sqlStockIt=$sqlCust='';
+	$sqlDate='';
 	if (isset($OrderNumber) && 0!=$OrderNumber) {
-		$SQL = "SELECT salesorders.orderno,
-						debtorsmaster.name,
-						custbranch.brname,
-						salesorders.customerref,
-						salesorders.orddate,
-						salesorders.deliverydate,
-						salesorders.deliverto,
-						currencies.decimalplaces AS currdecimalplaces, SUM(salesorderdetails.unitprice*salesorderdetails.quantity*(1-salesorderdetails.discountpercent)) AS ordervalue
-					FROM salesorders INNER JOIN salesorderdetails
-						ON salesorders.orderno = salesorderdetails.orderno
-						INNER JOIN debtorsmaster
-						ON salesorders.debtorno = debtorsmaster.debtorno
-						INNER JOIN custbranch
-						ON salesorders.branchcode = custbranch.branchcode
-						AND salesorders.debtorno = custbranch.debtorno
-						INNER JOIN currencies
-						ON debtorsmaster.currcode = currencies.currabrev
-					WHERE salesorders.orderno='". $OrderNumber ."'
-					AND salesorders.quotation=0
-					AND salesorderdetails.completed " . $Completed;
-	} elseif (isset($CustomerRef)) {
-		if (isset($SelectedCustomer)) {
-			$SQL = "SELECT salesorders.orderno,
-							debtorsmaster.name,
-							currencies.decimalplaces AS currdecimalplaces,
-							custbranch.brname,
-							salesorders.customerref,
-							salesorders.orddate,
-							salesorders.deliverydate,
-							salesorders.deliverto, SUM(salesorderdetails.unitprice*salesorderdetails.quantity*(1-salesorderdetails.discountpercent)) AS ordervalue
-						FROM salesorders INNER JOIN salesorderdetails
-							ON salesorders.orderno = salesorderdetails.orderno
-							INNER JOIN debtorsmaster
-							ON salesorders.debtorno = debtorsmaster.debtorno
-							INNER JOIN custbranch
-							ON salesorders.branchcode = custbranch.branchcode
-							AND salesorders.debtorno = custbranch.debtorno
-							INNER JOIN currencies
-							ON debtorsmaster.currcode = currencies.currabrev
-						WHERE salesorders.debtorno='" . $SelectedCustomer ."'
-						AND salesorders.customerref like '%". $CustomerRef."%'
-						AND salesorders.quotation=0
-						AND salesorderdetails.completed".$Completed;
-		} else { //customer not selected
-			$SQL = "SELECT salesorders.orderno,
-							debtorsmaster.name,
-							currencies.decimalplaces AS currdecimalplaces,
-							custbranch.brname,
-							salesorders.customerref,
-							salesorders.orddate,
-							salesorders.deliverydate,
-							salesorders.deliverto, SUM(salesorderdetails.unitprice*salesorderdetails.quantity*(1-salesorderdetails.discountpercent)) AS ordervalue
-						FROM salesorders INNER JOIN salesorderdetails
-							ON salesorders.orderno = salesorderdetails.orderno
-							INNER JOIN debtorsmaster
-							ON salesorders.debtorno = debtorsmaster.debtorno
-							INNER JOIN custbranch
-							ON salesorders.branchcode = custbranch.branchcode
-							AND salesorders.debtorno = custbranch.debtorno
-							INNER JOIN currencies
-							ON debtorsmaster.currcode = currencies.currabrev
-						WHERE salesorders.customerref " . LIKE . " '%". $CustomerRef . "%'
-						AND salesorders.quotation=0
-						AND salesorderdetails.completed" . $Completed;
-		}
+		$sqlOrderNum="AND salesorders.orderno='". $OrderNumber ."'";
+	}
+	$DateAfterCriteria = FormatDateforSQL($_POST['OrdersAfterDate']);
+	$sqlDate="AND salesorders.orddate >= '" . $DateAfterCriteria ."'";
+	if (isset($SelectedCustomer)) {
+		$sqlCust="AND salesorders.debtorno='" . $SelectedCustomer ."'";
+	}
 
-	} else {
-		$DateAfterCriteria = FormatDateforSQL($_POST['OrdersAfterDate']);
+	if (isset($SelectedStockItem)) {
+		$sqlStockIt="AND salesorderdetails.stkcode='". $SelectedStockItem ."'";
+	}
+	$SQL = "SELECT salesorders.orderno,
+					debtorsmaster.name,
+					currencies.decimalplaces AS currdecimalplaces,
+					custbranch.brname,
+					salesorders.customerref,
+					salesorders.orddate,
+					salesorders.deliverydate,
+					salesorders.deliverto, 
+					SUM(
+						(salesorderdetails.unitprice*salesorderdetails.quantity)
+						*(1-salesorderdetails.discountpercent)
+					)
+					*(1+stmt.taxrate)
+					+salesorders.ajuste AS ordervalue
 
-		if (isset($SelectedCustomer) AND !isset($OrderNumber) AND $OrderNumber!=0 AND !isset($CustomerRef)) {
-
-			if (isset($SelectedStockItem)) {
-				$SQL = "SELECT salesorders.orderno,
-								debtorsmaster.name,
-								currencies.decimalplaces AS currdecimalplaces,
-								custbranch.brname,
-								salesorders.customerref,
-								salesorders.orddate,
-								salesorders.deliverydate,
-								salesorders.deliverto, SUM(salesorderdetails.unitprice*salesorderdetails.quantity*(1-salesorderdetails.discountpercent)) AS ordervalue
-							FROM salesorders INNER JOIN salesorderdetails
-								ON salesorders.orderno = salesorderdetails.orderno
-								INNER JOIN debtorsmaster
-								ON salesorders.debtorno = debtorsmaster.debtorno
-								INNER JOIN custbranch
-								ON salesorders.branchcode = custbranch.branchcode
-								AND salesorders.debtorno = custbranch.debtorno
-								INNER JOIN currencies
-								ON debtorsmaster.currcode = currencies.currabrev
-							WHERE salesorderdetails.stkcode='". $SelectedStockItem ."'
-							AND salesorders.debtorno='" . $SelectedCustomer ."'
-							AND salesorders.orddate >= '" . $DateAfterCriteria ."'
-							AND salesorders.quotation=0
-							AND salesorderdetails.completed".$Completed;
-			} else {
-				$SQL = "SELECT salesorders.orderno,
-								debtorsmaster.name,
-								currencies.decimalplaces AS currdecimalplaces,
-								custbranch.brname,
-								salesorders.customerref,
-								salesorders.orddate,
-								salesorders.deliverto,
-								salesorders.deliverydate, SUM(salesorderdetails.unitprice*salesorderdetails.quantity*(1-salesorderdetails.discountpercent)) AS ordervalue
-							FROM salesorders INNER JOIN salesorderdetails
-								ON salesorders.orderno = salesorderdetails.orderno
-								INNER JOIN debtorsmaster
-								ON salesorders.debtorno = debtorsmaster.debtorno
-								INNER JOIN custbranch
-								ON salesorders.branchcode = custbranch.branchcode
-								AND salesorders.debtorno = custbranch.debtorno
-								INNER JOIN currencies
-								ON debtorsmaster.currcode = currencies.currabrev
-							WHERE salesorders.debtorno='" . $SelectedCustomer . "'
-							AND salesorders.orddate >= '" . $DateAfterCriteria . "'
-							AND salesorders.quotation=0
-							AND salesorderdetails.completed".$Completed;
-			}
-		} else { //no customer selected
-			if (isset($SelectedStockItem)) {
-				$SQL = "SELECT salesorders.orderno,
-								debtorsmaster.name,
-								currencies.decimalplaces AS currdecimalplaces,
-								custbranch.brname,
-								salesorders.customerref,
-								salesorders.orddate,
-								salesorders.deliverto,
-								salesorders.deliverydate, SUM(salesorderdetails.unitprice*salesorderdetails.quantity*(1-salesorderdetails.discountpercent)) AS ordervalue
-							FROM salesorders INNER JOIN salesorderdetails
-								ON salesorders.orderno = salesorderdetails.orderno
-								INNER JOIN debtorsmaster
-								ON salesorders.debtorno = debtorsmaster.debtorno
-								INNER JOIN custbranch
-								ON salesorders.branchcode = custbranch.branchcode
-								AND salesorders.debtorno = custbranch.debtorno
-								INNER JOIN currencies
-								ON debtorsmaster.currcode = currencies.currabrev
-							WHERE salesorderdetails.stkcode='". $SelectedStockItem ."'
-							AND salesorders.orddate >= '" . $DateAfterCriteria . "'
-							AND salesorders.quotation=0
-							AND salesorderdetails.completed".$Completed;
-			} else {
-				$SQL = "SELECT salesorders.orderno,
-								debtorsmaster.name,
-								currencies.decimalplaces AS currdecimalplaces,
-								custbranch.brname,
-								salesorders.customerref,
-								salesorders.orddate,
-								salesorders.deliverto,
-								salesorders.deliverydate, SUM(salesorderdetails.unitprice*salesorderdetails.quantity*(1-salesorderdetails.discountpercent)) AS ordervalue
-							FROM salesorders INNER JOIN salesorderdetails
-								ON salesorders.orderno = salesorderdetails.orderno
-								INNER JOIN debtorsmaster
-								ON salesorders.debtorno = debtorsmaster.debtorno
-								INNER JOIN custbranch
-								ON salesorders.branchcode = custbranch.branchcode
-								AND salesorders.debtorno = custbranch.debtorno
-								INNER JOIN currencies
-								ON debtorsmaster.currcode = currencies.currabrev
-							WHERE salesorders.orddate >= '".$DateAfterCriteria . "'
-							AND salesorders.quotation=0
-							AND salesorderdetails.completed".$Completed;
-			}
-		} //end selected customer
-	} //end not order number selected
+				FROM salesorders 
+					left join stockmoves stm 
+					on stm.reference=orderno and type=10
+					left join stockmovestaxes stmt 
+					on stmt.stkmoveno = stm.stkmoveno
+					INNER JOIN salesorderdetails
+					ON salesorders.orderno = salesorderdetails.orderno
+					INNER JOIN debtorsmaster
+					ON salesorders.debtorno = debtorsmaster.debtorno
+					INNER JOIN custbranch
+					ON salesorders.branchcode = custbranch.branchcode
+					AND salesorders.debtorno = custbranch.debtorno
+					INNER JOIN currencies
+					ON debtorsmaster.currcode = currencies.currabrev
+				WHERE salesorders.quotation=0
+				".$sqlCust."
+				".$sqlDate."
+				".$sqlStockIt."
+				".$sqlOrderNum."
+				AND salesorderdetails.completed".$Completed;
 
 	if ($_SESSION['SalesmanLogin'] != '') {
 		$SQL .= " AND salesorders.salesperson='" . $_SESSION['SalesmanLogin'] . "'";
@@ -415,7 +317,8 @@ if (isset($_POST['SearchParts']) AND $_POST['SearchParts']!=''){
 					salesorders.customerref,
 					salesorders.orddate,
 					salesorders.deliverydate,
-					salesorders.deliverto
+					salesorders.deliverto,
+					stmt.taxrate
 				ORDER BY salesorders.orderno";
 
 	$SalesOrdersResult = DB_query($SQL);
@@ -447,9 +350,7 @@ echo '<td>' . _('Order Number') . ':</td>
 	<td><input type="submit" name="SearchOrders" value="' . _('Search Orders') . '" /></td>
 	</tr>';
 echo '<tr>
-		<td></td>
-		<td>' . _('Customer Ref') . ':</td><td><input type="text" name="CustomerRef" maxlength="8" size="9" /></td>
-		<td></td>
+		<td colspan="3"></td>
 		<td colspan="2"><input type="checkbox" ' . $ShowChecked . ' name="completed" />' . _('Show Completed orders only') . '</td></tr>';
 
 echo '</table>';
@@ -467,6 +368,7 @@ if (!isset($SelectedStockItem)) {
    echo '<tr><td>' . _('Select a stock category') . ':';
    echo '<select name="StockCat">';
 
+   echo '<option value=""> </option>';
 	while ($myrow1 = DB_fetch_array($result1)) {
 		if (isset($_POST['StockCat']) AND $myrow1['categoryid'] == $_POST['StockCat']){
 			echo '<option selected="selected" value="' .  $myrow1['categoryid'] . '">' . $myrow1['categorydescription'] . '</option>';
@@ -484,7 +386,7 @@ if (!isset($SelectedStockItem)) {
 		<td><b> ' ._('OR') . ' </b>' . _('Enter extract of the Stock Code') . ':</td>
 		<td><input type="text" name="StockCode" size="15" maxlength="18" /></td>
    </tr>
-   <tr><td colspan="4"><div class="centre"><input type="submit" name="SearchParts" value="' . _('Search Parts Now') . '" />';
+   <tr><td colspan="4"><div class="centre"><input type="submit" name="SearchParts" value="' . _('Search for Items') . '" />';
 
    if (count($_SESSION['AllowedPageSecurityTokens'])>1){
 		echo '<input type="submit" name="ResetPart" value="' . _('Clean') . '" /></div>';
@@ -547,57 +449,57 @@ If (isset($SalesOrdersResult)) {
 		echo '<meta http-equiv="refresh" content="0; url=' . $RootPath . '/OrderDetails.php?OrderNumber=' . $OrderNumber. '">';
 		exit;
 	}
+	if (DB_num_rows($SalesOrdersResult) == 0) {
+		prnMsg(_('No orders were found'),'warn');
+	}else{
+	/*show a table of the orders returned by the SQL */
 
-/*show a table of the orders returned by the SQL */
+		echo '<br /><table cellpadding="2" width="90%" class="selection">';
 
-	echo '<br /><table cellpadding="2" width="90%" class="selection">';
+		$tableheader = '<tr><th>' . _('Order') . ' #</th>
+							<th>' . _('Customer') . '</th>
+							<th>' . _('Branch') . '</th>
+							<th>' . _('Order Date') . '</th>
+							<th>' . _('Req Del Date') . '</th>
+							<th>' . _('Delivery To') . '</th>
+							<th>' . _('Order Total') . '</th>
+						</tr>';
 
-	$tableheader = '<tr><th>' . _('Order') . ' #</th>
-						<th>' . _('Customer') . '</th>
-						<th>' . _('Branch') . '</th>
-						<th>' . _('Cust Order') . ' #</th>
-						<th>' . _('Order Date') . '</th>
-						<th>' . _('Req Del Date') . '</th>
-						<th>' . _('Delivery To') . '</th>
-						<th>' . _('Order Total') . '</th>
-					</tr>';
+		echo $tableheader;
 
-	echo $tableheader;
+		$j = 1;
 
-	$j = 1;
+		while ($myrow=DB_fetch_array($SalesOrdersResult)) {
 
-	while ($myrow=DB_fetch_array($SalesOrdersResult)) {
+			$ViewPage = $RootPath . '/OrderDetails.php?OrderNumber=' . $myrow['orderno'];
+			$FormatedDelDate = ConvertSQLDate($myrow['deliverydate']);
+			$FormatedOrderDate = ConvertSQLDate($myrow['orddate']);
+			$FormatedOrderValue = locale_number_format($myrow['ordervalue'],$myrow['currdecimalplaces']);
 
-		$ViewPage = $RootPath . '/OrderDetails.php?OrderNumber=' . $myrow['orderno'];
-		$FormatedDelDate = ConvertSQLDate($myrow['deliverydate']);
-		$FormatedOrderDate = ConvertSQLDate($myrow['orddate']);
-		$FormatedOrderValue = locale_number_format($myrow['ordervalue'],$myrow['currdecimalplaces']);
+			printf('<tr class="striped_row">
+					<td><a href="%s">%s</a></td>
+					<td>%s</td>
+					<td>%s</td>
+					<td>%s</td>
+					<td>%s</td>
+					<td>%s</td>
+					<td class="number">%s</td>
+					</tr>',
+					$ViewPage,
+					$myrow['orderno'],
+					$myrow['name'],
+					$myrow['brname'],
+					$FormatedOrderDate,
+					$FormatedDelDate,
+					$myrow['deliverto'],
+					$FormatedOrderValue);
 
-		printf('<tr class="striped_row">
-				<td><a href="%s">%s</a></td>
-				<td>%s</td>
-				<td>%s</td>
-				<td>%s</td>
-				<td>%s</td>
-				<td>%s</td>
-				<td>%s</td>
-				<td class="number">%s</td>
-				</tr>',
-				$ViewPage,
-				$myrow['orderno'],
-				$myrow['name'],
-				$myrow['brname'],
-				$myrow['customerref'],
-				$FormatedOrderDate,
-				$FormatedDelDate,
-				$myrow['deliverto'],
-				$FormatedOrderValue);
+	//end of page full new headings if
+		}
+	//end of while loop
 
-//end of page full new headings if
+		echo '</table>';
 	}
-//end of while loop
-
-	echo '</table>';
 }
 
 echo '</div>

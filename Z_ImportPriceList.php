@@ -1,7 +1,7 @@
 <?php
 
 include('includes/session.php');
-$Title = _('rice List from CSV');
+$Title = _('Import Price List from .csv file');
 include('includes/header.php');
 echo '<p class="page_title_text"><img alt="" src="' . $RootPath . '/css/' . $Theme .
 		'/images/maintenance.png" title="' .
@@ -85,7 +85,7 @@ if (isset($_FILES['PriceListFile']) and $_FILES['PriceListFile']['name']) { //st
 		$testrow = DB_fetch_row($result);
 		if ($testrow[0] == 0) {
 			$InputError = 1;
-			prnMsg (_('SalesType/Price List') . ' "' . $myrow[1]. '" ' . _('does not exist'),'error');
+			prnMsg (_('Sales type') . ' "' . $myrow[1]. '" ' . _('does not exist'),'error');
 		}
 
 		//Finally force the price to be a double

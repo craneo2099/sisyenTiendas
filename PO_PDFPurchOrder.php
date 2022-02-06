@@ -474,14 +474,19 @@ else {
 	} else {
 		echo '</table>';
 	}
-	echo '<br />
+	?>
+	<br />
          <div class="centre">
-		 <input type="submit" name="DoIt" value="' . _('OK') . '" />
+		 <input type="submit" name="DoIt" value="<?= _('OK') ?>" 
+		 	onclick="$('#ahfRecibir').show();"/>
 		 <input type="submit" name="refresh" value="r" style="display:none" />
          </div>
+		 	<a id="ahfRecibir"  style="display:none" 
+			 	href="<?= $RootPath ?>/GoodsReceived.php?PONumber=<?= $OrderNo ?>"><?= _('Receive Purchase Order') ?></a>
+		
          </div>
          </form>';
-
+	<?php
 	include('includes/footer.php');
 }
 ?>

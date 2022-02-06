@@ -7,6 +7,7 @@ include('includes/DefinePOClass.php');
 include('includes/DefineSerialItems.php');
 include('includes/session.php');
 include('includes/SQL_CommonFunctions.inc');
+include('Stock/das/stockmaster.inc');
 
 /*The identifier makes this goods received session unique so cannot get confused
  * with other sessions of goods received on the same machine/browser
@@ -203,11 +204,18 @@ if (count($poid->LineItems)>0 and !isset($_POST['ProcessGoodsReceived'])) {
 
 		if ($LnItm->Controlled == 1) {
 
-			echo '<input type="hidden" name="RecvQty_' . $LnItm->LineNo . '" autofocus="autofocus" value="' . locale_number_format($LnItm->ReceiveQty,$LnItm->DecimalPlaces) . '" /><a href="GoodsReceivedControlled.php?identifier=' . $identifier . '&amp;LineNo=' . $LnItm->LineNo . '">' . locale_number_format($LnItm->ReceiveQty,$LnItm->DecimalPlaces) . '</a></td>';
+			echo '<input type="hidden" name="RecvQty_' . $LnItm->LineNo . '" autofocus="autofocus" 
+			value="' . locale_number_format($LnItm->ReceiveQty,$LnItm->DecimalPlaces) . '" />
+			<a href="GoodsReceivedControlled.php?identifier=' . $identifier . '&amp;LineNo=' . $LnItm->LineNo . '">' . locale_number_format($LnItm->ReceiveQty,$LnItm->DecimalPlaces) . '</a></td>';
 
 		} else {
-			echo '<input type="text" class="number" name="RecvQty_' . $LnItm->LineNo . '" pattern="(?:^\d{1,3}(?:\.?\d{3})*(?:,\d{1,})?$)|(?:^\d{1,3}(?:,?\d{3})*(?:\.\d{1,})?$)|(?:^\d{1,3}(?:\s?\d{3})*(?:\.\d{1,})?$)|(?:^\d{1,3}(?:\s?\d{3})*(?:,\d{1,})?$)|(?:^(\d{1,2},)?(\d{2},)*(\d{3})(\.\d+)?|(\d{1,3})(\.\d+)?$)" title="' . _('Enter the quantity to receive against this order line as a number') . '"
-maxlength="10" size="10" value="' . locale_number_format(round($LnItm->ReceiveQty,$LnItm->DecimalPlaces),$LnItm->DecimalPlaces) . '" /></td>';
+			?>
+			<input type="text" class="number" name="RecvQty_<?= $LnItm->LineNo ?>" 
+			pattern="(?:^\d{1,3}(?:\.?\d{3})*(?:,\d{1,})?$)|(?:^\d{1,3}(?:,?\d{3})*(?:\.\d{1,})?$)|(?:^\d{1,3}(?:\s?\d{3})*(?:\.\d{1,})?$)|(?:^\d{1,3}(?:\s?\d{3})*(?:,\d{1,})?$)|(?:^(\d{1,2},)?(\d{2},)*(\d{3})(\.\d+)?|(\d{1,3})(\.\d+)?$)" 
+			onchange="$('#ProcessGoodsReceived').attr('disabled', true);"
+			title="<?= _('Enter the quantity to receive against this order line as a number') ?>"
+maxlength="10" size="10" value="<?= locale_number_format(round($LnItm->ReceiveQty,$LnItm->DecimalPlaces),$LnItm->DecimalPlaces) ?>" /></td>';
+			<?php
 		}
 		echo '<td><input type="checkbox" name="Complete_'. $LnItm->LineNo . '"';
 		if ($LnItm->Completed ==1) {
@@ -582,6 +590,7 @@ if ($poid->SomethingReceived()==0 AND isset($_POST['ProcessGoodsReceived'])) { /
 										'" . $poid->LineItems[$OrderLine->LineNo]->StandardCost . "',
 										'" . ($QtyOnHandPrior + $OrderLine->ReceiveQty) . "'
 										)";
+								
 
 				$ErrMsg = _('CRITICAL ERROR') . '! ' . _('NOTE DOWN THIS ERROR AND SEEK ASSISTANCE') . ': ' . _('stock movement records could not be inserted because');
 				$DbgMsg =  _('The following SQL to insert the stock movement records was used');
@@ -590,6 +599,7 @@ if ($poid->SomethingReceived()==0 AND isset($_POST['ProcessGoodsReceived'])) { /
 				/*Get the ID of the StockMove... */
 				$StkMoveNo = DB_Last_Insert_ID('stockmoves','stkmoveno');
 				/* Do the Controlled Item INSERTS HERE */
+				setStandardCost($OrderLine->StockID,$poid->LineItems[$OrderLine->LineNo]->Price);
 
 				if ($OrderLine->Controlled ==1) {
 					foreach($OrderLine->SerialItems as $Item) {
@@ -816,7 +826,7 @@ if ($poid->SomethingReceived()==0 AND isset($_POST['ProcessGoodsReceived'])) { /
 			<input type="submit" name="Update" value="' . _('Update') . '" />
 			<br />
 			<br />
-			<input type="submit" name="ProcessGoodsReceived" value="' . _('Process Goods Received') . '" />
+			<input type="submit" name="ProcessGoodsReceived" id="ProcessGoodsReceived" value="' . _('Process Goods Received') . '" />
 		</div>';
 }
 echo '</div>';

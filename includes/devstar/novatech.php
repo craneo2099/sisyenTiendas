@@ -215,6 +215,13 @@ function getPaymentAdjunstment($id){
 	$SQL = "SELECT percentdiscount FROM paymentmethods where paymentid=?";
 	return DB_fetch_row(DB_query_stmt($SQL,'','','s',array($id)))[0];
 }
+function getExistencias($StockId,$location){
+	$QohSql = "SELECT sum(quantity)
+						   FROM locstock
+						   WHERE stockid='" .$StockId . "' AND
+						   loccode = '" . $location . "'";
+	return DB_fetch_row( DB_query($QohSql))[0];
+}
 function confirmacion($migajas,$titulo){
 	echo '<div></div>';
 

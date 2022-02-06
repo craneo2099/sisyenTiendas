@@ -21929,7 +21929,7 @@ msgstr "El SQL que falló al actualizar el registro de detalle de la orden de co
 
 #: PO_Items.php:397
 msgid "Receive and Enter Purchase Invoice"
-msgstr "Recibir orden de compra"
+msgstr "Recibir e ingresar la factura de compra"
 
 #: PO_Items.php:414
 msgid "This item cannot be deleted because some of it has already been received"
@@ -45597,6 +45597,9 @@ msgstr "Artí­culos"
 #: includes/header.php:99
 msgid "Manual"
 msgstr "Manual"
+
+msgid "Shifts"
+msgstr "Turnos"
 
 #: includes/header.php:102 ../webSHOP/includes/header.php:199
 msgid "Are you sure you wish to logout?"

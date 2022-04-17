@@ -136,8 +136,11 @@ if (isset($Title)) {
 		echo '<li><a href="', $RootPath, '/Dashboard.php">', _('Dashboard'), '</a></li>',
 			'<li><a href="', $RootPath, '/SelectCustomer.php">', _('Customers'), '</a></li>',
 			'<li><a href="', $RootPath, '/SelectProduct.php">', _('Items'), '</a></li>',
-			'<li><a href="', $RootPath, '/SelectSupplier.php">', _('Suppliers'), '</a></li>',
-			'<li><a href="', $RootPath, '/ManualContents.php', $ViewTopic, $BookMark, '" rel="external" accesskey="8">', _('Manual'), '</a></li>';
+			'<li><a href="', $RootPath, '/SelectSupplier.php">', _('Suppliers'), '</a></li>';
+		?>
+		<li><a href="<?= $RootPath?>/CambiarTurno.php"><?= _('Shifts')?></a></li>
+		<?php
+		echo '<li><a href="', $RootPath, '/ManualContents.php', $ViewTopic, $BookMark, '" rel="external" accesskey="8">', _('Manual'), '</a></li>';
 	}
 
 

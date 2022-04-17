@@ -2208,13 +2208,8 @@ if (!isset($_POST['ProcessSale'])) {
 	// This code needs sorting out, but until then :
 				$ImageSource = _('No Image');
 	// Find the quantity in stock at location
-				$QohSql = "SELECT sum(quantity)
-						   FROM locstock
-						   WHERE stockid='" .$MyRow['stockid'] . "' AND
-						   loccode = '" . $_SESSION['Items'.$identifier]->Location . "'";
-				$QohResult =  DB_query($QohSql);
-				$QohRow = DB_fetch_row($QohResult);
-				$QOH = $QohRow[0];
+				
+				$QOH = getExistencias($MyRow['stockid'],$_SESSION['Items'.$identifier]->Location);
 
 				// Find the quantity on outstanding sales orders
 				$SQL = "SELECT SUM(salesorderdetails.quantity-salesorderdetails.qtyinvoiced) AS dem
@@ -2242,6 +2237,7 @@ if (!isset($_POST['ProcessSale'])) {
 				$QOO += GetQuantityOnOrderDueToWorkOrders($MyRow['stockid'], '');
 
 				$Available = $QOH - $DemandQty + $QOO;
+
 
 				printf('<tr class="striped_row">
 						<td>%s</td>

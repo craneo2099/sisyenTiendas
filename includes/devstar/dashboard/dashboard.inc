@@ -132,3 +132,58 @@ function registrarEntradaSalida($salesPerson) {
     }
 	return DB_query($sql);
 }
+
+function getEscasos($preview=true) {
+    $sql="SELECT * from (SELECT stockmaster.stockid id,
+            stockmaster.description nombre,
+            stockcategory.categorydescription categoria,
+            suppliers.suppname proveedor,
+            SUM(locstock.quantity) cantidad
+        FROM locstock INNER JOIN stockmaster
+        ON locstock.stockid=stockmaster.stockid
+        INNER JOIN locations
+        ON locstock.loccode=locations.loccode
+        INNER JOIN stockcategory
+        ON stockmaster.categoryid = stockcategory.categoryid
+        INNER JOIN purchdata
+        ON stockmaster.stockid=purchdata.stockid
+        INNER JOIN suppliers
+        ON purchdata.supplierno=suppliers.supplierid
+        WHERE locstock.quantity <> 0
+        AND (stockmaster.mbflag='B' OR stockmaster.mbflag='M') 
+        GROUP BY locstock.stockid) as qry
+        order by cantidad ASC
+        LIMIT 10";
+    $ErrMsg = _('The sales data could not be retrieved because') . ' - ' . DB_error_msg();
+	$Result = DB_query($sql,$ErrMsg);
+    return DB_fetch_all($Result);
+}
+function getPopulares($preview=true) {
+    $sql="SELECT stockmaster.stockid id,
+                stockmaster.description nombre,
+                stockcategory.categorydescription categoria,
+                suppliers.suppname proveedor,
+                SUM(CASE WHEN stockmoves.type=10
+                        OR stockmoves.type=11 THEN
+                        -qty
+                        ELSE 0 END) as cantidad
+            FROM stockmoves INNER JOIN stockmaster
+                ON stockmoves.stockid=stockmaster.stockid
+                INNER JOIN stockcategory
+                ON stockmaster.categoryid=stockcategory.categoryid
+                INNER JOIN purchdata
+                ON stockmaster.stockid=purchdata.stockid
+                INNER JOIN suppliers
+                ON purchdata.supplierno=suppliers.supplierid
+            WHERE (stockmoves.type=10 or stockmoves.type=11)
+                AND show_on_inv_crds =1
+                AND trandate>=date_sub(sysdate(),INTERVAL 100 DAY)
+            GROUP BY stockmaster.stockid,
+                stockmaster.description,
+                stockcategory.categorydescription 
+            ORDER BY cantidad DESC 
+            LIMIT 10";
+    $ErrMsg = _('The sales data could not be retrieved because') . ' - ' . DB_error_msg();
+	$Result = DB_query($sql,$ErrMsg);
+    return DB_fetch_all($Result);
+}

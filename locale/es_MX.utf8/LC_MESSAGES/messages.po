@@ -10318,6 +10318,15 @@ msgstr "Cuadro de indicadores"
 msgid "The security for Aging Debtors cannot be retrieved because"
 msgstr ""
 
+msgid "Items to sell out"
+msgstr "Articulos por Agotarse"
+
+msgid "Top selling items"
+msgstr "Articulos más vendidos"
+
+msgid "See More"
+msgstr "Ver más"
+
 #: Dashboard.php:19 Dashboard.php:28 Dashboard.php:37 Dashboard.php:46
 #: Payments.php:65 ProductSpecs.php:77 ProductSpecs.php:281
 #: ProductSpecs.php:316 QATests.php:109 SalesPeople.php:132
@@ -21929,7 +21938,7 @@ msgstr "El SQL que falló al actualizar el registro de detalle de la orden de co
 
 #: PO_Items.php:397
 msgid "Receive and Enter Purchase Invoice"
-msgstr "Recibir orden de compra"
+msgstr "Recibir e ingresar la factura de compra"
 
 #: PO_Items.php:414
 msgid "This item cannot be deleted because some of it has already been received"
@@ -45597,6 +45606,9 @@ msgstr "Artí­culos"
 #: includes/header.php:99
 msgid "Manual"
 msgstr "Manual"
+
+msgid "Shifts"
+msgstr "Turnos"
 
 #: includes/header.php:102 ../webSHOP/includes/header.php:199
 msgid "Are you sure you wish to logout?"

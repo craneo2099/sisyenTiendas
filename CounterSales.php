@@ -1381,7 +1381,8 @@ if (isset($_POST['ProcessSale']) AND $_POST['ProcessSale'] != '') {
 
 
 
-		$DefaultDispatchDate = Date('Y-m-d');
+	 $DefaultDispatchDate = Date('Y-m-d');
+	 $DefaultDispatchDateTime = Date('Y-m-d');
 
 	/*Update order header for invoice charged on */
 		$SQL = "UPDATE salesorders SET comments = CONCAT(comments,'" . ' ' . _('Invoice') . ': ' . "','" . $InvoiceNo . "') WHERE orderno= '" . $OrderNo."'";
@@ -2038,7 +2039,7 @@ if (isset($_POST['ProcessSale']) AND $_POST['ProcessSale'] != '') {
 			*/
 
 			//insert the banktrans record in the currency of the bank account
-
+			$sesiden=$_SESSION['Items'.$identifier];
 			$SQL="INSERT INTO banktrans (type,
 						transno,
 						bankact,
@@ -2048,17 +2049,19 @@ if (isset($_POST['ProcessSale']) AND $_POST['ProcessSale'] != '') {
 						transdate,
 						banktranstype,
 						amount,
-						currcode)
+						currcode,
+						userid)
 					VALUES (12,
 						'" . $ReceiptNumber . "',
 						'" . $_POST['BankAccount'] . "',
-						'" . mb_substr($_SESSION['Items'.$identifier]->LocationName . ' ' . _('Counter Sale') . ' ' . $InvoiceNo, 0, 50) . "',
+						'" . mb_substr($sesiden->LocationName . ' ' . _('Counter Sale') . ' ' . $InvoiceNo, 0, 50) . "',
 						'" . $ExRate . "',
 						'" . $BankAccountExRate . "',
-						'" . $DefaultDispatchDate . "',
+						'" . $DefaultDispatchDateTime . "',
 						'" . $_POST['PaymentMethod'] . "',
 						'" . filter_number_format($_POST['AmountPaid']) * $BankAccountExRate . "',
-						'" . $_SESSION['Items'.$identifier]->DefaultCurrency . "')";
+						'" . $sesiden->DefaultCurrency . "',
+						'" . $_SESSION['UserID']."')";
 
 			$DbgMsg = _('The SQL that failed to insert the bank account transaction was');
 			$ErrMsg = _('Cannot insert a bank transaction');

@@ -1,7 +1,48 @@
 <?php
+$path=$_SERVER['REQUEST_URI'];
+include ('includes/session.php');
+require_once('includes/devstar/novatech.php');
+
+$controlledWay=false;
+if(!str_contains($path,'.php')){
+	
+	include ('includes/Routes.inc');
+	$action=getRedirection($path,$_POST['hidAction']);
+	$actionSize=count($action);
+	if($actionSize>=2){
+		
+        $actionModule=$action[1];
+        $actionName=$action[2];
+		$controlledWay=true;
+		include ('modulos/'.$actionModule.'/controller/'.$actionName.'Control.php');
+		
+		$viewModule=$viewModule??$actionModule;
+		$viewName=$viewName??$actionName;
+		if(file_exists($PathPrefix.'modulos/'.$viewModule.'/vista/js/'.$viewName.'.js')){
+			$scriptList='/modulos/'.$viewModule.'/vista/js/'.$viewName.'.js';
+		}
+		
+		include ('includes/header.php');?>
+		<div class="col-12">
+
+			<p class="page_title_text"><img src="<?=$titleIcon?>" title="<?=$Title?>" alt="" /> <?=$Title?></p>
+			<div class="page_help_text"><?=_($textoAyudaPagina)?></div>
+			<br />
+			<?php
+			include ('modulos/'.$viewModule.'/vista/'.$viewName.'View.php');
+			?>
+		
+		</div>
+		<?php
+		include ('includes/footer.php');
+		
+	}
+}
+if($controlledWay){
+	exit;
+}
 $PageSecurity = 0;
 
-include ('includes/session.php');
 $Title = _('Main Menu');
 unset($_SESSION['migajas']);
 include ('includes/header.php');

@@ -169,15 +169,15 @@ function getPopulares($preview=true) {
                         ELSE 0 END) as cantidad
             FROM stockmoves INNER JOIN stockmaster
                 ON stockmoves.stockid=stockmaster.stockid
-                LEFT JOIN stockcategory
+                INNER JOIN stockcategory
                 ON stockmaster.categoryid=stockcategory.categoryid
-                LEFT JOIN purchdata
+                INNER JOIN purchdata
                 ON stockmaster.stockid=purchdata.stockid
-                LEFT JOIN suppliers
+                INNER JOIN suppliers
                 ON purchdata.supplierno=suppliers.supplierid
             WHERE (stockmoves.type=10 or stockmoves.type=11)
                 AND show_on_inv_crds =1
-                AND trandate>=date_sub(sysdate(),INTERVAL 15 DAY)
+                AND trandate>=date_sub(sysdate(),INTERVAL 100 DAY)
             GROUP BY stockmaster.stockid,
                 stockmaster.description,
                 stockcategory.categorydescription 

@@ -9,7 +9,6 @@
 
 require_once($PathPrefix.'includes/devstar/novatech.php');
 /*The module link codes are hard coded in a switch statement below to determine the options to show for each tab */
-include ('includes/MainMenuLinksArray.php');
 if (!isset($RootPath)) {
 	$RootPath = dirname(htmlspecialchars($_SERVER['PHP_SELF']));
 	if ($RootPath == '/' OR $RootPath == "\\") {
@@ -28,14 +27,20 @@ $compa=$_SESSION['CompanyRecord'];
 {
 	
 	$migajas=isset($_SESSION['migajas'])?$_SESSION['migajas']:array();
-	$BaseName = '/'.basename($_SERVER['PHP_SELF']);
-	$module=null;
-	if(recursive_search_array($BaseName,$MenuItems->{$_SESSION['Module']})){
-		$module=$_SESSION['Module'];
-	}else 
-	if($found=recursive_search_array($BaseName,$MenuItems)){
-		$module=explode('|',$found)[0];
+	if(isset($actionModule)){
+		$BaseName = '/'.$actionModule.'/'.$actionName;
+		$module=$actionModule;
+	}else{
+		$BaseName = '/'.basename($_SERVER['PHP_SELF']);
+		$module=null;
+		if(recursive_search_array($BaseName,$MenuItems->{$_SESSION['Module']})){
+			$module=$_SESSION['Module'];
+		}else 
+		if($found=recursive_search_array($BaseName,$MenuItems)){
+			$module=explode('|',$found)[0];
+		}
 	}
+
 	if(!is_null($module)){
 		$migajas=array(
 			$ModuleList[
@@ -132,13 +137,13 @@ if (isset($Title)) {
 
 	echo '</li>'; //take off inline formatting, use CSS instead ===HJ===
 
-	if (count($_SESSION['AllowedPageSecurityTokens'])>1){
+	if (isset($_SESSION['AllowedPageSecurityTokens']) and count($_SESSION['AllowedPageSecurityTokens'])>1){
 		echo '<li><a href="', $RootPath, '/Dashboard.php">', _('Dashboard'), '</a></li>',
 			'<li><a href="', $RootPath, '/SelectCustomer.php">', _('Customers'), '</a></li>',
 			'<li><a href="', $RootPath, '/SelectProduct.php">', _('Items'), '</a></li>',
 			'<li><a href="', $RootPath, '/SelectSupplier.php">', _('Suppliers'), '</a></li>';
 		?>
-		<li><a href="<?= $RootPath?>/CambiarTurno.php"><?= _('Shifts')?></a></li>
+		<li><a href="<?= $RootPath?>/Shifts/CorteCaja"><?= _('Shifts')?></a></li>
 		<?php
 		echo '<li><a href="', $RootPath, '/ManualContents.php', $ViewTopic, $BookMark, '" rel="external" accesskey="8">', _('Manual'), '</a></li>';
 	}

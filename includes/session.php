@@ -42,12 +42,13 @@ ini_set('session.cookie_httponly',1);
 // with other apps using the same host.
 // For an example situation to support this need, see:
 // http://www.weberp.org/forum/showthread.php?tid=8133
-session_name('PHPSESSIDwebERPteam');
+session_name('PHPSESSIDsizyen');
 session_start();
 
 include($PathPrefix . 'includes/LanguageSetup.php');
 include($PathPrefix . 'includes/ConnectDB.inc');
 include($PathPrefix . 'includes/DateFunctions.inc');
+include($PathPrefix . 'includes/MainMenuLinksArray.php');
 
 if (!isset($_SESSION['AttemptsCounter']) OR $AllowDemoMode==true){
 	$_SESSION['AttemptsCounter'] = 0;
@@ -189,7 +190,8 @@ if(basename($_SERVER['SCRIPT_NAME'])=='Logout.php'){
 }
 
 /*If the Code $Version - held in ConnectDB.inc is > than the Database VersionNumber held in config table then do upgrades */
-if (strcmp($Version,$_SESSION['VersionNumber'])>0 AND (basename($_SERVER['SCRIPT_NAME'])!='UpgradeDatabase.php')) {
+$vn=$_SESSION['VersionNumber'];
+if (strcmp($Version,$vn)>0 AND (basename($_SERVER['SCRIPT_NAME'])!='UpgradeDatabase.php')) {
 	header('Location: UpgradeDatabase.php');
 }
 

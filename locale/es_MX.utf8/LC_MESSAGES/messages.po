@@ -10318,6 +10318,15 @@ msgstr "Cuadro de indicadores"
 msgid "The security for Aging Debtors cannot be retrieved because"
 msgstr ""
 
+msgid "Items to sell out"
+msgstr "Articulos por Agotarse"
+
+msgid "Top selling items"
+msgstr "Articulos más vendidos"
+
+msgid "See More"
+msgstr "Ver más"
+
 #: Dashboard.php:19 Dashboard.php:28 Dashboard.php:37 Dashboard.php:46
 #: Payments.php:65 ProductSpecs.php:77 ProductSpecs.php:281
 #: ProductSpecs.php:316 QATests.php:109 SalesPeople.php:132

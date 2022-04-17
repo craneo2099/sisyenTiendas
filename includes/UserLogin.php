@@ -230,6 +230,22 @@ function userLogin($Name, $Password, $SysAdminEmail = '') {
 				}
 			}
 
+			/* Determinar si el usuario tiene la caja abierta
+			*/
+			include($PathPrefix . 'modulos/shifts/DAO/caja.inc');
+
+			$cajaAbierta=esCajaAbierta($_SESSION['UserID']);
+
+			/* si la caja esta abierta, deshabilita los modulos de compras y ventas
+			*/
+			
+			include($PathPrefix . 'modulos/core/DAO/seguridad.inc');
+			if(!$cajaAbierta){
+				disableModule("Sales");
+				disableModule("PO");
+			}
+
+
 
 			if(!isset($_SESSION['DB_Maintenance'])){
 				return  UL_CONFIGERR;

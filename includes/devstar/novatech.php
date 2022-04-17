@@ -226,3 +226,8 @@ function confirmacion($migajas,$titulo){
 	echo '<div></div>';
 
 }
+function getLink($accion){
+    global $RootPath;
+	return $RootPath.'/'.$accion;
+
+}

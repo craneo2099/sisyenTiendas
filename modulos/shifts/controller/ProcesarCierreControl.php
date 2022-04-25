@@ -1,5 +1,4 @@
 <?php
-$viewModule='Shifts';
-$viewName='CorteCaja';
+setEstadoCaja($_SESSION['UserID'],0);
 
 include ('modulos/Shifts/controller/CorteCajaControl.php');

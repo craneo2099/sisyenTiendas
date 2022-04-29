@@ -4,10 +4,11 @@ include ('includes/session.php');
 require_once('includes/devstar/novatech.php');
 
 $controlledWay=false;
-if(!str_contains($path,'.php')){
+
+include ('includes/Routes.inc');
+$action=getRedirection($path,$_POST['hidAction']);
+if(!str_contains(end($action),'.php')){
 	
-	include ('includes/Routes.inc');
-	$action=getRedirection($path,$_POST['hidAction']);
 	$actionSize=count($action);
 	if($actionSize>=2){
 		
@@ -18,6 +19,10 @@ if(!str_contains($path,'.php')){
 		
 		$viewModule=$viewModule??$actionModule;
 		$viewName=$viewName??$actionName;
+		if(str_contains($viewName,'.php')){
+			header('Location:' . $RootPath ."/".$viewName);
+		}
+
 		if(file_exists($PathPrefix.'modulos/'.$viewModule.'/vista/js/'.$viewName.'.js')){
 			$scriptList='/modulos/'.$viewModule.'/vista/js/'.$viewName.'.js';
 		}
@@ -37,7 +42,12 @@ if(!str_contains($path,'.php')){
 		include ('includes/footer.php');
 		
 	}
+}else{
+	header('Location:' . $RootPath .implode("/",$action));
 }
+
+
+///////
 if($controlledWay){
 	exit;
 }

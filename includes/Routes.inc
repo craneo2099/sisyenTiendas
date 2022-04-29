@@ -8,7 +8,7 @@ function getRedirection($path,$action){
             "Cotejar"=>"/Shifts/CotejarCierre",
             "Cerrar"=>"/Shifts/AplicarCierre",
             "Procesar"=>"/Shifts/ProcesarCierre",
-            "Abrir"=>"/Shifts/AbrirCaja"
+            "Abrir"=>"/Shifts/ProcesarApertura"
         )
     );
     $actionPath=str_replace($RootPath, "", $path);

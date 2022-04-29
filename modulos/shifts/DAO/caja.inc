@@ -39,10 +39,10 @@ function setEstadoCaja($usuarioId,$esHacerApertura){
     }
 }
 function cambiarCaja($usuarioId,$esApertura){
-    $SQL = "INSERT into cash_closings cc ( apertura, usuario, fecha_hora) 
-                values(?,?,NOW)";
+    $SQL = "INSERT into cash_closings ( apertura, usuario, fecha_hora) 
+                values(?,?,NOW())";
     $entradasSQL=array($esApertura,
             $usuarioId
             );
-	return DB_query_stmt($SQL,'','','iss',$entradasSQL);
+	return DB_query_stmt($SQL,'','','is',$entradasSQL);
 }

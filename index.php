@@ -42,7 +42,7 @@ if(!str_contains(end($action),'.php')){
 		include ('includes/footer.php');
 		
 	}
-}else{
+}else if (!str_contains(end($action),'index.php')){
 	header('Location:' . $RootPath .implode("/",$action));
 }
 

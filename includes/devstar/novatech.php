@@ -222,9 +222,13 @@ function getExistencias($StockId,$location){
 						   loccode = '" . $location . "'";
 	return DB_fetch_row( DB_query($QohSql))[0];
 }
-function confirmacion($migajas,$titulo){
-	echo '<div></div>';
-
+function mensajeConfirmacion($tituloMensaje, $descripcionMensaje) {
+	$sustituir = array("TITULO","MENSAJE");
+	$valoresSustitucion = array($tituloMensaje,$descripcionMensaje);
+	global $PathPrefix;
+	$valorHtml = file_get_contents($PathPrefix.'res/template/mensajePopup.html');
+	$mensajePopup =  str_replace($sustituir,$valoresSustitucion,$valorHtml);
+	return $mensajePopup;
 }
 function getLink($accion){
     global $RootPath;
